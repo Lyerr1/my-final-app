@@ -136,27 +136,33 @@
             const COMPANY_NAME = '安徽众包企业管理咨询有...';
             const dummyData = {
                 '2025': {
-                    totalIncome: '49214.34元',
-                    totalTax: '236.43元',
-                    records: [ // 按月份从高到低排序，便于累计计算
-                        { month: '06', company: COMPANY_NAME, income: '8800.00', tax: '85.00' },
-                        { month: '05', company: COMPANY_NAME, income: '8650.13', tax: '79.51' },
-                        { month: '04', company: COMPANY_NAME, income: '8264.48', tax: '72.93' },
-                        { month: '03', company: COMPANY_NAME, income: '7500.00', tax: '0.00' },
-                        { month: '02', company: COMPANY_NAME, income: '8000.00', tax: '0.00' },
-                        { month: '01', company: COMPANY_NAME, income: '7999.80', tax: '0.00' },
+                    totalIncome: '36864.21元',
+                    totalTax: '0.00元',
+                    records: [
+                        { month: '06', company: COMPANY_NAME, income: '6363.93', tax: '0.00' },
+                        { month: '05', company: COMPANY_NAME, income: '6150.13', tax: '0.00' },
+                        { month: '04', company: COMPANY_NAME, income: '5864.48', tax: '0.00' },
+                        { month: '03', company: COMPANY_NAME, income: '6200.00', tax: '0.00' },
+                        { month: '02', company: COMPANY_NAME, income: '6085.87', tax: '0.00' },
+                        { month: '01', company: COMPANY_NAME, income: '6199.80', tax: '0.00' },
                     ]
                 },
                 '2024': {
-                    totalIncome: '39489.60元',
-                    totalTax: '94.69元',
+                    totalIncome: '65943.40元',
+                    totalTax: '178.30元',
                     records: [
-                        { month: '12', company: COMPANY_NAME, income: '7100.00', tax: '54.00' },
-                        { month: '11', company: COMPANY_NAME, income: '6800.00', tax: '40.69' },
-                        { month: '10', company: COMPANY_NAME, income: '6500.00', tax: '0.00' },
-                        { month: '09', company: COMPANY_NAME, income: '6200.00', tax: '0.00' },
-                        { month: '08', company: COMPANY_NAME, income: '6889.60', tax: '0.00' },
+                        { month: '12', company: COMPANY_NAME, income: '6890.00', tax: '178.30' },
+                        { month: '11', company: COMPANY_NAME, income: '6753.80', tax: '0.00' },
+                        { month: '10', company: COMPANY_NAME, income: '4900.50', tax: '0.00' },
+                        { month: '09', company: COMPANY_NAME, income: '6450.00', tax: '0.00' },
+                        { month: '08', company: COMPANY_NAME, income: '4899.60', tax: '0.00' },
                         { month: '07', company: COMPANY_NAME, income: '6000.00', tax: '0.00' },
+                        { month: '06', company: COMPANY_NAME, income: '5890.00', tax: '0.00' },
+                        { month: '05', company: COMPANY_NAME, income: '5999.50', tax: '0.00' },
+                        { month: '04', company: COMPANY_NAME, income: '6160.00', tax: '0.00' },
+                        { month: '03', company: COMPANY_NAME, income: '6000.00', tax: '0.00' },
+                        { month: '02', company: COMPANY_NAME, income: '5500.00', tax: '0.00' },
+                        { month: '01', company: COMPANY_NAME, income: '4500.00', tax: '0.00' },
                     ]
                 },
                 '2023': {
@@ -174,7 +180,7 @@
             };
             // 重新排序记录，确保按月份降序显示
             for (const year in dummyData) {
-                dummyData[year].records.sort((a, b) => b.month - a.month);
+                dummyData[year].records.sort((a, b) => parseInt(b.month) - parseInt(a.month));
             }
 
             // --- 2. 状态管理 ---
