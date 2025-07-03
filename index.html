@@ -9,148 +9,20 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="纳税明细">
-    <link rel="apple-touch-icon" href="icon.png"> <!-- 指向您的App图标 -->
-    <link rel="manifest" href="manifest.json"> <!-- 指向一个配置文件 -->
+    <link rel="apple-touch-icon" href="icon.png">
+    <link rel="manifest" href="manifest.json">
 
     <style>
         /* --- 新增：认证遮罩层样式 --- */
-        #auth-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: #f4f6f9;
-            z-index: 2000;
-            display: flex; /* 默认显示，用于锁定屏幕 */
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-            color: #555;
-            font-size: 18px;
-        }
-        #auth-overlay .message {
-            padding: 20px;
-        }
+        #auth-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: #f4f6f9; z-index: 2000; display: flex; justify-content: center; align-items: center; text-align: center; color: #555; font-size: 18px; }
+        #auth-overlay .message { padding: 20px; }
         
         /* --- 修改：默认隐藏应用页面，等待验证通过 --- */
         #page-query { display: none; } 
         #page-results { display: none; }
         
         /* --- 通用样式 --- */
-        body {
-            margin: 0;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-            background-color: #f4f6f9;
-            color: #333;
-            -webkit-font-smoothing: antialiased;
-        }
-        .page { display: block; }
-
-        /* --- 头部导航栏 (通用) --- */
-        .header { display: flex; align-items: center; justify-content: center; position: relative; padding: 15px; background-color: #ffffff; border-bottom: 1px solid #e8e8e8; height: 30px; }
-        .header .back-link { position: absolute; left: 15px; font-size: 16px; color: #333; text-decoration: none; cursor: pointer; }
-        .header .title { font-size: 18px; font-weight: bold; }
-        .header .action-link { position: absolute; right: 15px; font-size: 16px; color: #4a90e2; text-decoration: none; }
-
-        /* --- 页面一：查询页样式 --- */
-        #page-query .container { background-color: #ffffff; }
-        #page-query .main-content { padding: 0 15px; }
-        #page-query .section-title { display: flex; align-items: center; font-size: 15px; color: #888; margin: 20px 0 10px; }
-        #page-query .section-title::before { content: ''; display: inline-block; width: 4px; height: 16px; background-color: #4a90e2; margin-right: 8px; border-radius: 2px; }
-        #page-query .list-item { display: flex; justify-content: space-between; align-items: center; padding: 18px 0; font-size: 16px; border-bottom: 1px solid #f0f0f0; cursor: pointer; }
-        #page-query .list-item .label { color: #333; }
-        #page-query .list-item .value { color: #555; display: flex; align-items: center; }
-        #page-query .arrow { color: #ccc; margin-left: 8px; font-size: 20px; }
-        #page-query .list-item:last-child { border-bottom: none; }
-        #page-query .checkbox-item { display: flex; align-items: center; }
-        #page-query input[type="checkbox"] { display: none; }
-        #page-query .custom-checkbox { display: inline-block; width: 20px; height: 20px; background-color: #fff; border: 1px solid #ccc; border-radius: 50%; position: relative; margin-right: 12px; cursor: pointer; transition: background-color 0.2s, border-color 0.2s; }
-        #page-query input[type="checkbox"]:checked + .custom-checkbox { background-color: #4a90e2; border-color: #4a90e2; }
-        #page-query input[type="checkbox"]:checked + .custom-checkbox::after { content: ''; position: absolute; left: 6px; top: 3px; width: 5px; height: 10px; border: solid white; border-width: 0 2px 2px 0; transform: rotate(45deg); }
-        #page-query .more-types { text-align: center; padding: 20px 0; }
-        #page-query .more-types a { color: #4a90e2; text-decoration: none; font-size: 15px; }
-        #page-query .more-types .arrow-down { display: inline-block; width: 0; height: 0; border-left: 5px solid transparent; border-right: 5px solid transparent; border-top: 6px solid #4a90e2; margin-left: 5px; }
-        #page-query .footer { padding: 30px 15px; }
-        #page-query .query-button { width: 100%; padding: 15px; background-color: #4a90e2; color: white; border: none; border-radius: 8px; font-size: 18px; cursor: pointer; }
-        
-        /* --- 页面二：结果页样式 --- */
-        #page-results .summary-section { background-color: #ffffff; padding: 20px 15px; margin-bottom: 10px; }
-        #page-results .summary-item { display: flex; justify-content: space-between; align-items: center; font-size: 16px; margin-bottom: 15px; }
-        #page-results .summary-item:last-child { margin-bottom: 0; }
-        #page-results .summary-item .label { color: #555; display: flex; align-items: center; }
-        #page-results .summary-item .value { font-size: 18px; font-weight: bold; color: #333; }
-        #page-results .info-icon { display: inline-block; width: 16px; height: 16px; border: 1px solid #4a90e2; border-radius: 50%; color: #4a90e2; text-align: center; font-size: 12px; line-height: 16px; margin-left: 5px; cursor: pointer; font-weight: bold; }
-        #page-results .results-list { background-color: #ffffff; }
-        #page-results .income-card { padding: 15px; border-bottom: 1px solid #f0f0f0; }
-        #page-results .income-card:last-child { border-bottom: none; }
-        #page-results .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
-        #page-results .card-header .type { font-size: 17px; font-weight: bold; }
-        #page-results .card-header .date { font-size: 15px; color: #888; }
-        #page-results .card-details p { margin: 5px 0; font-size: 15px; color: #888; display: flex; justify-content: space-between; align-items: center; }
-        #page-results .card-details .value { color: #333; }
-        #page-results .arrow { color: #ccc; font-size: 20px; }
-
-        /* --- 年份选择器 Modal 样式 --- */
-        .modal-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.5);
-            display: none; /* 默认隐藏 */
-            justify-content: center;
-            align-items: flex-end;
-            z-index: 1000;
-        }
-        .modal-overlay.active {
-            display: flex;
-        }
-        .modal-content {
-            background-color: #f4f6f9;
-            width: 100%;
-            border-top-left-radius: 12px;
-            border-top-right-radius: 12px;
-            animation: slide-up 0.3s ease-out;
-        }
-        .modal-content ul {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-            background-color: white;
-            max-height: 250px;
-            overflow-y: auto;
-        }
-        .modal-content li {
-            padding: 15px;
-            text-align: center;
-            font-size: 18px;
-            color: #333;
-            border-bottom: 1px solid #f0f0f0;
-        }
-        .modal-content li.selected {
-            color: #4a90e2;
-            font-weight: bold;
-        }
-        .modal-content li:last-child {
-            border-bottom: none;
-        }
-        .modal-cancel {
-            display: block;
-            width: 100%;
-            padding: 15px;
-            margin-top: 8px;
-            border: none;
-            background-color: white;
-            font-size: 18px;
-            color: #333;
-            font-weight: bold;
-        }
-        @keyframes slide-up {
-            from { transform: translateY(100%); }
-            to { transform: translateY(0); }
-        }
+        body { margin: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; background-color: #f4f6f9; color: #333; -webkit-font-smoothing: antialiased; } .page { display: block; } .header { display: flex; align-items: center; justify-content: center; position: relative; padding: 15px; background-color: #ffffff; border-bottom: 1px solid #e8e8e8; height: 30px; } .header .back-link { position: absolute; left: 15px; font-size: 16px; color: #333; text-decoration: none; cursor: pointer; } .header .title { font-size: 18px; font-weight: bold; } .header .action-link { position: absolute; right: 15px; font-size: 16px; color: #4a90e2; text-decoration: none; } #page-query .container { background-color: #ffffff; } #page-query .main-content { padding: 0 15px; } #page-query .section-title { display: flex; align-items: center; font-size: 15px; color: #888; margin: 20px 0 10px; } #page-query .section-title::before { content: ''; display: inline-block; width: 4px; height: 16px; background-color: #4a90e2; margin-right: 8px; border-radius: 2px; } #page-query .list-item { display: flex; justify-content: space-between; align-items: center; padding: 18px 0; font-size: 16px; border-bottom: 1px solid #f0f0f0; cursor: pointer; } #page-query .list-item .label { color: #333; } #page-query .list-item .value { color: #555; display: flex; align-items: center; } #page-query .arrow { color: #ccc; margin-left: 8px; font-size: 20px; } #page-query .list-item:last-child { border-bottom: none; } #page-query .checkbox-item { display: flex; align-items: center; } #page-query input[type="checkbox"] { display: none; } #page-query .custom-checkbox { display: inline-block; width: 20px; height: 20px; background-color: #fff; border: 1px solid #ccc; border-radius: 50%; position: relative; margin-right: 12px; cursor: pointer; transition: background-color 0.2s, border-color 0.2s; } #page-query input[type="checkbox"]:checked + .custom-checkbox { background-color: #4a90e2; border-color: #4a90e2; } #page-query input[type="checkbox"]:checked + .custom-checkbox::after { content: ''; position: absolute; left: 6px; top: 3px; width: 5px; height: 10px; border: solid white; border-width: 0 2px 2px 0; transform: rotate(45deg); } #page-query .more-types { text-align: center; padding: 20px 0; } #page-query .more-types a { color: #4a90e2; text-decoration: none; font-size: 15px; } #page-query .more-types .arrow-down { display: inline-block; width: 0; height: 0; border-left: 5px solid transparent; border-right: 5px solid transparent; border-top: 6px solid #4a90e2; margin-left: 5px; } #page-query .footer { padding: 30px 15px; } #page-query .query-button { width: 100%; padding: 15px; background-color: #4a90e2; color: white; border: none; border-radius: 8px; font-size: 18px; cursor: pointer; } #page-results .summary-section { background-color: #ffffff; padding: 20px 15px; margin-bottom: 10px; } #page-results .summary-item { display: flex; justify-content: space-between; align-items: center; font-size: 16px; margin-bottom: 15px; } #page-results .summary-item:last-child { margin-bottom: 0; } #page-results .summary-item .label { color: #555; display: flex; align-items: center; } #page-results .summary-item .value { font-size: 18px; font-weight: bold; color: #333; } #page-results .info-icon { display: inline-block; width: 16px; height: 16px; border: 1px solid #4a90e2; border-radius: 50%; color: #4a90e2; text-align: center; font-size: 12px; line-height: 16px; margin-left: 5px; cursor: pointer; font-weight: bold; } #page-results .results-list { background-color: #ffffff; } #page-results .income-card { padding: 15px; border-bottom: 1px solid #f0f0f0; } #page-results .income-card:last-child { border-bottom: none; } #page-results .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; } #page-results .card-header .type { font-size: 17px; font-weight: bold; } #page-results .card-header .date { font-size: 15px; color: #888; } #page-results .card-details p { margin: 5px 0; font-size: 15px; color: #888; display: flex; justify-content: space-between; align-items: center; } #page-results .card-details .value { color: #333; } #page-results .arrow { color: #ccc; font-size: 20px; } .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.5); display: none; justify-content: center; align-items: flex-end; z-index: 1000; } .modal-overlay.active { display: flex; } .modal-content { background-color: #f4f6f9; width: 100%; border-top-left-radius: 12px; border-top-right-radius: 12px; animation: slide-up 0.3s ease-out; } .modal-content ul { list-style: none; padding: 0; margin: 0; background-color: white; max-height: 250px; overflow-y: auto; } .modal-content li { padding: 15px; text-align: center; font-size: 18px; color: #333; border-bottom: 1px solid #f0f0f0; } .modal-content li.selected { color: #4a90e2; font-weight: bold; } .modal-content li:last-child { border-bottom: none; } .modal-cancel { display: block; width: 100%; padding: 15px; margin-top: 8px; border: none; background-color: white; font-size: 18px; color: #333; font-weight: bold; } @keyframes slide-up { from { transform: translateY(100%); } to { transform: translateY(0); } }
     </style>
 </head>
 <body>
@@ -160,7 +32,7 @@
         <div class="message">正在验证使用权限...</div>
     </div>
     
-    <!-- 页面一：查询页面 (HTML结构保持不变) -->
+    <!-- 页面一：查询页面 -->
     <div id="page-query" class="page">
         <div class="header">
             <a class="back-link">< 返回</a>
@@ -197,7 +69,7 @@
         </div>
     </div>
 
-    <!-- 页面二：结果页面 (HTML结构保持不变) -->
+    <!-- 页面二：结果页面 -->
     <div id="page-results" class="page">
         <div class="header">
             <a id="back-button" class="back-link">< 返回</a>
@@ -219,7 +91,7 @@
         </div>
     </div>
 
-    <!-- 年份选择器 Modal (HTML结构保持不变) -->
+    <!-- 年份选择器 Modal -->
     <div id="year-selector-modal" class="modal-overlay">
         <div class="modal-content">
             <ul id="year-list">
@@ -230,77 +102,87 @@
     </div>
 
     <script>
-        // --- 新增：认证模块 ---
+        // --- 认证模块 ---
         const AUTH_CONFIG = {
-            // 重要：这里的 accessKey 必须和您服务器上 check-access.js 文件里的 VALID_KEYS 数组中的一个完全匹配！
-            // 比如 'CLIENT_A_UNIQUE_ACCESS_KEY'
             accessKey: 'CLIENT_A_UNIQUE_ACCESS_KEY', 
-            
-            // 我已经根据您的截图，帮您填好了正确的服务器地址
             serverUrl: 'https://tax-app-controller.netlify.app/.netlify/functions/check-access' 
         };
 
         async function verifyAccess() {
             const authOverlay = document.getElementById('auth-overlay');
             const authMessage = authOverlay.querySelector('.message');
-
             try {
                 const response = await fetch(AUTH_CONFIG.serverUrl, {
                     method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
+                    headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ key: AUTH_CONFIG.accessKey })
                 });
-
-                if (!response.ok) {
-                    throw new Error('网络错误或服务器问题。');
-                }
-
+                if (!response.ok) throw new Error('网络错误或服务器问题。');
                 const data = await response.json();
-
                 if (data.status === 'ok') {
-                    // 权限验证通过！隐藏遮罩层并初始化应用。
                     authOverlay.style.display = 'none';
                     initializeApp();
                 } else {
-                    // 被服务器拒绝访问。
                     authMessage.textContent = `访问被拒绝: ${data.message || '无效的密钥。'}`;
                 }
             } catch (error) {
                 authMessage.textContent = `错误: ${error.message} 请检查网络连接或联系管理员。`;
             }
         }
-
-        // --- 您所有现有的应用代码都将移到这个函数内部 ---
+        
+        // --- 主应用逻辑 ---
         function initializeApp() {
-            
-            // --- 1. 数据中心：存放所有年份的模拟数据 ---
+            // --- 1. 数据中心：存放所有年份的模拟数据 (已按要求更新) ---
+            const COMPANY_NAME = '安徽众包企业管理咨询有...';
             const dummyData = {
                 '2025': {
-                    totalIncome: '41328.34元',
-                    totalTax: '153.20元',
-                    records: [
-                        { month: '06', company: '安徽众包企业管理咨询有...', income: '6363.93', tax: '0.00' },
-                        { month: '05', company: '安徽众包企业管理咨询有...', income: '7250.00', tax: '67.50' },
-                        { month: '04', company: '安徽众包企业管理咨询有...', income: '4264.48', tax: '0.00' },
-                        { month: '03', company: '安徽众包企业管理咨询有...', income: '8800.00', tax: '85.70' },
-                        { month: '02', company: '安徽众包企业管理咨询有...', income: '6850.13', tax: '0.00' },
-                        { month: '01', company: '安徽众包企业管理咨询有...', income: '7799.80', tax: '0.00' },
+                    totalIncome: '49214.34元',
+                    totalTax: '236.43元',
+                    records: [ // 按月份从高到低排序，便于累计计算
+                        { month: '06', company: COMPANY_NAME, income: '8800.00', tax: '85.00' },
+                        { month: '05', company: COMPANY_NAME, income: '8650.13', tax: '79.51' },
+                        { month: '04', company: COMPANY_NAME, income: '8264.48', tax: '72.93' },
+                        { month: '03', company: COMPANY_NAME, income: '7500.00', tax: '0.00' },
+                        { month: '02', company: COMPANY_NAME, income: '8000.00', tax: '0.00' },
+                        { month: '01', company: COMPANY_NAME, income: '7999.80', tax: '0.00' },
                     ]
                 },
-                '2024': { totalIncome: '35890.10元', totalTax: '99.50元', records: [ { month: '12', company: '广州数据处理中心', income: '5800.00', tax: '0.00' }, { month: '11', company: '杭州电商运营支持公司', income: '6500.00', tax: '45.00' }, { month: '10', company: '苏州智能制造有限公司', income: '4900.50', tax: '0.00' }, { month: '09', company: '南京软件开发有限公司', income: '7100.00', tax: '54.50' }, { month: '08', company: '成都文化传播有限公司', income: '5589.60', tax: '0.00' }, { month: '07', company: '重庆物流服务有限公司', income: '6000.00', tax: '0.00' }, ] },
-                '2023': { totalIncome: '29550.00元', totalTax: '0.00元', records: [ { month: '06', company: '武汉光谷技术服务部', income: '5200.00', tax: '0.00' }, { month: '05', company: '长沙新媒体运营公司', income: '4800.00', tax: '0.00' }, { month: '04', company: '西安古都文旅集团', income: '4500.00', tax: '0.00' }, { month: '03', company: '郑州交通枢纽服务公司', income: '5100.00', tax: '0.00' }, { month: '02', company: '青岛港口物流有限公司', income: '4950.00', tax: '0.00' }, { month: '01', company: '天津滨海新区科技公司', income: '5000.00', tax: '0.00' }, ] }
+                '2024': {
+                    totalIncome: '39489.60元',
+                    totalTax: '94.69元',
+                    records: [
+                        { month: '12', company: COMPANY_NAME, income: '7100.00', tax: '54.00' },
+                        { month: '11', company: COMPANY_NAME, income: '6800.00', tax: '40.69' },
+                        { month: '10', company: COMPANY_NAME, income: '6500.00', tax: '0.00' },
+                        { month: '09', company: COMPANY_NAME, income: '6200.00', tax: '0.00' },
+                        { month: '08', company: COMPANY_NAME, income: '6889.60', tax: '0.00' },
+                        { month: '07', company: COMPANY_NAME, income: '6000.00', tax: '0.00' },
+                    ]
+                },
+                '2023': {
+                    totalIncome: '30250.00元',
+                    totalTax: '0.00元',
+                    records: [
+                        { month: '06', company: COMPANY_NAME, income: '5200.00', tax: '0.00' },
+                        { month: '05', company: COMPANY_NAME, income: '4800.00', tax: '0.00' },
+                        { month: '04', company: COMPANY_NAME, income: '4500.00', tax: '0.00' },
+                        { month: '03', company: COMPANY_NAME, income: '5100.00', tax: '0.00' },
+                        { month: '02', company: COMPANY_NAME, income: '4950.00', tax: '0.00' },
+                        { month: '01', company: COMPANY_NAME, income: '5700.00', tax: '0.00' },
+                    ]
+                }
             };
+            // 重新排序记录，确保按月份降序显示
+            for (const year in dummyData) {
+                dummyData[year].records.sort((a, b) => b.month - a.month);
+            }
 
-            // --- 2. 状态管理：保存当前选择的年份 ---
+            // --- 2. 状态管理 ---
             let currentYear = 2025;
 
-            // --- 3. 获取所有需要操作的DOM元素 ---
+            // --- 3. 获取DOM元素 ---
             const pageQuery = document.getElementById('page-query');
             const pageResults = document.getElementById('page-results');
-            
-            // --- 修改：既然应用已初始化，现在显示第一个页面 ---
             pageQuery.style.display = 'block';
 
             const queryButton = document.getElementById('query-button');
@@ -315,8 +197,6 @@
             const resultsListContainer = document.getElementById('results-list-container');
             
             // --- 4. 核心功能函数 ---
-
-            // 函数：根据年份渲染结果页面
             function renderResultsPage(year) {
                 const data = dummyData[year];
                 if (!data) return; 
@@ -328,23 +208,18 @@
                 data.records.forEach(record => {
                     const cardHTML = `
                         <div class="income-card">
-                            <div class="card-header">
-                                <span class="type">工资薪金</span>
-                                <span class="date">${year}-${record.month}</span>
-                            </div>
+                            <div class="card-header"> <span class="type">工资薪金</span> <span class="date">${year}-${record.month}</span> </div>
                             <div class="card-details">
                                 <p>所得项目小类: <span class="value">正常工资薪金</span></p>
                                 <p><span>扣缴义务人: ${record.company}</span> <span class="arrow">></span></p>
                                 <p>收入: <span class="value">${record.income}元</span></p>
                                 <p>已申报税额: <span class="value">${record.tax}元</span></p>
                             </div>
-                        </div>
-                    `;
+                        </div>`;
                     resultsListContainer.insertAdjacentHTML('beforeend', cardHTML);
                 });
             }
 
-            // 函数：生成年份选择列表
             function populateYearSelector() {
                 yearList.innerHTML = '';
                 const years = Object.keys(dummyData).sort((a, b) => b - a);
@@ -352,54 +227,22 @@
                     const li = document.createElement('li');
                     li.textContent = year;
                     li.dataset.year = year;
-                    if (parseInt(year) === currentYear) {
-                        li.classList.add('selected');
-                    }
+                    if (parseInt(year) === currentYear) { li.classList.add('selected'); }
                     yearList.appendChild(li);
                 });
             }
 
             // --- 5. 事件监听器绑定 ---
-            queryButton.addEventListener('click', () => {
-                renderResultsPage(currentYear);
-                pageQuery.style.display = 'none';
-                pageResults.style.display = 'block';
-                window.scrollTo(0, 0);
-            });
-
-            backButton.addEventListener('click', () => {
-                pageResults.style.display = 'none';
-                pageQuery.style.display = 'block';
-                window.scrollTo(0, 0);
-            });
-
-            yearSelectorTrigger.addEventListener('click', () => {
-                populateYearSelector();
-                yearSelectorModal.classList.add('active');
-            });
-
-            modalCancelButton.addEventListener('click', () => {
-                yearSelectorModal.classList.remove('active');
-            });
-
-            yearList.addEventListener('click', (event) => {
-                if (event.target.tagName === 'LI') {
-                    const selectedYear = parseInt(event.target.dataset.year);
-                    currentYear = selectedYear;
-                    selectedYearDisplay.textContent = currentYear;
-                    yearSelectorModal.classList.remove('active');
-                }
-            });
-
-            yearSelectorModal.addEventListener('click', (event) => {
-                if (event.target === yearSelectorModal) {
-                     yearSelectorModal.classList.remove('active');
-                }
-            });
+            queryButton.addEventListener('click', () => { renderResultsPage(currentYear); pageQuery.style.display = 'none'; pageResults.style.display = 'block'; window.scrollTo(0, 0); });
+            backButton.addEventListener('click', () => { pageResults.style.display = 'none'; pageQuery.style.display = 'block'; window.scrollTo(0, 0); });
+            yearSelectorTrigger.addEventListener('click', () => { populateYearSelector(); yearSelectorModal.classList.add('active'); });
+            modalCancelButton.addEventListener('click', () => { yearSelectorModal.classList.remove('active'); });
+            yearList.addEventListener('click', (event) => { if (event.target.tagName === 'LI') { const selectedYear = parseInt(event.target.dataset.year); currentYear = selectedYear; selectedYearDisplay.textContent = currentYear; yearSelectorModal.classList.remove('active'); } });
+            yearSelectorModal.addEventListener('click', (event) => { if (event.target === yearSelectorModal) { yearSelectorModal.classList.remove('active'); } });
         }
         
-        // --- 新增：页面加载完成后，开始验证流程 ---
-        document.addEventListener('DOMContentLoaded', verifyAccess);
+        // --- 启动验证流程 ---
+        verifyAccess();
 
     </script>
 </body>
