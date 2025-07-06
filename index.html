@@ -28,6 +28,7 @@
         }
 
         .mobile-shell {
+            /* 关键：精确设置iPhone 15/16 Pro尺寸 */
             width: 393px;
             height: 852px;
             background-color: var(--bg-color);
@@ -43,7 +44,6 @@
             flex-grow: 1;
             overflow-y: auto;
             overflow-x: hidden;
-            padding-bottom: 85px; 
             display: none; /* 默认所有页面都隐藏 */
         }
         #home-page {
@@ -97,13 +97,11 @@
         .special-topic-btn { position: absolute; top: 15px; right: 15px; background-color: #4a77d4; color: white; padding: 4px 12px; border-radius: 12px; font-size: 12px; text-decoration: none; white-space: nowrap; }
         .main-card .person-img { position: absolute; right: 10px; bottom: 0; width: 110px; height: auto; flex-shrink: 0; }
         .section-title { margin: 20px 15px 8px; font-size: 18px; font-weight: bold; color: var(--text-color); }
-        
         .deduction-card { margin: 0 15px; padding: 15px; background: linear-gradient(to right, #6ba6f8, #5587e2); border-radius: 12px; color: white; margin-bottom: 15px; }
         .deduction-card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
         .deduction-card-header .title { font-size: 17px; font-weight: bold; }
         .deduction-card-header .policy-link { font-size: 13px; background-color: rgba(255,255,255,0.2); padding: 5px 10px; border-radius: 15px; }
         .deduction-card p { font-size: 14px; margin: 0 0 10px; }
-        
         .deduction-card .fill-btn { background-color: white; color: #5587e2; border: 1px solid #cce0ff; width: 100%; padding: 12px; border-radius: 25px; font-size: 16px; font-weight: bold; display: flex; justify-content: center; align-items: center; gap: 10px; }
         .fill-btn-content { background-color: #ffe6e6; color: #e27d7d; padding: 2px 8px; border-radius: 10px; margin-right: 10px; white-space: nowrap; display: flex; align-items: center; }
         .fill-btn-icons { display: flex; align-items: center; }
@@ -111,7 +109,6 @@
         .fill-btn-icon.second-icon { margin-left: -5px; }
         .fill-btn span:nth-child(2) { color: #d0d0d0; font-size: 18px; line-height: 1; }
         .fill-btn span:last-child { white-space: nowrap; color: #333; font-weight: 600; }
-
         .services-container { margin: 0 15px; overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: none; padding-bottom: 15px; }
         .services-container::-webkit-scrollbar { display: none; }
         .services-grid { display: flex; flex-wrap: nowrap; padding: 15px 0; }
@@ -121,7 +118,6 @@
         .service-item h3 { font-size: 14px; margin: 0 0 3px 0; color: var(--text-color); }
         .service-item p { font-size: 12px; color: var(--text-light); margin: 0; line-height: 1.2; }
         .service-item .action { margin-top: 5px; font-size: 13px; color: #5587e2; }
-
         .bottom-banner-card { margin: 15px; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05); margin-bottom: 20px; background-color: var(--card-bg); }
         .bottom-banner-card .banner-img { display: block; width: 100%; height: auto; }
 
@@ -151,11 +147,12 @@
         .logout-btn { margin: 20px 0; width: 100%; padding: 12px; border: 1px solid #ddd; background-color: var(--card-bg); color: var(--primary-blue); font-size: 16px; border-radius: 8px; cursor: pointer; font-weight: 500; }
         
         /* --- 底部导航栏 --- */
-        .bottom-nav { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); width: 95%; max-width: 480px; height: 65px; background-color: rgba(247, 248, 250, 0.95); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border-radius: 32.5px; display: flex; justify-content: space-around; align-items: center; z-index: 10; box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08); }
+        .bottom-nav { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); width: calc(100% - 16px); max-width: 480px; height: 65px; background-color: rgba(247, 248, 250, 0.95); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border-radius: 32.5px; display: flex; justify-content: space-around; align-items: center; z-index: 10; box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08); }
         .nav-item { display: flex; flex-direction: column; align-items: center; justify-content: center; flex-grow: 1; font-size: 11px; color: #555555; cursor: pointer; position: relative; height: 100%; }
         .nav-item .nav-icon { width: 26px; height: 26px; margin-bottom: 3px; }
-        .nav-item.active:not([data-page="home-page"]) .nav-icon { filter: invert(38%) sepia(98%) saturate(1354%) hue-rotate(195deg) brightness(93%) contrast(87%); }
-        .nav-item[data-page="profile-page"].active .nav-icon { filter: none; }
+        .nav-item.active:not([data-page="home-page"]) .nav-icon-inactive { display: none; }
+        .nav-item.active:not([data-page="home-page"]) .nav-icon-active { display: block; }
+        .nav-item:not(.active) .nav-icon-active { display: none; }
         .nav-item.active .nav-text { color: var(--primary-blue); }
         .nav-item .badge { position: absolute; top: 5px; right: 12px; background-color: #e74c3c; color: white; font-size: 10px; padding: 1px 5px; border-radius: 10px; border: 1px solid white; }
 
@@ -168,10 +165,11 @@
         .section-header { display: flex; align-items: center; margin-bottom: 15px; }
         .section-header .icon-bar { width: 3px; height: 14px; background-color: var(--primary-blue); border-radius: 2px; margin-right: 8px; }
         .section-header h2 { margin: 0; font-size: 15px; color: var(--text-color); }
-        .form-row { display: flex; justify-content: space-between; align-items: center; padding: 15px 0; border-bottom: 1px solid var(--border-color); }
+        .form-row { display: flex; justify-content: space-between; align-items: center; padding: 15px 0; border-bottom: 1px solid var(--border-color); cursor: pointer; }
         .form-row .form-label { font-size: 15px; color: var(--text-color); }
         .form-row .form-value { display: flex; align-items: center; font-size: 15px; color: #555; }
         .form-row .form-arrow { color: #ccc; margin-left: 5px; }
+        .form-row select { -webkit-appearance: none; appearance: none; border: none; background: transparent; text-align: right; font-size: 15px; color: #555; direction: rtl; }
         .checkbox-list { padding: 15px 0; }
         .checkbox-item { display: flex; align-items: center; padding: 10px 0; cursor: pointer; }
         .checkbox-icon { width: 20px; height: 20px; border: 1.5px solid #ccc; border-radius: 50%; margin-right: 10px; display: flex; align-items: center; justify-content: center; }
@@ -187,6 +185,7 @@
         .summary-label .q-icon { width: 14px; height: 14px; border: 1px solid var(--text-light); border-radius: 50%; margin-left: 5px; font-size: 10px; text-align: center; line-height: 14px; }
         .summary-value { font-size: 15px; color: var(--text-color); }
         .result-list { padding: 15px; }
+        .year-title { font-size: 14px; color: var(--text-light); margin: 10px 0 10px 5px; font-weight: 500; }
         .result-card { background-color: var(--card-bg); border-radius: 8px; padding: 15px; margin-bottom: 15px; position: relative; }
         .result-card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
         .result-card-title { font-size: 16px; font-weight: 600; color: var(--text-color); }
@@ -196,13 +195,12 @@
         .result-detail-label { color: var(--text-light); }
         .result-detail-value { color: var(--text-color); }
         .result-card-arrow { position: absolute; right: 15px; top: 50%; transform: translateY(-50%); color: #ccc; }
-
     </style>
 </head>
 <body>
     <div class="mobile-shell">
         <!-- 首页 -->
-        <div class="page" id="home-page">
+        <div class="page has-nav" id="home-page">
             <header class="home-header">
                 <div class="search-bar">
                     <svg class="search-svg" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="9" cy="9" r="7.5" stroke-linecap="round"/><line x1="15" y1="15" x2="18" y2="18" stroke-linecap="round"/></svg>
@@ -279,7 +277,7 @@
         </div>
 
         <!-- 个人中心页 -->
-        <div class="page" id="profile-page">
+        <div class="page has-nav" id="profile-page">
             <header class="profile-header">
                 <div class="avatar-container">
                     <img id="profile-avatar" src="imge/52ccf66bdc8c3e37acac6ed8c9846c2.jpg" alt="avatar">
@@ -339,7 +337,11 @@
                     <div class="form-row">
                         <span class="form-label">年度</span>
                         <div class="form-value">
-                            2025
+                            <select id="year-select">
+                                <option value="2025">2025</option>
+                                <option value="2024">2024</option>
+                                <option value="2023">2023</option>
+                            </select>
                             <span class="form-arrow">></span>
                         </div>
                     </div>
@@ -392,39 +394,15 @@
                 <div class="result-summary">
                     <div class="summary-row">
                         <span class="summary-label">收入合计 <span class="q-icon">?</span></span>
-                        <span class="summary-value">1846.50元</span>
+                        <span class="summary-value" id="total-income">0.00元</span>
                     </div>
                     <div class="summary-row">
                         <span class="summary-label">已申报税额合计：</span>
-                        <span class="summary-value">0.00元</span>
+                        <span class="summary-value" id="total-tax">0.00元</span>
                     </div>
                 </div>
-                <div class="result-list">
-                    <div class="result-card">
-                        <div class="result-card-header">
-                            <h3 class="result-card-title">工资薪金</h3>
-                            <span class="result-card-date">2025-01</span>
-                        </div>
-                        <div class="result-card-body">
-                            <div class="result-detail-row">
-                                <span class="result-detail-label">所得项目小类：</span>
-                                <span class="result-detail-value">正常工资薪金</span>
-                            </div>
-                            <div class="result-detail-row">
-                                <span class="result-detail-label">扣缴义务人：</span>
-                                <span class="result-detail-value">江西拓城人力资源有限公司</span>
-                            </div>
-                            <div class="result-detail-row">
-                                <span class="result-detail-label">收入：</span>
-                                <span class="result-detail-value">1846.50元</span>
-                            </div>
-                            <div class="result-detail-row">
-                                <span class="result-detail-label">已申报税额：</span>
-                                <span class="result-detail-value">0.00元</span>
-                            </div>
-                        </div>
-                        <span class="result-card-arrow">></span>
-                    </div>
+                <div class="result-list" id="salary-details-list">
+                    <!-- 数据将由JS动态生成 -->
                 </div>
             </main>
         </div>
@@ -445,7 +423,6 @@
             const bottomNav = document.querySelector('.bottom-nav');
             const navItems = document.querySelectorAll('.nav-item');
             
-            // --- 页面切换逻辑 ---
             let currentPageId = 'home-page';
             function showPage(pageId) {
                 allPages.forEach(p => p.style.display = 'none');
@@ -453,17 +430,10 @@
                 if (pageToShow) {
                     pageToShow.style.display = 'block';
                     currentPageId = pageId;
-
-                    // 根据页面ID决定是否显示底部导航栏
-                    if (pageId === 'home-page' || pageId === 'profile-page') {
-                        bottomNav.style.display = 'flex';
-                    } else {
-                        bottomNav.style.display = 'none';
-                    }
+                    bottomNav.style.display = (pageId === 'home-page' || pageId === 'profile-page') ? 'flex' : 'none';
                 }
             }
 
-            // --- 导航栏激活状态逻辑 ---
             function setActiveNav(pageId) {
                 navItems.forEach(nav => {
                     nav.classList.remove('active');
@@ -473,32 +443,26 @@
                 });
             }
 
-            // --- 首页到查询页的跳转 ---
             const goToQueryBtn = document.getElementById('go-to-query-btn');
             if (goToQueryBtn) {
-                goToQueryBtn.addEventListener('click', () => {
-                    showPage('query-page');
-                });
+                goToQueryBtn.addEventListener('click', () => showPage('query-page'));
             }
             
-            // --- 查询页到结果页的跳转 ---
             const submitQueryBtn = document.getElementById('submit-query-btn');
             if (submitQueryBtn) {
                 submitQueryBtn.addEventListener('click', () => {
+                    const yearSelect = document.getElementById('year-select');
+                    const selectedYear = yearSelect.value;
+                    generateSalaryData(selectedYear); // 传递选中的年份
                     showPage('result-page');
                 });
             }
 
-            // --- 返回按钮的通用逻辑 ---
             const backButtons = document.querySelectorAll('.back-btn');
             backButtons.forEach(btn => {
-                btn.addEventListener('click', () => {
-                    const targetPage = btn.getAttribute('data-target');
-                    showPage(targetPage);
-                });
+                btn.addEventListener('click', () => showPage(btn.getAttribute('data-target')));
             });
 
-            // --- 查询页复选框的交互逻辑 ---
             const checkboxItems = document.querySelectorAll('.checkbox-item');
             checkboxItems.forEach(item => {
                 item.addEventListener('click', () => {
@@ -507,25 +471,23 @@
                 });
             });
 
-            // --- 底部导航栏的交互逻辑 ---
             navItems.forEach(item => {
                 item.addEventListener('click', () => {
                     const targetPageId = item.getAttribute('data-page');
                     const targetPageElement = document.getElementById(targetPageId);
                     
-                    setActiveNav(targetPageId); // 先更新按钮状态
+                    setActiveNav(targetPageId);
 
                     if (targetPageElement) {
                         showPage(targetPageId);
                     } else {
                         alert(`您点击了 "${item.querySelector('.nav-text').textContent}"，该页面尚未实现。`);
-                        showPage('home-page'); // 如果页面不存在，返回首页
-                        setActiveNav('home-page'); // 并将首页按钮设为激活
+                        showPage('home-page');
+                        setActiveNav('home-page');
                     }
                 });
             });
             
-            // --- 个人中心页的逻辑 ---
             const editInfoBtn = document.getElementById('edit-info-btn');
             const userNameEl = document.getElementById('user-name');
             const taxIdEl = document.getElementById('tax-id-number');
@@ -538,21 +500,21 @@
                 const savedId = localStorage.getItem('taxAppId') || '4****************X';
                 const savedGender = localStorage.getItem('taxAppGender') || 'male';
                 userNameEl.textContent = savedName;
-                document.getElementById('tax-id-number').textContent = savedId; // Correctly set the span's content
+                taxIdEl.textContent = savedId;
                 profileAvatarEl.src = savedGender === 'female' ? femaleAvatarPath : maleAvatarPath;
             }
             loadUserInfo();
 
             editInfoBtn.addEventListener('click', () => {
                 const currentName = userNameEl.textContent;
-                const currentId = document.getElementById('tax-id-number').textContent;
+                const currentId = taxIdEl.textContent;
                 const currentGender = localStorage.getItem('taxAppGender') || 'male';
 
                 const newName = prompt('请输入新的名字:', currentName);
-                if (newName === null || newName.trim() === '') return;
+                if (newName === null) return;
 
                 const newId = prompt('请输入新的纳税人识别号:', currentId);
-                if (newId === null || newId.trim() === '') return;
+                if (newId === null) return;
 
                 let newGender = '';
                 let genderInputValid = false;
@@ -576,7 +538,7 @@
                 const finalId = newId.trim() || currentId;
 
                 userNameEl.textContent = finalName;
-                document.getElementById('tax-id-number').textContent = finalId;
+                taxIdEl.textContent = finalId;
                 profileAvatarEl.src = newGender === 'female' ? femaleAvatarPath : maleAvatarPath;
 
                 localStorage.setItem('taxAppName', finalName);
@@ -585,6 +547,67 @@
 
                 alert('信息更新成功！');
             });
+            
+            function generateSalaryData(yearToDisplay) {
+                const listContainer = document.getElementById('salary-details-list');
+                const totalIncomeEl = document.getElementById('total-income');
+                const totalTaxEl = document.getElementById('total-tax');
+                listContainer.innerHTML = '';
+                let totalIncome = 0;
+                let totalTax = 0;
+                const year = parseInt(yearToDisplay, 10);
+
+                const yearGroup = document.createElement('div');
+                yearGroup.className = 'year-group';
+                
+                const yearTitle = document.createElement('h4');
+                yearTitle.className = 'year-title';
+                yearTitle.textContent = `${year}年`;
+                yearGroup.appendChild(yearTitle);
+
+                const months = year === 2025 ? 6 : 12;
+                for (let month = months; month >= 1; month--) {
+                    const salary = Math.floor(Math.random() * 1001) + 5000;
+                    const tax = salary > 6000 ? (Math.random() * 7 + 3) : 0;
+                    const monthStr = month < 10 ? '0' + month : month;
+
+                    totalIncome += salary;
+                    totalTax += tax;
+
+                    const cardHTML = `
+                        <div class="result-card">
+                            <div class="result-card-header">
+                                <h3 class="result-card-title">工资薪金</h3>
+                                <span class="result-card-date">${year}-${monthStr}</span>
+                            </div>
+                            <div class="result-card-body">
+                                <div class="result-detail-row">
+                                    <span class="result-detail-label">所得项目小类：</span>
+                                    <span class="result-detail-value">正常工资薪金</span>
+                                </div>
+                                <div class="result-detail-row">
+                                    <span class="result-detail-label">扣缴义务人：</span>
+                                    <span class="result-detail-value">江西拓城人力资源有限公司</span>
+                                </div>
+                                <div class="result-detail-row">
+                                    <span class="result-detail-label">收入：</span>
+                                    <span class="result-detail-value">${salary.toFixed(2)}元</span>
+                                </div>
+                                <div class="result-detail-row">
+                                    <span class="result-detail-label">已申报税额：</span>
+                                    <span class="result-detail-value">${tax.toFixed(2)}元</span>
+                                </div>
+                            </div>
+                            <span class="result-card-arrow">></span>
+                        </div>
+                    `;
+                    yearGroup.innerHTML += cardHTML;
+                }
+                listContainer.appendChild(yearGroup);
+
+                totalIncomeEl.textContent = `${totalIncome.toFixed(2)}元`;
+                totalTaxEl.textContent = `${totalTax.toFixed(2)}元`;
+            }
         });
     </script>
 </body>
