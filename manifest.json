@@ -1,3 +1,16 @@
 {
-  "short_name": "纳税明estring"
+  "name": "个人所得税",
+  "short_name": "个税",
+  "start_url": ".",
+  "display": "standalone",
+  "background_color": "#f4f6f9",
+  "theme_color": "#5d9cec",
+  "description": "个人所得税应用模拟",
+  "icons": [
+    {
+      "src": "imge/icon.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    }
+  ]
 }
