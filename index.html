@@ -22,23 +22,36 @@
             --text-light: #666;
             --text-lighter: #999;
             --bg-gray: #f4f6f9;
-            --safe-area-inset-bottom: env(safe-area-inset-bottom, 20px);
+            --safe-area-inset-bottom: env(safe-area-inset-bottom, 20px); /* 默认为20px，适配iPhone */
         }
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         body { margin: 0; font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Helvetica Neue", "Segoe UI", Roboto, Arial, sans-serif; background-color: var(--bg-gray); color: var(--text-dark); -webkit-font-smoothing: antialiased; padding-bottom: calc(65px + var(--safe-area-inset-bottom)); }
-        .page { display: none; min-height: 100vh; background-color: var(--bg-gray); }
+        .page { display: none; min-height: 100vh; background-color: var(--bg-gray); position: relative; }
         a { text-decoration: none; color: inherit; }
 
         /* --- 认证遮罩层 --- */
         #auth-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: var(--bg-gray); z-index: 2000; display: flex; justify-content: center; align-items: center; text-align: center; color: var(--text-light); font-size: 18px; }
         #auth-overlay .message { padding: 20px; }
 
+        /* --- 顶部状态栏 --- */
+        .status-bar { height: 44px; display: flex; justify-content: space-between; align-items: center; padding: 0 15px; font-size: 15px; font-weight: 500; position: sticky; top: 0; z-index: 101; background-color: #fff; border-bottom: 1px solid #f0f0f0; /* Add a subtle border */ }
+        .status-bar.no-border { border-bottom: none; } /* For pages where header already has a border */
+        .status-bar .time { }
+        .status-bar .right-icons { display: flex; align-items: center; gap: 5px; color: #333; }
+        .status-bar .right-icons span { font-size: 14px; }
+        /* Placeholder for actual icons */
+        .status-bar .right-icons .signal { width: 16px; height: 12px; background: currentColor; mask-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1L3 9v11a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V9L12 1z"></path></svg>'); }
+        .status-bar .right-icons .wifi { width: 16px; height: 12px; background: currentColor; mask-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.55a11 11 0 0 1 14 0"></path><path d="M1.42 8.63a15 15 0 0 1 21.16 0"></path><path d="M8.53 16.14a5 5 0 0 1 6.95 0"></path><line x1="12" y1="20" x2="12.01" y2="20"></line></svg>'); }
+        .status-bar .right-icons .battery { width: 22px; height: 12px; border: 1px solid currentColor; border-radius: 2px; position: relative; }
+        .status-bar .right-icons .battery::after { content: ''; position: absolute; top: 2px; left: 2px; right: 2px; bottom: 2px; background-color: currentColor; width: 80%; /* Simulate charge level */ }
+        .status-bar .right-icons .battery::before { content: ''; position: absolute; right: -4px; top: 3px; width: 2px; height: 6px; background-color: currentColor; border-radius: 0 1px 1px 0; }
+
         /* --- SVG图标 (用于通用线稿图标，彩色图标使用<img>) --- */
         .icon { display: inline-block; width: 1em; height: 1em; background-color: currentColor; mask-repeat: no-repeat; mask-size: contain; mask-position: center; vertical-align: middle; }
         .icon-arrow-right { mask-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>'); }
         
         /* --- 首页详细样式 --- */
-        #page-home .home-header-bg { background: linear-gradient(to bottom, #d6eaff, var(--bg-gray) 60%); padding: 15px; }
+        #page-home .home-header-bg { background: linear-gradient(to bottom, #d6eaff, var(--bg-gray) 60%); padding: 0 15px 15px; }
         .search-bar { display: flex; align-items: center; background-color: #fff; border-radius: 99px; padding: 10px 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
         .search-bar .icon { color: var(--text-lighter); font-size: 18px; mask-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>'); }
         .search-bar input { border: none; outline: none; flex-grow: 1; font-size: 14px; margin: 0 10px; background: transparent; }
@@ -54,6 +67,21 @@
         .banner-link { position: absolute; top: 15px; right: 15px; font-size: 13px; background: rgba(255,255,255,0.2); padding: 4px 10px; border-radius: 99px; }
         .banner-image { content: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 125 108" fill="none"><path d="M62.3 83.2c0-1.2-1-2.2-2.2-2.2H42.7c-1.2 0-2.2 1-2.2 2.2v2.2c0 1.2 1 2.2 2.2 2.2h17.3c1.2 0 2.2-1 2.2-2.2v-2.2Z" fill="%23fff"/><path d="M102.7 85.3a2.2 2.2 0 1 0 0-4.4 2.2 2.2 0 0 0 0 4.4Z" fill="%23fff" opacity=".5"/><path d="M112 76.5a2.2 2.2 0 1 0 0-4.4 2.2 2.2 0 0 0 0 4.4Z" fill="%23fff" opacity=".5"/><path d="M52.2 107.5c-4-.3-7.5-3.6-7.8-7.6a8 8 0 0 1 7.8-8.4h.3c4 .3 7.5 3.6 7.8 7.6.4 4.4-2.8 8.1-7.1 8.4Z" fill="%23B2DDFF"/><path d="M68.8 91.5c-4-.3-7.5-3.6-7.8-7.6a8 8 0 0 1 7.8-8.4h.3c4 .3 7.5 3.6 7.8 7.6.4 4.4-2.8 8.1-7.1 8.4Z" fill="%23B2DDFF" opacity=".5"/><g filter="url(%23a)"><path d="M99.6 40.5c.3 1.8 1.4 3.3 3.3 3.3 1 0 2-.6 2.6-1.3a3 3 0 0 0 2.6 1.3c2 0 3.3-1.8 3.3-3.6s-1.5-3.3-3.3-3.3a3 3 0 0 0-2.6 1.3c-.7-.7-1.7-1.3-2.6-1.3-2 0-3.3 1.5-3.3 3.3Z" fill="%23FFD8A9"/><path d="M103.2 46c-2.3 0-4.4-1.2-5-3-.3-1 .2-2.2 1.3-2.7.2-.2.3-.2.5-.2h.2c.2 0 .5 0 .7.2l.3.2c.5.5.8 1.1.8 1.8 0 1.4-1.2 2.7-2.8 2.7Z" fill="%23FFD8A9"/></g><path d="M85.5 86.8H29.3c-2 0-3.6-1.6-3.6-3.6V29.7c0-2 1.6-3.6 3.6-3.6h56.2c2 0 3.6 1.6 3.6 3.6v53.5c0 2-1.6 3.6-3.6 3.6Z" fill="%23fff"/><path d="M82.2 32.7H32.6c-2.2 0-4 1.8-4 4v10.3h57.6V36.7c0-2.2-1.8-4-4-4Z" fill="%2387Bffd"/><path d="M82.2 80.2H32.6c-2.2 0-4-1.8-4-4V61.4h57.6v14.8c0 2.2-1.8 4-4 4Z" fill="%23C9E7FF"/><path d="M65.4 39.5H39.7c-.8 0-1.4-.6-1.4-1.4s.6-1.4 1.4-1.4h25.7c.8 0 1.4.6 1.4 1.4s-.6 1.4-1.4 1.4Z" fill="%23fff"/><path d="m76 56.5-3.7-3.7c-.5-.5-1.4-.5-2 0l-15.8 16c-.5.5-.5 1.4 0 2l3.7 3.7c.5.5 1.4.5 2 0l15.8-16c.5-.5.5-1.4 0-2Z" fill="%2366AFFF"/><path d="m42.4 68.2 3.6-14-11.2 3.4 7.6 10.6Z" fill="%23FFD13C"/><path d="M57 26.1c-6.8 0-12.4 5.5-12.4 12.4v.9c0 6.8 5.6 12.4 12.4 12.4h.9c6.8 0 12.4-5.6 12.4-12.4v-.9c0-6.8-5.6-12.4-12.4-12.4h-.9Z" fill="%23FFC076"/><path d="M78.5 35.4c-.6.3-1.2.4-2 .4-2.2 0-4.2-1.2-5.2-3-.5-1-.4-2.2.4-3 .6-.5 1.4-.7 2.2-.7 2.2 0 4.2 1.2 5.2 3 .5 1 .4 2.2-.4 3Z" fill="%236D4C41"/><path d="M70.5 44.5c0 4.1-3.3 7.3-7.3 7.3s-7.3-3.3-7.3-7.3c0-4.1 3.3-7.3 7.3-7.3s7.3 3.3 7.3 7.3Z" fill="%23fff"/><path d="M66.4 44.5a3.2 3.2 0 1 0-6.4 0 3.2 3.2 0 0 0 6.4 0Z" fill="%23212121"/><path d="M61 28.5c-3.4 0-6.4 2-7.8 4.9-.7 1.4.2 3 1.7 3.7.3.2.7.2 1 .2 1.2 0 2.3-.8 2.8-2 1-2.2 3.3-3.6 5.8-3.6h.4c3.4 0 6.4-2 7.8-4.9.7-1.4-.2-3-1.7-3.7a3.4 3.4 0 0 0-1-.2c-1.2 0-2.3.8-2.8 2-1 2.2-3.3 3.6-5.8 3.6h-.4Z" fill="%236D4C41"/><path d="M51.8 12.4c-1.4 0-2.5-1.1-2.5-2.5V4.3c0-1.4 1.1-2.5 2.5-2.5s2.5 1.1 2.5 2.5v5.6c0 1.4-1.1 2.5-2.5 2.5Z" fill="%23FFD13C"/><path d="M37 26.6c-1 1-2.6 1-3.5 0L28 21.1c-1-1-1-2.6 0-3.5 1-1 2.6-1 3.5 0l5.6 5.6c1 1 1 2.6 0 3.5Z" fill="%23FFD13C"/><path d="M12.3 52.2c0 1.4-1.1 2.5-2.5 2.5H4.2c-1.4 0-2.5-1.1-2.5-2.5s1.1-2.5 2.5-2.5h5.6c1.4 0 2.5 1.1 2.5 2.5Z" fill="%23FFD13C"/><defs><filter id="a" x="95.2" y="36.5" width="20.7" height="13.5" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feColorMatrix in="SourceAlpha" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/><feOffset dy="2"/><feGaussianBlur stdDeviation="1.5"/><feComposite in2="hardAlpha" operator="out"/><feColorMatrix values="0 0 0 0 0.960784 0 0 0 0 0.619608 0 0 0 0 0.239216 0 0 0 0.3 0"/><feBlend in2="BackgroundImageFix" result="effect1_dropShadow_105_2"/><feBlend in="SourceGraphic" in2="effect1_dropShadow_105_2" result="shape"/></filter></defs></svg>'); position: absolute; bottom: 0; right: 5px; width: 125px; height: 108px; opacity: 0.9; }
         .home-content { padding: 15px; }
+        .section-header { display: flex; justify-content: space-between; align-items: center; margin: 20px 0 15px; }
+        .section-header h3 { font-size: 18px; font-weight: bold; margin: 0; }
+        
+        .recommendation-card { background: linear-gradient(135deg, #64b5f6, var(--primary-blue)); padding: 20px; border-radius: 12px; margin-bottom: 20px; color: white; }
+        .rec-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+        .rec-title { display: flex; align-items: center; font-size: 17px; font-weight: bold; }
+        .rec-title .icon { margin-right: 8px; font-size: 20px; color: red; mask-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="red" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11.448 20.252a12.11 12.11 0 0 0 5.426-8.995c.03-1.043.168-2.272.168-2.272s-3.212 1.37-4.225 3.376c-1.011 2.004-1.488 4.39-1.488 4.39s.117-1.42.119-1.42c.002-.002 4.414-6.27 1.848-11.232C11.733 1.135 6.26 3.66 6.26 3.66s3.83 5.922-1.23 10.983c-2.34 2.34-1.39 4.353-1.39 4.353s2.131-1.63 4.166-.37c2.036 1.26 2.092 1.63 2.092 1.63s1.247.37 1.55.096z"/></svg>'); }
+        .rec-policy { font-size: 13px; opacity: 0.9; }
+        .rec-info { font-size: 15px; margin-bottom: 20px; }
+        .rec-button-container { display: flex; align-items: center; background-color: white; border-radius: 99px; padding: 5px; }
+        .rec-button-info { display: flex; align-items: center; color: var(--text-light); font-size: 13px; padding: 0 15px; white-space: nowrap; }
+        .rec-button-info .icon { font-size: 20px; margin-right: 8px; color: var(--primary-blue); mask-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>'); }
+        .rec-button-divider { width: 1px; height: 15px; background-color: #e0e0e0; }
+        .rec-button-action { flex-grow: 1; text-align: center; color: var(--primary-blue); font-weight: bold; padding: 8px 10px; }
+
         .service-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-top: 15px; }
         .service-item { display: flex; flex-direction: column; background-color: #fff; border-radius: 12px; padding: 15px; }
         .service-header { display: flex; align-items: start; flex-grow: 1; }
@@ -79,7 +107,7 @@
         .profile-taxid .icon.icon-eye { font-size: 16px; margin-left: 10px; color: #bcaaa4; mask-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>');}
         .profile-link { background-color: rgba(255,255,255,0.3); color: #8d6e63; padding: 6px 12px; border-radius: 99px; font-size: 12px; font-weight: 500; }
 
-        .quick-access-cards { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
+        .quick-access-cards { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-top: 20px; }
         .quick-access-item { background-color: #fff; padding: 15px; border-radius: 12px; text-align: center; }
         .quick-access-icon { font-size: 24px; margin-bottom: 8px; }
         .qa-icon-home { color: #ff7043; } .qa-icon-job { color: #ffca28; } .qa-icon-card { color: #66bb6a; }
@@ -126,16 +154,76 @@
         .icon-nav-messages .active { mask-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/></svg>'); }
         .icon-nav-profile .inactive { mask-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>'); }
         .icon-nav-profile .active { mask-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>'); }
+    
+        /* --- 页面三/四：收入纳税明细（查询页面）样式 --- */
+        #page-query { background-color: #fff; padding-top: 44px; /* Space for status bar */ }
+        #page-query .header { display: flex; align-items: center; position: relative; padding: 15px; background-color: #ffffff; height: 50px; border-bottom: 1px solid #e8e8e8; } 
+        #page-query .header .back-link { position: absolute; left: 15px; font-size: 16px; color: #333; text-decoration: none; cursor: pointer; } 
+        #page-query .header .title { flex-grow: 1; text-align: center; font-size: 18px; font-weight: bold; }
+        
+        #page-query .main-content { padding: 0 20px; }
+        #page-query .section-title { font-size: 15px; color: #333; margin: 20px 0 10px; font-weight: bold; }
+        
+        #page-query .list-item { display: flex; justify-content: space-between; align-items: center; padding: 18px 0; font-size: 16px; color: #333; border-bottom: 1px solid #f0f0f0; cursor: pointer; }
+        #page-query .list-item:last-child { border-bottom: none; }
+        #page-query .list-item .value { color: #555; display: flex; align-items: center; }
+        #page-query .arrow { color: #ccc; margin-left: 8px; font-size: 20px; }
+
+        #page-query .checkbox-item { display: flex; align-items: center; padding: 15px 0; font-size: 16px; color: #333; border-bottom: 1px solid #f0f0f0; cursor: pointer; }
+        #page-query .checkbox-item:last-of-type { border-bottom: none; } /* Fix for the last checkbox in its section */
+        #page-query .custom-checkbox { display: inline-block; width: 22px; height: 22px; background-color: #e3f2fd; border: 1px solid #a8d5ff; border-radius: 50%; position: relative; margin-right: 12px; cursor: pointer; transition: background-color 0.2s, border-color 0.2s; flex-shrink: 0; }
+        #page-query .custom-checkbox.checked { background-color: var(--primary-blue); border-color: var(--primary-blue); }
+        #page-query .custom-checkbox.checked::after { content: ''; position: absolute; left: 7px; top: 4px; width: 6px; height: 10px; border: solid white; border-width: 0 2px 2px 0; transform: rotate(45deg); }
+        #page-query .label { flex-grow: 1; }
+        
+        #page-query .more-types { text-align: left; padding: 15px 0; }
+        #page-query .more-types a { color: var(--primary-blue); text-decoration: none; font-size: 15px; }
+        #page-query .more-types .arrow-down { display: inline-block; width: 0; height: 0; border-left: 5px solid transparent; border-right: 5px solid transparent; border-top: 6px solid var(--primary-blue); margin-left: 5px; }
+
+        /* --- 页面四：结果页面样式 --- */
+        #page-results { background-color: var(--bg-gray); padding-top: 44px; /* Space for status bar */ }
+        #page-results .header { background-color: #ffffff; border-bottom: 1px solid #e8e8e8; } 
+        #page-results .summary-section { background-color: #ffffff; padding: 20px 15px; margin-bottom: 10px; } 
+        #page-results .summary-item { display: flex; justify-content: space-between; align-items: center; font-size: 16px; margin-bottom: 15px; } 
+        #page-results .summary-item:last-child { margin-bottom: 0; } 
+        #page-results .summary-item .label { color: #555; display: flex; align-items: center; } 
+        #page-results .summary-item .value { font-size: 18px; font-weight: bold; color: #333; } 
+        #page-results .info-icon { display: inline-block; width: 16px; height: 16px; border: 1px solid var(--primary-blue); border-radius: 50%; color: var(--primary-blue); text-align: center; font-size: 12px; line-height: 16px; margin-left: 5px; cursor: pointer; font-weight: bold; } 
+        #page-results .results-list { background-color: #ffffff; } 
+        #page-results .income-card { padding: 15px; border-bottom: 1px solid #f0f0f0; } 
+        #page-results .income-card:last-child { border-bottom: none; } 
+        #page-results .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; } 
+        #page-results .card-header .type { font-size: 17px; font-weight: bold; } 
+        #page-results .card-header .date { font-size: 15px; color: #888; } 
+        #page-results .card-details p { margin: 5px 0; font-size: 15px; color: #888; display: flex; justify-content: space-between; align-items: center; } 
+        #page-results .card-details .value { color: #333; } 
+        #page-results .arrow { color: #ccc; font-size: 20px; } 
+        
+        /* Modal 样式 */
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.5); display: none; justify-content: center; align-items: flex-end; z-index: 1000; } 
+        .modal-overlay.active { display: flex; } 
+        .modal-content { background-color: #f4f6f9; width: 100%; border-top-left-radius: 12px; border-top-right-radius: 12px; animation: slide-up 0.3s ease-out; } 
+        .modal-content ul { list-style: none; padding: 0; margin: 0; background-color: white; max-height: 250px; overflow-y: auto; } 
+        .modal-content li { padding: 15px; text-align: center; font-size: 18px; color: #333; border-bottom: 1px solid #f0f0f0; } 
+        .modal-content li.selected { color: var(--primary-blue); font-weight: bold; } 
+        .modal-content li:last-child { border-bottom: none; } 
+        .modal-cancel { display: block; width: 100%; padding: 15px; margin-top: 8px; border: none; background-color: white; font-size: 18px; color: #333; font-weight: bold; } 
+        @keyframes slide-up { from { transform: translateY(100%); } to { transform: translateY(0); } }
     </style>
 </head>
 <body>
 
+    <!-- 认证遮罩层 -->
     <div id="auth-overlay">
         <div class="message">正在验证使用权限...</div>
     </div>
     
     <!-- 页面一：首页 -->
     <div id="page-home" class="page">
+        <div class="status-bar">
+            <span class="time">13:57</span>
+            <div class="right-icons">... <i class="wifi icon"></i><span class="battery"></span> 95</div>
+        </div>
         <div class="home-header-bg">
             <div class="search-bar">
                 <i class="icon"></i>
@@ -155,6 +243,22 @@
             </div>
         </div>
         <div class="home-content">
+            <div class="section-header">
+                <h3>重点服务推荐</h3>
+            </div>
+            <div class="recommendation-card">
+                <div class="rec-header">
+                    <div class="rec-title"><i class="icon"></i>专项附加扣除</div>
+                    <a href="#" class="rec-policy">相关政策 <i class="icon icon-arrow-right" style="font-size: 0.8em;"></i></a>
+                </div>
+                <p class="rec-info">若符合条件，您可点击下方填报</p>
+                <div class="rec-button-container">
+                    <div class="rec-button-info"><i class="icon"></i>超1亿人参与</div>
+                    <div class="rec-button-divider"></div>
+                    <a href="#" class="rec-button-action">我要填报</a>
+                </div>
+            </div>
+
             <div class="service-grid">
                 <a href="#" class="service-item">
                     <div class="service-header">
@@ -205,6 +309,10 @@
 
     <!-- 页面二：我的 -->
     <div id="page-profile" class="page">
+        <div class="status-bar">
+            <span class="time">11:34</span>
+            <div class="right-icons">... <i class="wifi icon"></i><span class="battery"></span> 95</div>
+        </div>
         <div class="profile-bg"></div>
         <div class="profile-content">
             <div class="profile-main-info">
@@ -213,9 +321,9 @@
                 </div>
                 <div id="profile-info-trigger" class="profile-card">
                     <div class="profile-details">
-                        <div id="display-name" class="profile-name">某某</div>
+                        <div id="display-name" class="profile-name">黄梓良</div>
                         <div class="profile-taxid">
-                            <span id="display-taxid">纳税人识别号 9****************Y</span>
+                            <span id="display-taxid">纳税人识别号 4****************X</span>
                             <i class="icon icon-eye"></i>
                         </div>
                     </div>
@@ -242,45 +350,49 @@
         </div>
     </div>
     
-    <!-- 页面三：查询页面 (原页面一) -->
+    <!-- 页面三：查询页面 (收入纳税明细) -->
     <div id="page-query" class="page">
+        <div class="status-bar">
+            <span class="time">13:55</span>
+            <div class="right-icons">... <i class="wifi icon"></i><span class="battery"></span> 95</div>
+        </div>
         <div class="header">
-            <a id="back-to-home-from-query" class="back-link">< 返回</a>
-            <span class="title">收入纳税明细</span>
+            <a id="back-to-home-from-query" class="back-link">< 返回 收入纳税明细</a>
+            <!-- No title here, title is part of the back link in this design -->
         </div>
-        <div class="container">
-            <div class="main-content">
-                <div class="section-title">请选择纳税年度</div>
-                <div id="year-selector-trigger" class="list-item">
-                    <span class="label">年度</span>
-                    <span class="value"><span id="selected-year-display">2025</span> <span class="arrow">></span></span>
-                </div>
-                
-                <div class="section-title">请选择所得类型</div>
-                <div class="list-item checkbox-item">
-                    <input type="checkbox" id="type1" checked><label for="type1" class="custom-checkbox"></label><label for="type1" class="label">工资薪金</label>
-                </div>
-                <div class="list-item checkbox-item">
-                    <input type="checkbox" id="type2" checked><label for="type2" class="custom-checkbox"></label><label for="type2" class="label">劳务报酬</label>
-                </div>
-                <div class="list-item checkbox-item">
-                    <input type="checkbox" id="type3" checked><label for="type3" class="custom-checkbox"></label><label for="type3" class="label">稿酬</label>
-                </div>
-                <div class="list-item checkbox-item">
-                    <input type="checkbox" id="type4" checked><label for="type4" class="custom-checkbox"></label><label for="type4" class="label">特许权使用费</label>
-                </div>
-                <div class="more-types">
-                    <a href="#">其他类型 <span class="arrow-down"></span></a>
-                </div>
+        <div class="main-content">
+            <div class="section-title">请选择纳税年度</div>
+            <div id="year-selector-trigger" class="list-item">
+                <span class="label">年度</span>
+                <span class="value"><span id="selected-year-display">2025</span> <span class="arrow">></span></span>
             </div>
-            <div class="footer">
-                <button id="query-button" class="query-button">查询</button>
+            
+            <div class="section-title">请选择所得类型</div>
+            <div class="checkbox-item" data-type-id="type1">
+                <div class="custom-checkbox checked"></div><span class="label">工资薪金</span>
+            </div>
+            <div class="checkbox-item" data-type-id="type2">
+                <div class="custom-checkbox checked"></div><span class="label">劳务报酬</span>
+            </div>
+            <div class="checkbox-item" data-type-id="type3">
+                <div class="custom-checkbox checked"></div><span class="label">稿酬</span>
+            </div>
+            <div class="checkbox-item" data-type-id="type4">
+                <div class="custom-checkbox checked"></div><span class="label">特许权使用费</span>
+            </div>
+            <div class="more-types">
+                <a href="#">其他类型 <span class="arrow-down"></span></a>
             </div>
         </div>
+        <!-- Query button is removed from this page as per new screenshot -->
     </div>
 
-    <!-- 页面四：结果页面 (原页面二) -->
+    <!-- 页面四：结果页面 (收入纳税明细结果) -->
     <div id="page-results" class="page">
+        <div class="status-bar">
+            <span class="time">13:55</span>
+            <div class="right-icons">... <i class="wifi icon"></i><span class="battery"></span> 95</div>
+        </div>
         <div class="header">
             <a id="back-button" class="back-link">< 返回</a>
             <span class="title">收入纳税明细</span>
@@ -354,11 +466,16 @@
             }
         };
         try {
-            const response = await fetch(AUTH_CONFIG.serverUrl, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ key: AUTH_CONFIG.accessKey }) });
-            if (!response.ok) throw new Error('网络错误或服务器问题。');
-            const data = await response.json();
-            if (data.status === 'ok') checkTimeLimitAndStart();
-            else authMessage.textContent = `访问被拒绝: ${data.message || '无效的密钥。'}`;
+            // Uncomment this block and run on a server for actual auth check
+            // const response = await fetch(AUTH_CONFIG.serverUrl, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ key: AUTH_CONFIG.accessKey }) });
+            // if (!response.ok) throw new Error('网络错误或服务器问题。');
+            // const data = await response.json();
+            // if (data.status === 'ok') checkTimeLimitAndStart();
+            // else authMessage.textContent = `访问被拒绝: ${data.message || '无效的密钥。'}`;
+            
+            // For local testing without a server, simulate success:
+            checkTimeLimitAndStart(); 
+
         } catch (error) {
             authMessage.textContent = `错误: ${error.message} 请检查网络连接或联系管理员。`;
         }
@@ -366,10 +483,10 @@
 
     // --- 主应用逻辑 ---
     function initializeApp() {
-        // --- 1. 数据动态生成模块 ---
+        // --- 1. 数据动态生成模块 (模拟数据，与实际无关) ---
         function getRandomSalary() { return (Math.random() * (6000 - 5000) + 5000).toFixed(2); }
         function getRandomCompany() {
-            const companyNames = [ '北京数字科技有限公司', '上海智能云服务有限公司', '深圳创新信息咨询合伙企业(有限合伙)', '广州众包平台管理有限公司', '杭州数据处理中心有限公司', '安徽众包企业管理咨询有限公司', '江苏省人力资源服务外包有限公司', '浙江灵活共享经济信息技术有限公司' ];
+            const companyNames = [ '安徽众包企业管理咨询有限公司', '北京数字科技有限公司', '上海智能云服务有限公司', '深圳创新信息咨询合伙企业(有限合伙)', '广州众包平台管理有限公司', '杭州数据处理中心有限公司', '江苏省人力资源服务外包有限公司', '浙江灵活共享经济信息技术有限公司' ];
             const randomIndex = Math.floor(Math.random() * companyNames.length);
             let name = companyNames[randomIndex];
             if (name.length > 15) { name = name.substring(0, 15) + '...'; }
@@ -378,37 +495,46 @@
         function calculateTaxForYear(records) {
             let cumulativeIncome = 0;
             let cumulativeTaxPaid = 0;
-            const standardDeduction = 5000;
-            records.sort((a, b) => parseInt(a.month) - parseInt(b.month));
+            const standardDeduction = 5000; // 每月5000元免征额
+            records.sort((a, b) => parseInt(a.month) - parseInt(b.month)); // 确保按月份升序计算
+
             records.forEach((record, index) => {
                 const monthNumber = index + 1;
                 cumulativeIncome += parseFloat(record.income);
+                
                 const cumulativeDeductionTotal = standardDeduction * monthNumber;
                 const taxableIncome = Math.max(0, cumulativeIncome - cumulativeDeductionTotal);
+
                 let taxRate = 0;
                 let quickDeduction = 0;
+
+                // 累进税率表（简化版，仅包含常见税率）
                 if (taxableIncome <= 36000) { taxRate = 0.03; quickDeduction = 0; } 
                 else if (taxableIncome <= 144000) { taxRate = 0.10; quickDeduction = 2520; } 
                 else if (taxableIncome <= 300000) { taxRate = 0.20; quickDeduction = 16920; }
+                // 更高的税率档次在此范围内不常用，故省略
+
                 const totalTaxDue = (taxableIncome * taxRate) - quickDeduction;
                 const currentMonthTax = Math.max(0, totalTaxDue - cumulativeTaxPaid);
+                
                 record.tax = currentMonthTax.toFixed(2);
                 cumulativeTaxPaid += currentMonthTax;
             });
-            records.sort((a, b) => parseInt(b.month) - parseInt(a.month));
+            records.sort((a, b) => parseInt(b.month) - parseInt(a.month)); // 重新按月份降序显示
             return records;
         }
         function generateDynamicData() {
             const data = {};
-            const companyName = getRandomCompany();
+            const companyName = getRandomCompany(); // 确保所有年份都使用同一家公司
             const years = ['2025', '2024', '2023'];
             years.forEach(year => {
                 let records = [];
-                const monthCount = (year === '2024') ? 12 : 6;
+                const monthCount = (year === '2024') ? 12 : 6; // 2024年有12个月数据，其他年份6个月
+
                 for (let i = 1; i <= monthCount; i++) {
                     records.push({ month: i.toString().padStart(2, '0'), company: companyName, income: getRandomSalary(), tax: '0.00' });
                 }
-                records = calculateTaxForYear(records);
+                records = calculateTaxForYear(records); // 计算税额
                 const totalIncome = records.reduce((sum, rec) => sum + parseFloat(rec.income), 0);
                 const totalTax = records.reduce((sum, rec) => sum + parseFloat(rec.tax), 0);
                 data[year] = { totalIncome: totalIncome.toFixed(2) + '元', totalTax: totalTax.toFixed(2) + '元', records: records };
@@ -422,11 +548,11 @@
         // --- 3. 状态管理 (包含个人信息本地存储) ---
         const userProfileKey = 'taxAppUserProfile';
         const defaultProfile = {
-            name: "某某",
-            taxId: "9****************Y"
+            name: "黄梓良", // 默认名称
+            taxId: "4****************X" // 默认识别号
         };
         let userProfile = JSON.parse(localStorage.getItem(userProfileKey)) || defaultProfile;
-        let currentYear = new Date().getFullYear(); // Initialize currentYear
+        let currentYear = new Date().getFullYear(); 
         
         // --- 4. 获取DOM元素 ---
         const pages = {
@@ -441,9 +567,9 @@
         const displayTaxIdEl = document.getElementById('display-taxid');
 
         // 查询页面相关元素
-        const queryButton = document.getElementById('query-button');
-        const backButtonResults = document.getElementById('back-button'); // Back from results to query
-        const backButtonQuery = document.getElementById('back-to-home-from-query'); // Back from query to home
+        // Removed queryButton as per new screenshot
+        const backButtonResults = document.getElementById('back-button'); 
+        const backButtonQuery = document.getElementById('back-to-home-from-query'); 
         const yearSelectorTrigger = document.getElementById('year-selector-trigger');
         const yearSelectorModal = document.getElementById('year-selector-modal');
         const yearList = document.getElementById('year-list');
@@ -452,6 +578,7 @@
         const totalIncomeEl = document.getElementById('total-income');
         const totalTaxEl = document.getElementById('total-tax');
         const resultsListContainer = document.getElementById('results-list-container');
+        const checkboxItems = document.querySelectorAll('#page-query .checkbox-item');
 
 
         // --- 5. 核心功能函数 ---
@@ -462,8 +589,13 @@
             // 底部导航栏显示逻辑
             if (pageId === 'home' || pageId === 'profile') {
                 bottomNav.style.display = 'block';
+                // Home page status bar might need a different treatment (e.g. transparent background)
+                document.querySelector('#page-home .status-bar').classList.add('no-border');
             } else {
                 bottomNav.style.display = 'none';
+                // Other pages usually have a solid status bar background
+                document.querySelector('#page-query .status-bar').classList.remove('no-border');
+                document.querySelector('#page-results .status-bar').classList.remove('no-border');
             }
             
             navItems.forEach(item => {
@@ -547,32 +679,61 @@
             saveProfile(); // 保存到本地存储
         });
 
-        // 查询页面 "查询" 按钮
-        queryButton.addEventListener('click', () => { 
-            renderResultsPage(currentYear); 
-            showPage('results');
+        // 查询页面的年份选择器点击
+        yearSelectorTrigger.addEventListener('click', () => { 
+            populateYearSelector(); 
+            yearSelectorModal.classList.add('active'); 
         });
 
-        // 结果页面 "返回" 按钮
+        // 年份选择器Modal的取消按钮
+        modalCancelButton.addEventListener('click', () => { 
+            yearSelectorModal.classList.remove('active'); 
+        });
+
+        // 年份选择器Modal的年份点击
+        yearList.addEventListener('click', (event) => { 
+            if (event.target.tagName === 'LI') { 
+                const selectedYear = parseInt(event.target.dataset.year); 
+                currentYear = selectedYear; 
+                selectedYearDisplay.textContent = currentYear; 
+                yearSelectorModal.classList.remove('active'); 
+                
+                // 自动触发查询并跳转到结果页
+                renderResultsPage(currentYear); 
+                showPage('results');
+            } 
+        });
+
+        // 模态框外部点击关闭
+        yearSelectorModal.addEventListener('click', (event) => { 
+            if (event.target === yearSelectorModal) { 
+                yearSelectorModal.classList.remove('active'); 
+            } 
+        });
+
+        // 查询页面复选框点击切换状态
+        checkboxItems.forEach(item => {
+            item.addEventListener('click', () => {
+                const checkbox = item.querySelector('.custom-checkbox');
+                checkbox.classList.toggle('checked');
+                // You might want to store the selected types in a state variable here
+            });
+        });
+
+        // 结果页面 "返回" 按钮 -> 返回查询页面
         backButtonResults.addEventListener('click', () => { 
             showPage('query');
         });
 
-        // 查询页面 "返回" 按钮
+        // 查询页面 "返回" 按钮 -> 返回首页
         backButtonQuery.addEventListener('click', () => {
             showPage('home');
         });
 
-        // 年份选择器
-        yearSelectorTrigger.addEventListener('click', () => { populateYearSelector(); yearSelectorModal.classList.add('active'); });
-        modalCancelButton.addEventListener('click', () => { yearSelectorModal.classList.remove('active'); });
-        yearList.addEventListener('click', (event) => { if (event.target.tagName === 'LI') { const selectedYear = parseInt(event.target.dataset.year); currentYear = selectedYear; selectedYearDisplay.textContent = currentYear; yearSelectorModal.classList.remove('active'); } });
-        yearSelectorModal.addEventListener('click', (event) => { if (event.target === yearSelectorModal) { yearSelectorModal.classList.remove('active'); } });
-
         // --- 初始化应用状态 ---
         showPage('home');
         updateProfileDisplay();
-        selectedYearDisplay.textContent = currentYear; // Ensure initial year display is correct
+        selectedYearDisplay.textContent = currentYear; // 确保初始年份显示正确
     }
     </script>
 </body>
