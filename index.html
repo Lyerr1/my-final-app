@@ -44,10 +44,9 @@
             flex-grow: 1;
             overflow-y: auto;
             overflow-x: hidden;
-            padding-bottom: 70px; /* 为底部导航栏留出空间 */
+            padding-bottom: 90px; 
         }
 
-        /* 隐藏滚动条 */
         .page::-webkit-scrollbar {
             display: none;
         }
@@ -253,7 +252,7 @@
         }
 
         .profile-main-content {
-            margin-top: -60px; /* 让内容区域上移，覆盖部分头部背景 */
+            margin-top: -60px;
             padding: 0 15px;
             position: relative;
             z-index: 2;
@@ -381,46 +380,59 @@
             cursor: pointer;
         }
 
-        /* --- 底部导航栏样式 (Bottom Nav) --- */
+        /* --- 底部导航栏样式 --- */
         .bottom-nav {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 100%;
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 95%;
             height: 65px;
-            background-color: rgba(255, 255, 255, 0.95);
+            background-color: rgba(255, 255, 255, 0.9);
             backdrop-filter: blur(10px);
             -webkit-backdrop-filter: blur(10px);
-            border-top: 1px solid var(--border-color);
+            border: 1px solid rgba(200, 200, 200, 0.3);
+            border-radius: 32.5px;
             display: flex;
             justify-content: space-around;
             align-items: center;
             z-index: 10;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
         }
 
         .nav-item {
             display: flex;
             flex-direction: column;
             align-items: center;
+            justify-content: center;
+            flex-grow: 1;
             font-size: 11px;
-            color: var(--text-light);
+            color: #555555;
             cursor: pointer;
             position: relative;
+            height: 100%;
         }
 
-        .nav-item .icon {
-            font-size: 24px;
+        .nav-item .nav-icon {
+            width: 26px;
+            height: 26px;
             margin-bottom: 3px;
         }
-
-        .nav-item.active {
+        
+        .nav-item.active .nav-text {
             color: var(--primary-blue);
+        }
+        
+        /* 激活状态下，首页图标是蓝色的，不需要滤镜。其他图标需要滤镜变蓝 */
+        /* 通过:not选择器排除首页 */
+        .nav-item.active:not(:first-child) .nav-icon {
+            filter: invert(38%) sepia(98%) saturate(1354%) hue-rotate(195deg) brightness(93%) contrast(87%);
         }
 
         .nav-item .badge {
             position: absolute;
-            top: -3px;
-            right: 0px;
+            top: 5px;
+            right: 12px;
             background-color: #e74c3c;
             color: white;
             font-size: 10px;
@@ -434,20 +446,18 @@
 
     <div class="mobile-shell">
         
-        <!-- ======================= 首页 (Page 1) ======================= -->
+        <!-- 页面内容区域 -->
         <div class="page" id="home-page">
             <header class="home-header">
                 <div class="search-bar">
                     <span class="icon">🔍</span> 请输入想搜索的功能/服务 <span class="scan-icon">͏㖣</span>
                 </div>
             </header>
-
             <div class="notification-bar">
                 <span class="icon">🔔</span>
                 税务总局令第57号：《个人所得税综合所得汇算...
                 <span class="arrow">></span>
             </div>
-
             <div class="main-card">
                 <a href="#" style="position:absolute; top:10px; right:15px; font-size:13px; color:#5587e2; text-decoration: none;">进入专题页 ></a>
                 <h2>2024综合所得年度汇算</h2>
@@ -455,9 +465,7 @@
                 <button class="start-btn">开始申报</button>
                 <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMjAgMTIwIj48cGF0aCBmaWxsPSIjZWNlZmYxIiBkPSJNNjAsMEMyNi44NiwwLDAsMjYuODYsMCw2MGMwLDMzLjE0LDI2Ljg2LDYwLDYwLDYwczYwLTI2Ljg2LDYwLTYwQzEyMCwyNi44Niw5My4xNCwwLDYwLDBaIi8+PHBhdGggZmlsbD0iIzM5MzkzOSIgZD0iTTYyLjcxLDM0LjA5Yy01LjI4LDAtOS41Nyw0LjI4LTkuNTcsOS41NmMwLDUuMjgsNC4yOCw5LjU2LDkuNTcsOS41NnM5LjU3LTQuMjgsOS41Ny05LjU2QzcyLjI4LDM4LjM3LDY3Ljk5LDM0LjA5LDYyLjcxLDM0LjA5eiIvPjxwYXRoIGZpbGw9IiM2MDc4RUUiIGQ9Ik05MC4zMSw4Ny4zN2MwLTEyLjU3LTYuNzgtMjMuNjctMTYuOC0yOS45M2MtMS4yNy0uOC0yLjg5LS45MS00LjI4LS4yOWMtNS42MywyLjUxLTEwLjEsMy45Mi0xMy41MiwzLjkyYy0zLjQxLDAtNy44OS0xLjQxLTEzLjUyLTMuOTJjLTEuMzktLjYyLTMuMDEtLjUxLTQuMjgsLjI5Yy0xMC4wMSw2LjI2LTE2LjgsMTcuMzYtMTYuOCwyOS45M2MwLDIuNzYsMCw1LjkzLDAsOS40NWg3OS43MkM5MC4zMSw5My4zLDkwLjMxLDkwLjEzLDkwLjMxLDg3LjM3eiIvPjwvc3ZnPg==" alt="person" class="person-img" style="opacity: 0.5;">
             </div>
-
             <h3 class="section-title">重点服务推荐</h3>
-
             <div class="deduction-card">
                 <div class="deduction-card-header">
                     <div class="title">专项附加扣除</div>
@@ -470,7 +478,6 @@
                     <span>我要填报</span>
                 </button>
             </div>
-
             <div class="services-grid">
                 <div class="service-item">
                     <div class="icon-bg blue">🧾</div>
@@ -496,17 +503,13 @@
                     <p>设置查询常用功...</p>
                 </div>
             </div>
-            
         </div>
-
-        <!-- ======================= 个人中心页 (Page 2) ======================= -->
         <div class="page" id="profile-page">
             <header class="profile-header">
                 <div class="avatar-container">
                     <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIj48Y2lyY2xlIGN4PSI1MCIgY3k9IjUwIiByPSI1MCIgZmlsbD0iI2YwZjBmMCIvPjxwYXRoIGZpbGw9IiMzOTM5MzkiIGQ9Ik01MiwzMGMyLjIsMCA0LDEuOCA0LDRjMCwyLjItMS44LDQtNCw0cy00LTEuOC00LTQtMS44LTQtNC00UzQ0LDMyLjIsNDQsMzRjMCwyLjIsMS44LDQsNCw0aDRjMi4yLDAsNC0xLjgsNC00VjMwek01MiwxOGMtNi42LDAtMTIsNS40LTEyLDEyczEyLDUuNCwxMiwxMnMtNS40LDEyLTEyLDEycy0xMi01LjQtMTItMTJoMi40YzEuMywwLDIuNC0xLjEsMi40LTIuNHMtMS4xLTIuNC0yLjQtMi40SDQwYy04LjgsMC0xNi03LjItMTYtMTZTNDAsMiw1MiwyejE2LDBjOC44LDAsMTYsNy4yLDE2LDE2SDY1LjZjLTEuMywwLTIuNCwxLjEtMi40LDIuNHMxLjEsMi40LDIuNCwyLjRIMjhWMzBjMC0yLjItMS44LTQtNC00cy00LDEuOC00LTRjMC0xMSw5LTIwLDIwLTIwaDRjMi4yLDAsNCwxLjgsNCw0djQuOEg1MnoiLz48cGF0aCBmaWxsPSIjMzQ0OTVlIiBkPSJNNzgsNjVjMC0xMS41LTkuNS0yMS0yMS0yM2MtMS41LS4yLTMtLjMtNC41LS4zcy0zLC4xLTQuNSwuM0MzNyw0NCwyNy41LDUzLjUsMjcuNSw2NWMwLDAsMCw0LjUsMCw4aDUwLjVDNzgsNjkuNSw3OCw2NSw3OCw2NXoiLz48cGF0aCBmaWxsPSIjMzkzOTM5IiBkPSJNNTIsMzQuOWMtNC40LDAtOCwzLjYtOCw4czMuNiw4LDgsOHM4LTMuNiw4LThTNTYuNCwzNC45LDUyLDM0Ljl6Ii8+PC9zdmc+" alt="avatar">
                 </div>
             </header>
-
             <div class="profile-main-content">
                 <div class="info-card">
                     <div class="info-card-details">
@@ -520,7 +523,6 @@
                         个人信息 >
                     </div>
                 </div>
-
                 <div class="profile-grid">
                     <div class="profile-grid-item">
                         <div class="icon">🏠</div>
@@ -538,7 +540,6 @@
                         <span>1张</span>
                     </div>
                 </div>
-
                 <div class="profile-list">
                     <div class="profile-list-item">
                         <div class="icon">❤️</div>
@@ -572,112 +573,85 @@
                         <div class="arrow">></div>
                     </div>
                 </div>
-
                 <button class="logout-btn">退出登录</button>
             </div>
         </div>
 
-        <!-- ======================= 底部导航栏 ======================= -->
+        <!-- ======================= 底部导航栏 (最终版) ======================= -->
         <nav class="bottom-nav">
             <div class="nav-item active" data-page="home-page">
-                <div class="icon">🏠</div>
-                <div>首页</div>
+                <img src="imge/e474e0ab2f7f3567bfa20908f2fe029.jpg" alt="首页" class="nav-icon">
+                <div class="nav-text">首页</div>
             </div>
             <div class="nav-item" data-page="todo-page">
-                <div class="icon">📋</div>
-                <div>待办</div>
+                <img src="imge/d3dc02ec7af1f8a8ca3671c25b612d6.jpg" alt="待办" class="nav-icon">
+                <div class="nav-text">待办</div>
             </div>
             <div class="nav-item" data-page="search-page">
-                <div class="icon">🔍</div>
-                <div>办&查</div>
+                <img src="imge/e722c4b0deb679803b6a303e59d3c96.jpg" alt="办&查" class="nav-icon">
+                <div class="nav-text">办&查</div>
             </div>
             <div class="nav-item" data-page="message-page">
-                <div class="icon">✉️</div>
-                <div>消息</div>
+                <img src="imge/b9dc6613a5323b87754bd4fc8f7b544.jpg" alt="消息" class="nav-icon">
+                <div class="nav-text">消息</div>
                 <div class="badge">4</div>
             </div>
             <div class="nav-item" data-page="profile-page">
-                <div class="icon">👤</div>
-                <div>我的</div>
+                <img src="imge/a57b665eec018a5593120bf4f907837.jpg" alt="我的" class="nav-icon">
+                <div class="nav-text">我的</div>
             </div>
         </nav>
     </div>
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            // --- 元素获取 ---
+            // 元素获取
             const homePage = document.getElementById('home-page');
             const profilePage = document.getElementById('profile-page');
             const navItems = document.querySelectorAll('.nav-item');
-            
             const editInfoBtn = document.getElementById('edit-info-btn');
             const userNameEl = document.getElementById('user-name');
             const taxIdEl = document.getElementById('tax-id-number');
 
-            // --- 数据初始化 ---
+            // 数据初始化
             function loadUserInfo() {
                 const savedName = localStorage.getItem('taxAppName');
                 const savedId = localStorage.getItem('taxAppId');
-
-                // 如果本地存储有数据，则使用；否则使用默认值
                 userNameEl.textContent = savedName || '某某';
                 taxIdEl.textContent = savedId || '4****************X';
             }
-            
-            // 页面加载时，初始化用户信息
             loadUserInfo();
 
-
-            // --- 事件监听 ---
-
-            // 1. 底部导航栏切换
+            // 事件监听
             navItems.forEach(item => {
                 item.addEventListener('click', () => {
                     const targetPageId = item.getAttribute('data-page');
+                    navItems.forEach(nav => nav.classList.remove('active'));
+                    item.classList.add('active');
 
-                    // 只有 "首页" 和 "我的" 有实际页面，其他只做样式切换
                     if (targetPageId === 'home-page' || targetPageId === 'profile-page') {
-                        // 切换页面显示
                         homePage.style.display = (targetPageId === 'home-page') ? 'block' : 'none';
                         profilePage.style.display = (targetPageId === 'profile-page') ? 'block' : 'none';
-                        
-                        // 更新激活状态
-                        navItems.forEach(nav => nav.classList.remove('active'));
-                        item.classList.add('active');
                     } else {
-                        // 对于待办、办&查、消息，只切换样式，不切换页面（或可以添加提示）
-                        navItems.forEach(nav => nav.classList.remove('active'));
-                        item.classList.add('active');
-                        alert(`您点击了 "${item.innerText.split('\n')[1]}"，该页面尚未实现。`);
-                        
-                        // 恢复到当前页面对应的激活状态
-                        const currentPageIsHome = homePage.style.display === 'block';
-                        document.querySelector(`.nav-item[data-page="${currentPageIsHome ? 'home-page' : 'profile-page'}"]`).classList.add('active');
+                        homePage.style.display = 'none';
+                        profilePage.style.display = 'none';
+                        const pageName = item.querySelector('.nav-text').textContent;
+                        alert(`您点击了 "${pageName}"，该页面尚未实现。`);
                     }
                 });
             });
 
-            // 2. "个人信息" 编辑功能
             editInfoBtn.addEventListener('click', () => {
                 const currentName = userNameEl.textContent;
                 const currentId = taxIdEl.textContent;
-                
                 const newName = prompt('请输入新的名字:', currentName);
-                
-                // 如果用户没有取消输入名字
                 if (newName !== null && newName.trim() !== '') {
                     const newId = prompt('请输入新的纳税人识别号:', currentId);
-
-                    // 如果用户没有取消输入ID
                     if (newId !== null && newId.trim() !== '') {
-                        // 更新页面显示
                         userNameEl.textContent = newName;
                         taxIdEl.textContent = newId;
-
-                        // 保存到 localStorage
                         localStorage.setItem('taxAppName', newName);
                         localStorage.setItem('taxAppId', newId);
-
                         alert('信息更新成功！');
                     } else {
                          alert('已取消修改纳税人识别号。');
