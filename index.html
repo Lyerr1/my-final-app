@@ -3,39 +3,293 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>收入纳税明细</title>
+    <title>个人所得税</title>
 
     <!-- PWA 相关配置 -->
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="纳税明细">
+    <meta name="apple-mobile-web-app-title" content="个人所得税">
     <link rel="apple-touch-icon" href="icon.png">
     <link rel="manifest" href="manifest.json">
 
     <style>
-        /* --- 新增：认证遮罩层样式 --- */
+        /* CSS样式与之前完全相同，此处省略以保持简洁... */
+        /* --- 通用样式和重置 --- */
+        body { margin: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "PingFang SC", sans-serif; background-color: #f4f6f9; color: #333; -webkit-font-smoothing: antialiased; padding-bottom: 60px; }
+        .page { display: none; min-height: 100vh;}
+        a { text-decoration: none; color: inherit; }
+
+        /* --- 认证遮罩层样式 --- */
         #auth-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: #f4f6f9; z-index: 2000; display: flex; justify-content: center; align-items: center; text-align: center; color: #555; font-size: 18px; }
         #auth-overlay .message { padding: 20px; }
+
+        /* --- 底部导航栏 (新增) --- */
+        #bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; background-color: #ffffff; box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.05); display: none; /* 默认隐藏，验证后显示 */ z-index: 100; }
+        .nav-container { display: flex; justify-content: space-around; padding-top: 5px; padding-bottom: 5px; /* PWA/iOS safe area */ padding-bottom: constant(safe-area-inset-bottom); padding-bottom: env(safe-area-inset-bottom); }
+        .nav-item { flex: 1; text-align: center; color: #666; cursor: pointer; font-size: 12px; position: relative; }
+        .nav-item.active { color: #3a80e8; }
+        .nav-icon { font-size: 22px; display: block; margin-bottom: 2px; }
+        .nav-badge { position: absolute; top: -2px; right: calc(50% - 20px); background-color: red; color: white; border-radius: 50%; width: 16px; height: 16px; line-height: 16px; font-size: 10px; text-align: center; }
+
+        /* --- 首页样式 (新增) --- */
+        #page-home { background-color: #f4f6f9; }
+        .home-header { background: linear-gradient(to bottom, #e3f2fd 0%, #f4f6f9 100%); padding: 15px 15px 0; }
+        .search-bar { display: flex; align-items: center; background-color: #fff; border-radius: 20px; padding: 8px 15px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+        .search-bar input { border: none; outline: none; flex-grow: 1; font-size: 14px; margin-left: 8px; }
+        .search-icon { color: #999; }
+        .scan-icon { color: #333; margin-left: 15px; font-size: 18px; }
         
-        /* --- 修改：默认隐藏应用页面，等待验证通过 --- */
-        #page-query { display: none; } 
-        #page-results { display: none; }
+        .notification-bar { background-color: #e3f2fd; color: #3a80e8; padding: 10px 15px; border-radius: 8px; margin-top: 15px; font-size: 14px; display: flex; align-items: center; }
+        .notification-bar span { margin-right: 10px; color: #f57c00; }
+
+        .main-banner { background: linear-gradient(135deg, #64b5f6 0%, #3a80e8 100%); color: white; padding: 20px 15px; border-radius: 12px; margin-top: 15px; box-shadow: 0 4px 12px rgba(58, 128, 232, 0.3); position: relative; overflow: hidden; }
+        .banner-title { font-size: 20px; font-weight: bold; margin-bottom: 5px; }
+        .banner-subtitle { font-size: 14px; opacity: 0.9; margin-bottom: 15px; }
+        .banner-action { background-color: white; color: #3a80e8; border: none; padding: 10px 20px; border-radius: 20px; font-weight: bold; cursor: pointer; }
+        .banner-link { position: absolute; top: 15px; right: 15px; font-size: 14px; }
+        .banner-image { position: absolute; bottom: 0; right: 15px; font-size: 50px; /* Placeholder for image */ opacity: 0.8; }
+
+        .home-content { padding: 15px; }
+        .section-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+        .section-header h3 { font-size: 16px; font-weight: bold; margin: 0; }
+        .section-header a { font-size: 14px; color: #666; }
+
+        .recommendation-card { background-color: white; padding: 15px; border-radius: 12px; margin-bottom: 20px; }
+        .rec-title { display: flex; align-items: center; font-size: 16px; font-weight: bold; margin-bottom: 15px; }
+        .rec-title span { color: red; margin-right: 8px; }
+        .rec-actions { display: flex; justify-content: space-between; align-items: center; }
+        .rec-info { font-size: 14px; color: #666; }
+        .rec-button { background-color: #3a80e8; color: white; border: none; padding: 8px 15px; border-radius: 20px; font-size: 14px; }
+
+        .service-grid { display: grid; grid-template-columns: repeat(4, 1fr); background-color: white; border-radius: 12px; padding: 10px 0; }
+        .service-item { text-align: center; padding: 10px 5px; cursor: pointer; }
+        .service-icon { font-size: 28px; display: block; margin-bottom: 8px; }
+        /* Specific colors for icons */
+        .icon-blue { color: #42a5f5; }
+        .icon-purple { color: #ab47bc; }
+        .icon-green { color: #66bb6a; }
+        .icon-orange { color: #ffa726; }
+        .service-text { font-size: 13px; color: #333; }
+
+        /* --- "我的"页面样式 (新增) --- */
+        #page-profile { background-color: #f4f6f9; }
+        .profile-header-bg { background: linear-gradient(to bottom, #3a80e8 0%, #64b5f6 70%, #f4f6f9 100%); height: 200px; position: absolute; top: 0; left: 0; width: 100%; z-index: 1; }
+        .profile-content { position: relative; z-index: 2; padding: 30px 15px 15px; }
         
-        /* --- 通用样式 --- */
-        body { margin: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; background-color: #f4f6f9; color: #333; -webkit-font-smoothing: antialiased; } .page { display: block; } .header { display: flex; align-items: center; justify-content: center; position: relative; padding: 15px; background-color: #ffffff; border-bottom: 1px solid #e8e8e8; height: 30px; } .header .back-link { position: absolute; left: 15px; font-size: 16px; color: #333; text-decoration: none; cursor: pointer; } .header .title { font-size: 18px; font-weight: bold; } .header .action-link { position: absolute; right: 15px; font-size: 16px; color: #4a90e2; text-decoration: none; } #page-query .container { background-color: #ffffff; } #page-query .main-content { padding: 0 15px; } #page-query .section-title { display: flex; align-items: center; font-size: 15px; color: #888; margin: 20px 0 10px; } #page-query .section-title::before { content: ''; display: inline-block; width: 4px; height: 16px; background-color: #4a90e2; margin-right: 8px; border-radius: 2px; } #page-query .list-item { display: flex; justify-content: space-between; align-items: center; padding: 18px 0; font-size: 16px; border-bottom: 1px solid #f0f0f0; cursor: pointer; } #page-query .list-item .label { color: #333; } #page-query .list-item .value { color: #555; display: flex; align-items: center; } #page-query .arrow { color: #ccc; margin-left: 8px; font-size: 20px; } #page-query .list-item:last-child { border-bottom: none; } #page-query .checkbox-item { display: flex; align-items: center; } #page-query input[type="checkbox"] { display: none; } #page-query .custom-checkbox { display: inline-block; width: 20px; height: 20px; background-color: #fff; border: 1px solid #ccc; border-radius: 50%; position: relative; margin-right: 12px; cursor: pointer; transition: background-color 0.2s, border-color 0.2s; } #page-query input[type="checkbox"]:checked + .custom-checkbox { background-color: #4a90e2; border-color: #4a90e2; } #page-query input[type="checkbox"]:checked + .custom-checkbox::after { content: ''; position: absolute; left: 6px; top: 3px; width: 5px; height: 10px; border: solid white; border-width: 0 2px 2px 0; transform: rotate(45deg); } #page-query .more-types { text-align: center; padding: 20px 0; } #page-query .more-types a { color: #4a90e2; text-decoration: none; font-size: 15px; } #page-query .more-types .arrow-down { display: inline-block; width: 0; height: 0; border-left: 5px solid transparent; border-right: 5px solid transparent; border-top: 6px solid #4a90e2; margin-left: 5px; } #page-query .footer { padding: 30px 15px; } #page-query .query-button { width: 100%; padding: 15px; background-color: #4a90e2; color: white; border: none; border-radius: 8px; font-size: 18px; cursor: pointer; } #page-results .summary-section { background-color: #ffffff; padding: 20px 15px; margin-bottom: 10px; } #page-results .summary-item { display: flex; justify-content: space-between; align-items: center; font-size: 16px; margin-bottom: 15px; } #page-results .summary-item:last-child { margin-bottom: 0; } #page-results .summary-item .label { color: #555; display: flex; align-items: center; } #page-results .summary-item .value { font-size: 18px; font-weight: bold; color: #333; } #page-results .info-icon { display: inline-block; width: 16px; height: 16px; border: 1px solid #4a90e2; border-radius: 50%; color: #4a90e2; text-align: center; font-size: 12px; line-height: 16px; margin-left: 5px; cursor: pointer; font-weight: bold; } #page-results .results-list { background-color: #ffffff; } #page-results .income-card { padding: 15px; border-bottom: 1px solid #f0f0f0; } #page-results .income-card:last-child { border-bottom: none; } #page-results .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; } #page-results .card-header .type { font-size: 17px; font-weight: bold; } #page-results .card-header .date { font-size: 15px; color: #888; } #page-results .card-details p { margin: 5px 0; font-size: 15px; color: #888; display: flex; justify-content: space-between; align-items: center; } #page-results .card-details .value { color: #333; } #page-results .arrow { color: #ccc; font-size: 20px; } .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.5); display: none; justify-content: center; align-items: flex-end; z-index: 1000; } .modal-overlay.active { display: flex; } .modal-content { background-color: #f4f6f9; width: 100%; border-top-left-radius: 12px; border-top-right-radius: 12px; animation: slide-up 0.3s ease-out; } .modal-content ul { list-style: none; padding: 0; margin: 0; background-color: white; max-height: 250px; overflow-y: auto; } .modal-content li { padding: 15px; text-align: center; font-size: 18px; color: #333; border-bottom: 1px solid #f0f0f0; } .modal-content li.selected { color: #4a90e2; font-weight: bold; } .modal-content li:last-child { border-bottom: none; } .modal-cancel { display: block; width: 100%; padding: 15px; margin-top: 8px; border: none; background-color: white; font-size: 18px; color: #333; font-weight: bold; } @keyframes slide-up { from { transform: translateY(100%); } to { transform: translateY(0); } }
+        .profile-info { display: flex; align-items: center; color: white; margin-bottom: 25px; cursor: pointer; }
+        .profile-avatar { width: 60px; height: 60px; border-radius: 50%; background-color: #fff; margin-right: 15px; display: flex; justify-content: center; align-items: center; font-size: 30px; color: #3a80e8; border: 2px solid white; }
+        .profile-details { flex-grow: 1; }
+        .profile-name { font-size: 20px; font-weight: bold; margin-bottom: 5px; }
+        .profile-taxid { font-size: 14px; opacity: 0.9; }
+        .profile-link { border: 1px solid white; padding: 5px 10px; border-radius: 15px; font-size: 12px; }
+
+        .profile-cards { display: flex; justify-content: space-between; margin-bottom: 20px; }
+        .profile-card-item { background-color: white; flex: 1; margin: 0 5px; padding: 15px 10px; border-radius: 10px; text-align: center; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
+        .profile-card-item:first-child { margin-left: 0; }
+        .profile-card-item:last-child { margin-right: 0; }
+        .card-icon { font-size: 24px; margin-bottom: 8px; }
+        .icon-home { color: #ff7043; }
+        .icon-job { color: #ffca28; }
+        .icon-card { color: #66bb6a; }
+        .card-label { font-size: 14px; color: #333; margin-bottom: 5px; }
+        .card-value { font-size: 12px; font-weight: bold; }
+        .value-add { color: #3a80e8; }
+
+        .settings-list { background-color: white; border-radius: 12px; margin-bottom: 20px; }
+        .settings-item { display: flex; align-items: center; padding: 15px; border-bottom: 1px solid #f0f0f0; }
+        .settings-item:last-child { border-bottom: none; }
+        .settings-icon { font-size: 20px; margin-right: 15px; color: #3a80e8; }
+        .settings-label { flex-grow: 1; font-size: 16px; }
+        .settings-arrow { color: #ccc; font-size: 18px; }
+        .settings-badge { width: 8px; height: 8px; background-color: red; border-radius: 50%; margin-right: 8px; }
+
+        .logout-button { width: 100%; padding: 15px; background-color: white; color: #333; border: none; border-radius: 12px; font-size: 16px; text-align: center; cursor: pointer; margin-top: 10px; }
+
+
+        /* --- 收入纳税明细页面样式 (复用之前的样式) --- */
+        .header { display: flex; align-items: center; justify-content: center; position: relative; padding: 15px; background-color: #ffffff; border-bottom: 1px solid #e8e8e8; height: 30px; } 
+        .header .back-link { position: absolute; left: 15px; font-size: 16px; color: #333; text-decoration: none; cursor: pointer; } 
+        .header .title { font-size: 18px; font-weight: bold; } 
+        .header .action-link { position: absolute; right: 15px; font-size: 16px; color: #4a90e2; text-decoration: none; } 
+        
+        /* 查询页面 */
+        #page-query .container { background-color: #ffffff; } 
+        #page-query .main-content { padding: 0 15px; } 
+        #page-query .section-title { display: flex; align-items: center; font-size: 15px; color: #888; margin: 20px 0 10px; } 
+        #page-query .section-title::before { content: ''; display: inline-block; width: 4px; height: 16px; background-color: #4a90e2; margin-right: 8px; border-radius: 2px; } 
+        #page-query .list-item { display: flex; justify-content: space-between; align-items: center; padding: 18px 0; font-size: 16px; border-bottom: 1px solid #f0f0f0; cursor: pointer; } 
+        #page-query .list-item .label { color: #333; } 
+        #page-query .list-item .value { color: #555; display: flex; align-items: center; } 
+        #page-query .arrow { color: #ccc; margin-left: 8px; font-size: 20px; } 
+        #page-query .list-item:last-child { border-bottom: none; } 
+        #page-query .checkbox-item { display: flex; align-items: center; } 
+        #page-query input[type="checkbox"] { display: none; } 
+        #page-query .custom-checkbox { display: inline-block; width: 20px; height: 20px; background-color: #fff; border: 1px solid #ccc; border-radius: 50%; position: relative; margin-right: 12px; cursor: pointer; transition: background-color 0.2s, border-color 0.2s; } 
+        #page-query input[type="checkbox"]:checked + .custom-checkbox { background-color: #4a90e2; border-color: #4a90e2; } 
+        #page-query input[type="checkbox"]:checked + .custom-checkbox::after { content: ''; position: absolute; left: 6px; top: 3px; width: 5px; height: 10px; border: solid white; border-width: 0 2px 2px 0; transform: rotate(45deg); } 
+        #page-query .more-types { text-align: center; padding: 20px 0; } 
+        #page-query .more-types a { color: #4a90e2; text-decoration: none; font-size: 15px; } 
+        #page-query .more-types .arrow-down { display: inline-block; width: 0; height: 0; border-left: 5px solid transparent; border-right: 5px solid transparent; border-top: 6px solid #4a90e2; margin-left: 5px; } 
+        #page-query .footer { padding: 30px 15px; } 
+        #page-query .query-button { width: 100%; padding: 15px; background-color: #4a90e2; color: white; border: none; border-radius: 8px; font-size: 18px; cursor: pointer; } 
+        
+        /* 结果页面 */
+        #page-results .summary-section { background-color: #ffffff; padding: 20px 15px; margin-bottom: 10px; } 
+        #page-results .summary-item { display: flex; justify-content: space-between; align-items: center; font-size: 16px; margin-bottom: 15px; } 
+        #page-results .summary-item:last-child { margin-bottom: 0; } 
+        #page-results .summary-item .label { color: #555; display: flex; align-items: center; } 
+        #page-results .summary-item .value { font-size: 18px; font-weight: bold; color: #333; } 
+        #page-results .info-icon { display: inline-block; width: 16px; height: 16px; border: 1px solid #4a90e2; border-radius: 50%; color: #4a90e2; text-align: center; font-size: 12px; line-height: 16px; margin-left: 5px; cursor: pointer; font-weight: bold; } 
+        #page-results .results-list { background-color: #ffffff; } 
+        #page-results .income-card { padding: 15px; border-bottom: 1px solid #f0f0f0; } 
+        #page-results .income-card:last-child { border-bottom: none; } 
+        #page-results .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; } 
+        #page-results .card-header .type { font-size: 17px; font-weight: bold; } 
+        #page-results .card-header .date { font-size: 15px; color: #888; } 
+        #page-results .card-details p { margin: 5px 0; font-size: 15px; color: #888; display: flex; justify-content: space-between; align-items: center; } 
+        #page-results .card-details .value { color: #333; } 
+        #page-results .arrow { color: #ccc; font-size: 20px; } 
+        
+        /* Modal 样式 */
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.5); display: none; justify-content: center; align-items: flex-end; z-index: 1000; } 
+        .modal-overlay.active { display: flex; } 
+        .modal-content { background-color: #f4f6f9; width: 100%; border-top-left-radius: 12px; border-top-right-radius: 12px; animation: slide-up 0.3s ease-out; } 
+        .modal-content ul { list-style: none; padding: 0; margin: 0; background-color: white; max-height: 250px; overflow-y: auto; } 
+        .modal-content li { padding: 15px; text-align: center; font-size: 18px; color: #333; border-bottom: 1px solid #f0f0f0; } 
+        .modal-content li.selected { color: #4a90e2; font-weight: bold; } 
+        .modal-content li:last-child { border-bottom: none; } 
+        .modal-cancel { display: block; width: 100%; padding: 15px; margin-top: 8px; border: none; background-color: white; font-size: 18px; color: #333; font-weight: bold; } 
+        @keyframes slide-up { from { transform: translateY(100%); } to { transform: translateY(0); } }
     </style>
 </head>
 <body>
 
-    <!-- 新增：认证遮罩层 -->
+    <!-- 认证遮罩层 -->
     <div id="auth-overlay">
         <div class="message">正在验证使用权限...</div>
     </div>
-    
-    <!-- 页面一：查询页面 -->
+
+    <!-- HTML 页面结构 -->
+    <div id="page-home" class="page">
+        <div class="home-header">
+            <div class="search-bar">
+                <span class="search-icon">🔍</span>
+                <input type="text" placeholder="请输入想要搜索的功能/服务">
+                <span class="scan-icon">[扫一扫]</span>
+            </div>
+            <div class="notification-bar">
+                <span>🔔</span> 务总局令第57号：《个人所得税综合所得汇算》
+            </div>
+            <div class="main-banner">
+                <div class="banner-title">2024综合所得年度汇算</div>
+                <div class="banner-subtitle">已于6月30日结束，逾期办理可能会产生滞纳金，请您尽快申报</div>
+                <button class="banner-action">开始申报</button>
+                <a href="#" class="banner-link">进入专题页 ></a>
+                <div class="banner-image">👨‍💼</div>
+            </div>
+        </div>
+        <div class="home-content">
+            <div class="section-header">
+                <h3>重点服务推荐</h3>
+            </div>
+            <div class="recommendation-card">
+                <div class="rec-title"><span>🔥</span>专项附加扣除</div>
+                <div class="rec-actions">
+                    <div class="rec-info">若符合条件，您可点击下方填报</div>
+                    <button class="rec-button">我要填报</button>
+                </div>
+            </div>
+
+            <div class="service-grid">
+                <div class="service-item">
+                    <span class="service-icon icon-blue">📄</span>
+                    <div class="service-text">综合所得年度汇算</div>
+                </div>
+                <div id="nav-to-query" class="service-item">
+                    <span class="service-icon icon-purple">💰</span>
+                    <div class="service-text">收入纳税明细</div>
+                </div>
+                <div class="service-item">
+                    <span class="service-icon icon-green">🧾</span>
+                    <div class="service-text">纳税记录开具</div>
+                </div>
+                <div class="service-item">
+                    <span class="service-icon icon-orange">⚙️</span>
+                    <div class="service-text">更多功能</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="page-profile" class="page">
+        <div class="profile-header-bg"></div>
+        <div class="profile-content">
+            <div id="profile-info-trigger" class="profile-info">
+                <div class="profile-avatar">👨‍💻</div>
+                <div class="profile-details">
+                    <div id="display-name" class="profile-name">某某</div>
+                    <div class="profile-taxid">纳税人识别号 <span id="display-taxid">9****************Y</span></div>
+                </div>
+                <div class="profile-link">个人信息 ></div>
+            </div>
+
+            <div class="profile-cards">
+                <div class="profile-card-item">
+                    <div class="card-icon icon-home">🏠</div>
+                    <div class="card-label">家庭成员</div>
+                    <div class="card-value value-add">添加</div>
+                </div>
+                <div class="profile-card-item">
+                    <div class="card-icon icon-job">💼</div>
+                    <div class="card-label">任职受雇</div>
+                    <div class="card-value">3家</div>
+                </div>
+                <div class="profile-card-item">
+                    <div class="card-icon icon-card">💳</div>
+                    <div class="card-label">银行卡</div>
+                    <div class="card-value">1张</div>
+                </div>
+            </div>
+
+            <div class="settings-list">
+                <div class="settings-item">
+                    <span class="settings-icon">♡</span>
+                    <span class="settings-label">切换关怀版</span>
+                    <span class="settings-arrow">></span>
+                </div>
+                <div class="settings-item">
+                    <span class="settings-icon">🏢</span>
+                    <span class="settings-label">企业办税权限</span>
+                    <span class="settings-arrow">></span>
+                </div>
+                <div class="settings-item">
+                    <span class="settings-icon">🛡️</span>
+                    <span class="settings-label">安全中心</span>
+                    <span class="settings-arrow">></span>
+                </div>
+                <div class="settings-item">
+                    <span class="settings-icon">❓</span>
+                    <span class="settings-label">帮助中心</span>
+                    <span class="settings-arrow">></span>
+                </div>
+                <div class="settings-item">
+                    <span class="settings-icon">💬</span>
+                    <span class="settings-label">我要咨询</span>
+                    <span class="settings-arrow">></span>
+                </div>
+                <div class="settings-item">
+                    <span class="settings-icon">ℹ️</span>
+                    <span class="settings-label">关于&更新</span>
+                    <span class="settings-badge"></span>
+                    <span class="settings-arrow">></span>
+                </div>
+            </div>
+            
+            <button class="logout-button">退出登录</button>
+        </div>
+    </div>
     <div id="page-query" class="page">
         <div class="header">
-            <a class="back-link">< 返回</a>
+            <a id="back-to-home-from-query" class="back-link">< 返回</a>
             <span class="title">收入纳税明细</span>
         </div>
         <div class="container">
@@ -68,8 +322,6 @@
             </div>
         </div>
     </div>
-
-    <!-- 页面二：结果页面 -->
     <div id="page-results" class="page">
         <div class="header">
             <a id="back-button" class="back-link">< 返回</a>
@@ -91,12 +343,37 @@
         </div>
     </div>
 
+    <!-- 底部导航栏 -->
+    <div id="bottom-nav">
+        <div class="nav-container">
+            <div class="nav-item active" data-page="page-home">
+                <span class="nav-icon">🏠</span>
+                首页
+            </div>
+            <div class="nav-item" data-page="page-todo">
+                <span class="nav-icon">📅</span>
+                待办
+            </div>
+            <div class="nav-item" data-page="page-services">
+                <span class="nav-icon">💼</span>
+                办&查
+            </div>
+            <div class="nav-item" data-page="page-messages">
+                <span class="nav-icon">💬</span>
+                <span class="nav-badge">4</span>
+                消息
+            </div>
+            <div class="nav-item" data-page="page-profile">
+                <span class="nav-icon">👤</span>
+                我的
+            </div>
+        </div>
+    </div>
+
     <!-- 年份选择器 Modal -->
     <div id="year-selector-modal" class="modal-overlay">
         <div class="modal-content">
-            <ul id="year-list">
-                <!-- 年份将由JavaScript动态生成 -->
-            </ul>
+            <ul id="year-list"></ul>
             <button id="modal-cancel-button" class="modal-cancel">取消</button>
         </div>
     </div>
@@ -120,8 +397,7 @@
                 if (!response.ok) throw new Error('网络错误或服务器问题。');
                 const data = await response.json();
                 if (data.status === 'ok') {
-                    authOverlay.style.display = 'none';
-                    initializeApp();
+                    checkTimeLimitAndStart();
                 } else {
                     authMessage.textContent = `访问被拒绝: ${data.message || '无效的密钥。'}`;
                 }
@@ -130,142 +406,105 @@
             }
         }
         
+        // --- 时间限制检查模块 ---
+        function checkTimeLimitAndStart() {
+            const authOverlay = document.getElementById('auth-overlay');
+            const authMessage = authOverlay.querySelector('.message');
+            const expirationKey = 'appExpirationTimestamp';
+            
+            const timeLimitInMillis = 5 * 60 * 60 * 1000; // 5小时
+
+            const now = Date.now();
+            let expirationTimestamp = localStorage.getItem(expirationKey);
+
+            if (!expirationTimestamp) {
+                expirationTimestamp = now + timeLimitInMillis;
+                localStorage.setItem(expirationKey, expirationTimestamp);
+            }
+
+            if (now > parseInt(expirationTimestamp)) {
+                authMessage.textContent = '应用使用已到期，请联系管理员。';
+                authOverlay.style.display = 'flex';
+            } else {
+                authOverlay.style.display = 'none';
+                initializeApp();
+            }
+        }
+
         // --- 主应用逻辑 ---
         function initializeApp() {
-
-            // --- 1. 数据动态生成模块 (MODIFIED) ---
-            
-            /**
-             * @returns {string} a random salary between 5000.00 and 6000.00
-             */
-            function getRandomSalary() {
-                return (Math.random() * (6000 - 5000) + 5000).toFixed(2);
-            }
-
-            /**
-             * @returns {string} a random company name from a predefined list.
-             */
+            // --- 1. 数据动态生成模块 ---
+            function getRandomSalary() { return (Math.random() * (6000 - 5000) + 5000).toFixed(2); }
             function getRandomCompany() {
-                const companyNames = [
-                    '北京数字科技有限公司',
-                    '上海智能云服务有限公司',
-                    '深圳创新信息咨询合伙企业(有限合伙)',
-                    '广州众包平台管理有限公司',
-                    '杭州数据处理中心有限公司',
-                    '安徽众包企业管理咨询有限公司',
-                    '江苏省人力资源服务外包有限公司',
-                    '浙江灵活共享经济信息技术有限公司'
-                ];
+                const companyNames = [ '北京数字科技有限公司', '上海智能云服务有限公司', '深圳创新信息咨询合伙企业(有限合伙)', '广州众包平台管理有限公司', '杭州数据处理中心有限公司', '安徽众包企业管理咨询有限公司', '江苏省人力资源服务外包有限公司', '浙江灵活共享经济信息技术有限公司' ];
                 const randomIndex = Math.floor(Math.random() * companyNames.length);
-                // Truncate name to simulate the UI like in the original example
                 let name = companyNames[randomIndex];
-                if (name.length > 15) {
-                    name = name.substring(0, 15) + '...';
-                }
+                if (name.length > 15) { name = name.substring(0, 15) + '...'; }
                 return name;
             }
-
-            /**
-             * Calculates cumulative tax for a given year's records.
-             * @param {Array} records - Array of income records for a year.
-             * @returns {Array} The records array with calculated tax.
-             */
             function calculateTaxForYear(records) {
                 let cumulativeIncome = 0;
                 let cumulativeTaxPaid = 0;
                 const standardDeduction = 5000;
-
-                // Sort records by month ascending (01, 02, ...) for correct calculation
                 records.sort((a, b) => parseInt(a.month) - parseInt(b.month));
-
                 records.forEach((record, index) => {
                     const monthNumber = index + 1;
                     cumulativeIncome += parseFloat(record.income);
-                    
                     const cumulativeDeductionTotal = standardDeduction * monthNumber;
-                    // Taxable income cannot be negative
                     const taxableIncome = Math.max(0, cumulativeIncome - cumulativeDeductionTotal);
-
                     let taxRate = 0;
                     let quickDeduction = 0;
-
-                    if (taxableIncome <= 36000) {
-                        taxRate = 0.03;
-                        quickDeduction = 0;
-                    } else if (taxableIncome <= 144000) {
-                        taxRate = 0.10;
-                        quickDeduction = 2520;
-                    } else if (taxableIncome <= 300000) {
-                        taxRate = 0.20;
-                        quickDeduction = 16920;
-                    } // Higher brackets omitted as they are unlikely to be reached with this salary range
-
+                    if (taxableIncome <= 36000) { taxRate = 0.03; quickDeduction = 0; } 
+                    else if (taxableIncome <= 144000) { taxRate = 0.10; quickDeduction = 2520; } 
+                    else if (taxableIncome <= 300000) { taxRate = 0.20; quickDeduction = 16920; }
                     const totalTaxDue = (taxableIncome * taxRate) - quickDeduction;
                     const currentMonthTax = Math.max(0, totalTaxDue - cumulativeTaxPaid);
-                    
                     record.tax = currentMonthTax.toFixed(2);
                     cumulativeTaxPaid += currentMonthTax;
                 });
-
-                // Sort back to descending month for display (12, 11, ...)
                 records.sort((a, b) => parseInt(b.month) - parseInt(a.month));
-
                 return records;
             }
-
-            /**
-             * Generates the entire data structure for all years.
-             * @returns {Object} The complete data object for the application.
-             */
             function generateDynamicData() {
                 const data = {};
                 const companyName = getRandomCompany();
                 const years = ['2025', '2024', '2023'];
-                
                 years.forEach(year => {
                     let records = [];
-                    // Define how many months of records to generate for each year
                     const monthCount = (year === '2024') ? 12 : 6;
-
                     for (let i = 1; i <= monthCount; i++) {
-                        records.push({
-                            month: i.toString().padStart(2, '0'),
-                            company: companyName,
-                            income: getRandomSalary(),
-                            tax: '0.00' // Placeholder, will be calculated next
-                        });
+                        records.push({ month: i.toString().padStart(2, '0'), company: companyName, income: getRandomSalary(), tax: '0.00' });
                     }
-                    
-                    // Calculate tax for the generated records of the year
                     records = calculateTaxForYear(records);
-
-                    // Calculate annual totals from the processed records
                     const totalIncome = records.reduce((sum, rec) => sum + parseFloat(rec.income), 0);
                     const totalTax = records.reduce((sum, rec) => sum + parseFloat(rec.tax), 0);
-                    
-                    data[year] = {
-                        totalIncome: totalIncome.toFixed(2) + '元',
-                        totalTax: totalTax.toFixed(2) + '元',
-                        records: records
-                    };
+                    data[year] = { totalIncome: totalIncome.toFixed(2) + '元', totalTax: totalTax.toFixed(2) + '元', records: records };
                 });
-                
                 return data;
             }
             
-            // --- 2. 数据中心：调用生成器，替换静态数据 ---
+            // --- 2. 数据中心 ---
             const dummyData = generateDynamicData();
 
-            // --- 3. 状态管理 ---
+            // --- 3. 状态管理 (已修改) ---
             let currentYear = 2025;
+            let userProfile = {
+                name: "某某",
+                taxId: "9****************Y" 
+            };
 
             // --- 4. 获取DOM元素 ---
+            const pageHome = document.getElementById('page-home');
+            const pageProfile = document.getElementById('page-profile');
             const pageQuery = document.getElementById('page-query');
             const pageResults = document.getElementById('page-results');
-            pageQuery.style.display = 'block';
-
+            const bottomNav = document.getElementById('bottom-nav');
+            const navItems = document.querySelectorAll('.nav-item');
+            const displayNameEl = document.getElementById('display-name');
+            const displayTaxIdEl = document.getElementById('display-taxid');
             const queryButton = document.getElementById('query-button');
-            const backButton = document.getElementById('back-button');
+            const backButtonResults = document.getElementById('back-button');
+            const backButtonQuery = document.getElementById('back-to-home-from-query');
             const yearSelectorTrigger = document.getElementById('year-selector-trigger');
             const yearSelectorModal = document.getElementById('year-selector-modal');
             const yearList = document.getElementById('year-list');
@@ -276,29 +515,24 @@
             const resultsListContainer = document.getElementById('results-list-container');
             
             // --- 5. 核心功能函数 ---
+            function showPage(pageId, showNav = true) {
+                [pageHome, pageProfile, pageQuery, pageResults].forEach(page => { page.style.display = 'none'; });
+                document.getElementById(pageId).style.display = 'block';
+                bottomNav.style.display = showNav ? 'block' : 'none';
+                navItems.forEach(item => { item.classList.toggle('active', item.dataset.page === pageId); });
+                window.scrollTo(0, 0);
+            }
             function renderResultsPage(year) {
                 const data = dummyData[year];
                 if (!data) return; 
-
                 totalIncomeEl.textContent = data.totalIncome;
                 totalTaxEl.textContent = data.totalTax;
                 resultsListContainer.innerHTML = '';
-
                 data.records.forEach(record => {
-                    const cardHTML = `
-                        <div class="income-card">
-                            <div class="card-header"> <span class="type">工资薪金</span> <span class="date">${year}-${record.month}</span> </div>
-                            <div class="card-details">
-                                <p>所得项目小类: <span class="value">正常工资薪金</span></p>
-                                <p><span>扣缴义务人: ${record.company}</span> <span class="arrow">></span></p>
-                                <p>收入: <span class="value">${record.income}元</span></p>
-                                <p>已申报税额: <span class="value">${record.tax}元</span></p>
-                            </div>
-                        </div>`;
+                    const cardHTML = `<div class="income-card"><div class="card-header"> <span class="type">工资薪金</span> <span class="date">${year}-${record.month}</span> </div><div class="card-details"><p>所得项目小类: <span class="value">正常工资薪金</span></p><p><span>扣缴义务人: ${record.company}</span> <span class="arrow">></span></p><p>收入: <span class="value">${record.income}元</span></p><p>已申报税额: <span class="value">${record.tax}元</span></p></div></div>`;
                     resultsListContainer.insertAdjacentHTML('beforeend', cardHTML);
                 });
             }
-
             function populateYearSelector() {
                 yearList.innerHTML = '';
                 const years = Object.keys(dummyData).sort((a, b) => b - a);
@@ -310,19 +544,36 @@
                     yearList.appendChild(li);
                 });
             }
+            function updateProfileDisplay() {
+                displayNameEl.textContent = userProfile.name;
+                displayTaxIdEl.textContent = userProfile.taxId;
+            }
 
             // --- 6. 事件监听器绑定 ---
-            queryButton.addEventListener('click', () => { renderResultsPage(currentYear); pageQuery.style.display = 'none'; pageResults.style.display = 'block'; window.scrollTo(0, 0); });
-            backButton.addEventListener('click', () => { pageResults.style.display = 'none'; pageQuery.style.display = 'block'; window.scrollTo(0, 0); });
+            navItems.forEach(item => { item.addEventListener('click', () => { const pageId = item.dataset.page; if (pageId === 'page-home' || pageId === 'page-profile') { showPage(pageId, true); } }); });
+            document.getElementById('nav-to-query').addEventListener('click', () => { showPage('page-query', false); });
+            document.getElementById('profile-info-trigger').addEventListener('click', () => {
+                const newName = prompt("请输入新的姓名:", userProfile.name);
+                if (newName && newName.trim() !== "") { userProfile.name = newName.trim(); }
+                const newTaxId = prompt("请输入新的纳税人识别号 (演示用):", userProfile.taxId);
+                if (newTaxId && newTaxId.trim() !== "") { userProfile.taxId = newTaxId.trim(); }
+                updateProfileDisplay();
+            });
+            queryButton.addEventListener('click', () => { renderResultsPage(currentYear); showPage('page-results', false); });
+            backButtonResults.addEventListener('click', () => { showPage('page-query', false); });
+            backButtonQuery.addEventListener('click', () => { showPage('page-home', true); });
             yearSelectorTrigger.addEventListener('click', () => { populateYearSelector(); yearSelectorModal.classList.add('active'); });
             modalCancelButton.addEventListener('click', () => { yearSelectorModal.classList.remove('active'); });
             yearList.addEventListener('click', (event) => { if (event.target.tagName === 'LI') { const selectedYear = parseInt(event.target.dataset.year); currentYear = selectedYear; selectedYearDisplay.textContent = currentYear; yearSelectorModal.classList.remove('active'); } });
             yearSelectorModal.addEventListener('click', (event) => { if (event.target === yearSelectorModal) { yearSelectorModal.classList.remove('active'); } });
+
+            // --- 初始化调用 ---
+            showPage('page-home', true);
+            updateProfileDisplay();
         }
         
         // --- 启动验证流程 ---
         verifyAccess();
-
     </script>
 </body>
 </html>
