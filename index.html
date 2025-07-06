@@ -33,37 +33,14 @@
         #auth-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: var(--bg-gray); z-index: 2000; display: flex; justify-content: center; align-items: center; text-align: center; color: var(--text-light); font-size: 18px; }
         #auth-overlay .message { padding: 20px; }
 
-        /* --- 顶部状态栏 --- */
-        #global-status-bar {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 44px; /* Standard iPhone status bar height */
-            z-index: 200; /* Above all content */
-            background-color: transparent; /* Default for home page (over blue bg) */
-            color: #fff; /* Default text color for home page */
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 0 15px;
-            font-size: 15px;
-            font-weight: 500;
-            transition: background-color 0.3s ease, color 0.3s ease;
-        }
-        #global-status-bar.on-white-bg {
-            background-color: #fff;
-            color: #333;
-        }
-
-        /* Adjust page content to be below the fixed status bar */
+        /* --- 顶部通用样式 (内容下移，状态栏交由系统原生) --- */
         .page > div:first-child { /* Target first direct child of each page */
-            margin-top: 44px; /* Push content down below fixed status bar */
+            margin-top: 44px; /* Push content down below fixed status bar (standard iOS status bar height) */
         }
         /* Special case for profile page where .profile-bg is first child and needs to be full height */
         #page-profile .profile-bg { margin-top: 0 !important; }
 
-        /* General header style for white-background pages under status bar */
+        /* Headers for pages like query/results */
         .header { 
             display: flex; 
             align-items: center; 
@@ -204,113 +181,6 @@
         .icon-nav-messages .active { mask-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/></svg>'); }
         .icon-nav-profile .inactive { mask-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>'); }
         .icon-nav-profile .active { mask-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>'); }
-    
-        /* --- 页面三：收入纳税明细（查询页面）样式 --- */
-        #page-query .header { 
-            display: flex; 
-            align-items: center; 
-            position: relative; 
-            padding: 15px 0; /* Adjust padding for screenshot match */
-            background-color: #ffffff; 
-            border-bottom: 1px solid #e8e8e8; 
-            height: 50px; /* Header height */
-        } 
-        #page-query .header .back-link { 
-            position: absolute; 
-            left: 0; /* Align to screen edge */
-            font-size: 16px; 
-            color: var(--primary-blue); 
-            text-decoration: none; 
-            cursor: pointer; 
-            padding-left: 15px; /* Indent text from edge */
-        } 
-        #page-query .header .title { /* Middle title for query page */
-            flex-grow: 1; 
-            text-align: center; 
-            font-size: 18px; 
-            font-weight: bold; 
-            color: #333; 
-        }
-        
-        #page-query .main-content { padding: 0 20px; }
-        #page-query .section-title { font-size: 15px; color: #333; margin: 20px 0 10px; font-weight: normal; }
-        
-        #page-query .list-item { display: flex; justify-content: space-between; align-items: center; padding: 18px 0; font-size: 16px; color: #333; border-bottom: 1px solid #f0f0f0; cursor: pointer; }
-        #page-query .list-item:last-child { border-bottom: none; }
-        #page-query .list-item .value { color: #555; display: flex; align-items: center; }
-        #page-query .arrow { color: #ccc; margin-left: 8px; font-size: 20px; }
-
-        #page-query .checkbox-item { display: flex; align-items: center; padding: 15px 0; font-size: 16px; color: #333; border-bottom: 1px solid #f0f0f0; cursor: pointer; }
-        #page-query .checkbox-item:last-of-type { border-bottom: none; }
-        #page-query .custom-checkbox { 
-            display: inline-block; 
-            width: 22px; 
-            height: 22px; 
-            background-color: #e3f2fd; /* Light blue background when unchecked */
-            border: 1px solid #a8d5ff; /* Light blue border */
-            border-radius: 50%; 
-            position: relative; 
-            margin-right: 12px; 
-            cursor: pointer; 
-            transition: background-color 0.2s, border-color 0.2s; 
-            flex-shrink: 0; 
-            box-shadow: inset 0 1px 2px rgba(0,0,0,0.1); /* Subtle inner shadow */
-        }
-        #page-query .custom-checkbox.checked { 
-            background-color: var(--primary-blue); /* Primary blue when checked */
-            border-color: var(--primary-blue); 
-            box-shadow: none; /* Remove inner shadow when checked */
-        }
-        #page-query .custom-checkbox.checked::after { 
-            content: ''; 
-            position: absolute; 
-            left: 7px; /* Adjust checkmark position */
-            top: 4px; /* Adjust checkmark position */
-            width: 6px; 
-            height: 10px; 
-            border: solid white; 
-            border-width: 0 2px 2px 0; 
-            transform: rotate(45deg); 
-        }
-        #page-query .label { flex-grow: 1; }
-        
-        #page-query .more-types { text-align: center; padding: 20px 0; } /* Centered as per new screenshot */
-        #page-query .more-types a { color: var(--primary-blue); text-decoration: none; font-size: 15px; }
-        #page-query .more-types .arrow-down { display: inline-block; width: 0; height: 0; border-left: 5px solid transparent; border-right: 5px solid transparent; border-top: 6px solid var(--primary-blue); margin-left: 5px; }
-        #page-query .footer { padding: 30px 15px; background-color: var(--bg-gray); } /* Footer style */
-        #page-query .query-button { width: 100%; padding: 15px; background-color: var(--primary-blue); color: white; border: none; border-radius: 8px; font-size: 18px; cursor: pointer; }
-
-        /* --- 页面四：结果页面样式 --- */
-        #page-results { background-color: var(--bg-gray); }
-        /* Header style same as query page header, but with right action link */
-        #page-results .header .back-link { left: 15px; flex-grow: unset; } /* Reset flex-grow for back link */
-        #page-results .header .title { flex-grow: 1; text-align: center; } /* Make title centered between links */
-        #page-results .summary-section { background-color: #ffffff; padding: 20px 15px; margin-bottom: 10px; } 
-        #page-results .summary-item { display: flex; justify-content: space-between; align-items: center; font-size: 16px; margin-bottom: 15px; } 
-        #page-results .summary-item:last-child { margin-bottom: 0; } 
-        #page-results .summary-item .label { color: #555; display: flex; align-items: center; } 
-        #page-results .summary-item .value { font-size: 18px; font-weight: bold; color: #333; } 
-        #page-results .info-icon { display: inline-block; width: 16px; height: 16px; border: 1px solid var(--primary-blue); border-radius: 50%; color: var(--primary-blue); text-align: center; font-size: 12px; line-height: 16px; margin-left: 5px; cursor: pointer; font-weight: bold; } 
-        #page-results .results-list { background-color: #ffffff; } 
-        #page-results .income-card { padding: 15px; border-bottom: 1px solid #f0f0f0; } 
-        #page-results .income-card:last-child { border-bottom: none; } 
-        #page-results .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; } 
-        #page-results .card-header .type { font-size: 17px; font-weight: bold; } 
-        #page-results .card-header .date { font-size: 15px; color: #888; } 
-        #page-results .card-details p { margin: 5px 0; font-size: 15px; color: #888; display: flex; justify-content: space-between; align-items: center; } 
-        #page-results .card-details .value { color: #333; } 
-        #page-results .arrow { color: #ccc; font-size: 20px; } 
-        
-        /* Modal 样式 */
-        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.5); display: none; justify-content: center; align-items: flex-end; z-index: 1000; } 
-        .modal-overlay.active { display: flex; } 
-        .modal-content { background-color: #f4f6f9; width: 100%; border-top-left-radius: 12px; border-top-right-radius: 12px; animation: slide-up 0.3s ease-out; } 
-        .modal-content ul { list-style: none; padding: 0; margin: 0; background-color: white; max-height: 250px; overflow-y: auto; } 
-        .modal-content li { padding: 15px; text-align: center; font-size: 18px; color: #333; border-bottom: 1px solid #f0f0f0; } 
-        .modal-content li.selected { color: var(--primary-blue); font-weight: bold; } 
-        .modal-content li:last-child { border-bottom: none; } 
-        .modal-cancel { display: block; width: 100%; padding: 15px; margin-top: 8px; border: none; background-color: white; font-size: 18px; color: #333; font-weight: bold; } 
-        @keyframes slide-up { from { transform: translateY(100%); } to { transform: translateY(0); } }
     </style>
 </head>
 <body>
@@ -417,7 +287,8 @@
         <div class="profile-content">
             <div class="profile-main-info">
                 <div class="profile-avatar">
-                    <img src="imge/0d89a73cd25b3e3b21829ca1912e53e.jpg" alt="avatar">
+                    <!-- 头像图片会通过JS动态设置 -->
+                    <img id="profile-avatar-img" src="imge/0d89a73cd25b3e3b21829ca1912e53e.jpg" alt="avatar">
                 </div>
                 <div id="profile-info-trigger" class="profile-card">
                     <div class="profile-details">
@@ -560,13 +431,6 @@
             }
         };
         try {
-            // Uncomment this block and run on a server for actual auth check
-            // const response = await fetch(AUTH_CONFIG.serverUrl, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ key: AUTH_CONFIG.accessKey }) });
-            // if (!response.ok) throw new Error('网络错误或服务器问题。');
-            // const data = await response.json();
-            // if (data.status === 'ok') checkTimeLimitAndStart();
-            // else authMessage.textContent = `访问被拒绝: ${data.message || '无效的密钥。'}`;
-            
             // For local testing without a server, simulate success:
             checkTimeLimitAndStart(); 
 
@@ -582,7 +446,18 @@
             return (Math.random() * (max - min) + min).toFixed(2); 
         } 
         function getRandomCompany() {
-            return '江西拓城人力资源有限公司'; /* 固定公司名称 */
+            const guangdongCompanies = [
+                '广东天河信息技术有限公司',
+                '深圳市南山科技服务中心',
+                '广州白云数据处理有限公司',
+                '佛山顺德软件开发公司',
+                '东莞虎门智能科技公司',
+                '珠海横琴税务咨询公司',
+                '江门新会人力资源公司',
+                '惠州大亚湾财务管理公司'
+            ];
+            const randomIndex = Math.floor(Math.random() * guangdongCompanies.length);
+            return guangdongCompanies[randomIndex];
         }
         function calculateTaxForYear(records) {
             let cumulativeIncome = 0;
@@ -617,24 +492,27 @@
         }
         function generateDynamicData() {
             const data = {};
-            const companyName = getRandomCompany(); 
+            /* Ensure company name is consistent for a user across years but unique per user session */
+            const userCompanyName = localStorage.getItem('userCompanyName') || getRandomCompany();
+            localStorage.setItem('userCompanyName', userCompanyName); /* Save for persistence */
+
             const years = ['2025', '2024', '2023'];
             years.forEach(year => {
                 let records = [];
-                const monthCount = (year === '2024') ? 12 : 6; /* 2024年有12个月数据，其他年份6个月 */
+                const monthCount = (year === '2024') ? 12 : 6; 
 
                 for (let i = 1; i <= monthCount; i++) {
                     let income = getRandomSalary();
-                    if (year === '2025' && i === 1) { /* For 2025-01, set income to 1846.50 */
+                    if (year === '2025' && i === 1) { /* For 2025-01, set income to 1846.50 as per screenshot */
                         income = '1846.50';
                     }
-                    records.push({ month: i.toString().padStart(2, '0'), company: companyName, income: income, tax: '0.00' });
+                    records.push({ month: i.toString().padStart(2, '0'), company: userCompanyName, income: income, tax: '0.00' });
                 }
-                records = calculateTaxForYear(records); /* 计算税额 */
+                records = calculateTaxForYear(records); 
                 let totalIncome = records.reduce((sum, rec) => sum + parseFloat(rec.income), 0);
                 let totalTax = records.reduce((sum, rec) => sum + parseFloat(rec.tax), 0);
 
-                /* Specific override for 2025 based on screenshot */
+                /* Specific override for 2025 totals based on screenshot */
                 if (year === '2025') {
                     totalIncome = 1846.50;
                     totalTax = 0.00;
@@ -651,8 +529,9 @@
         // --- 3. 状态管理 (包含个人信息本地存储) ---
         const userProfileKey = 'taxAppUserProfile';
         const defaultProfile = {
-            name: "黄梓良", /* 默认名称 */
-            taxId: "4****************X" /* 默认识别号 */
+            name: "某某",
+            taxId: "9****************Y",
+            gender: "male" /* Add default gender */
         };
         let userProfile = JSON.parse(localStorage.getItem(userProfileKey)) || defaultProfile;
         let currentYear = new Date().getFullYear(); 
@@ -669,6 +548,7 @@
         const navItems = document.querySelectorAll('.nav-item');
         const displayNameEl = document.getElementById('display-name');
         const displayTaxIdEl = document.getElementById('display-taxid');
+        const profileAvatarImg = document.getElementById('profile-avatar-img'); /* Get avatar image element */
 
         /* 查询页面相关元素 */
         const queryButton = document.getElementById('query-button'); 
@@ -713,6 +593,13 @@
         const updateProfileDisplay = () => {
             displayNameEl.textContent = userProfile.name;
             displayTaxIdEl.textContent = `纳税人识别号 ${userProfile.taxId}`;
+            
+            /* Set avatar based on gender */
+            if (userProfile.gender === 'female') {
+                profileAvatarImg.src = 'imge/52ccf66bdc8c3e37acac6ed8c9846c2.jpg';
+            } else {
+                profileAvatarImg.src = 'imge/0d89a73cd25b3e3b21829ca1912e53e.jpg';
+            }
         };
 
         const saveProfile = () => {
@@ -781,6 +668,15 @@
             if (newTaxId && newTaxId.trim()) {
                 userProfile.taxId = newTaxId.trim();
             }
+            
+            /* Ask for gender and update avatar */
+            let newGender = prompt("请选择性别 (male/female):", userProfile.gender);
+            if (newGender && (newGender.toLowerCase() === 'male' || newGender.toLowerCase() === 'female')) {
+                userProfile.gender = newGender.toLowerCase();
+            } else if (newGender !== null) { /* If user types something invalid but not cancel */
+                alert("性别输入无效，请输入 'male' 或 'female'。");
+            }
+
             updateProfileDisplay();
             saveProfile(); /* 保存到本地存储 */
         });
