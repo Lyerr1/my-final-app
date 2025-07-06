@@ -33,8 +33,7 @@
         #auth-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: var(--bg-gray); z-index: 2000; display: flex; justify-content: center; align-items: center; text-align: center; color: var(--text-light); font-size: 18px; }
         #auth-overlay .message { padding: 20px; }
 
-        /* --- 顶部通用样式 (内容下移，状态栏交由系统原生) --- */
-        /* Each page's first child will be pushed down by 44px (status bar height) */
+        /* --- 顶部App内容区域的padding (为原生状态栏预留空间) --- */
         .page > div:first-child { 
             padding-top: 44px; /* Push content down below fixed status bar (standard iOS status bar height) */
             box-sizing: content-box; /* Ensure padding adds to height, not takes from it */
@@ -42,7 +41,7 @@
         /* Special case for profile page where .profile-bg is first child and needs to be full height */
         #page-profile .profile-bg { padding-top: 0 !important; }
 
-        /* App Header for white-background pages (query/results) */
+        /* App Header for pages like query/results, and Home page search/notification area */
         .app-header { 
             display: flex; 
             align-items: center; 
@@ -75,6 +74,27 @@
             text-decoration: none; 
         }
 
+        /* Status bar content displayed directly in query/results pages */
+        .query-status-header {
+            position: absolute; /* positioned relative to the page div */
+            top: 0; /* at the very top of the page content area */
+            left: 0;
+            width: 100%;
+            height: 44px; /* match system status bar height */
+            z-index: 10; /* above page content, below modal/bottom nav */
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 15px;
+            font-size: 15px;
+            color: #333; /* Black text for white background pages */
+            font-weight: 500;
+        }
+        .query-status-header .right-icons {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
 
         /* --- SVG图标 (用于通用线稿图标，彩色图标使用<img>) --- */
         .icon { display: inline-block; width: 1em; height: 1em; background-color: currentColor; mask-repeat: no-repeat; mask-size: contain; mask-position: center; vertical-align: middle; }
@@ -192,12 +212,6 @@
     <div id="auth-overlay">
         <div class="message">正在验证使用权限...</div>
     </div>
-
-    <!-- 全局状态栏 -->
-    <div id="global-status-bar" class="status-bar">
-        <span class="time">13:55</span>
-        <div class="right-icons">... <span class="wifi"></span><span class="battery"></span> 95</div>
-    </div>
     
     <!-- 页面一：首页 -->
     <div id="page-home" class="page">
@@ -295,9 +309,9 @@
                 </div>
                 <div id="profile-info-trigger" class="profile-card">
                     <div class="profile-details">
-                        <div id="display-name" class="profile-name">黄梓良</div>
+                        <div id="display-name" class="profile-name">某某</div>
                         <div class="profile-taxid">
-                            <span id="display-taxid">纳税人识别号 4****************X</span>
+                            <span id="display-taxid">纳税人识别号 9****************Y</span>
                             <i class="icon icon-eye"></i>
                         </div>
                     </div>
@@ -335,13 +349,13 @@
             <span class="title">收入纳税明细</span>
         </div>
         <div class="main-content">
-            <div class="section-title">请选择纳税年度</div>
+            <div class="section-title">I 请选择纳税年度</div>
             <div id="year-selector-trigger" class="list-item">
                 <span class="label">年度</span>
                 <span class="value"><span id="selected-year-display">2025</span> <span class="arrow">></span></span>
             </div>
             
-            <div class="section-title">请选择所得类型</div>
+            <div class="section-title">I 请选择所得类型</div>
             <div class="checkbox-item" data-type-id="type1">
                 <div class="custom-checkbox checked"></div><span class="label">工资薪金</span>
             </div>
@@ -517,18 +531,21 @@
                     let income = getRandomSalary();
                     let companyForRecord = initialCompanyName; // Use the consistent company name
 
-                    if (year === '2025' && i === 1) { 
-                        income = '1846.50';
-                        companyForRecord = '江西拓城人力资源有限公司'; // Override for this specific record
-                    } else if (year === '2025' && i === 6) { /* 2025-06 for screenshot */
-                         income = '5367.81';
-                         companyForRecord = '惠州大亚湾财务管理公司'; // Override for this specific record
-                    } else if (year === '2025' && i === 5) { /* 2025-05 for screenshot */
-                         income = '5976.82';
-                         companyForRecord = '惠州大亚湾财务管理公司'; // Override for this specific record
-                    } else if (year === '2025' && i === 4) { /* 2025-04 for screenshot */
-                         income = '5770.06';
-                         companyForRecord = '惠州大亚湾财务管理公司'; // Override for this specific record
+                    // Override company and income for specific records from screenshots
+                    if (year === '2025') {
+                        if (i === 1) { /* 2025-01 for first results screenshot */
+                            income = '1846.50';
+                            companyForRecord = '江西拓城人力资源有限公司'; 
+                        } else if (i === 6) { /* 2025-06 for second results screenshot */
+                            income = '5367.81';
+                            companyForRecord = '惠州大亚湾财务管理公司'; 
+                        } else if (i === 5) { /* 2025-05 for second results screenshot */
+                            income = '5976.82';
+                            companyForRecord = '惠州大亚湾财务管理公司'; 
+                        } else if (i === 4) { /* 2025-04 for second results screenshot */
+                            income = '5770.06';
+                            companyForRecord = '惠州大亚湾财务管理公司'; 
+                        }
                     }
                     records.push({ month: i.toString().padStart(2, '0'), company: companyForRecord, income: income, tax: '0.00' });
                 }
@@ -536,9 +553,9 @@
                 let totalIncome = records.reduce((sum, rec) => sum + parseFloat(rec.income), 0);
                 let totalTax = records.reduce((sum, rec) => sum + parseFloat(rec.tax), 0);
 
-                /* Specific override for 2025 totals based on screenshot */
+                // Override total for 2025 based on first results screenshot
                 if (year === '2025') {
-                    totalIncome = 1846.50; // Total sum for 2025 shown in screenshot is 1846.50
+                    totalIncome = 1846.50; 
                     totalTax = 0.00;
                 }
 
@@ -567,7 +584,6 @@
             query: document.getElementById('page-query'),
             results: document.getElementById('page-results')
         };
-        const globalStatusBar = document.getElementById('global-status-bar');
         const bottomNav = document.getElementById('bottom-nav');
         const navItems = document.querySelectorAll('.nav-item');
         const displayNameEl = document.getElementById('display-name');
@@ -599,13 +615,6 @@
                 bottomNav.style.display = 'block';
             } else {
                 bottomNav.style.display = 'none';
-            }
-
-            /* 状态栏颜色切换 (根据页面背景模拟) */
-            if (pageId === 'home') {
-                globalStatusBar.classList.remove('on-white-bg');
-            } else {
-                globalStatusBar.classList.add('on-white-bg');
             }
             
             navItems.forEach(item => {
@@ -694,7 +703,7 @@
             }
             
             let newGenderInput = prompt("请选择性别 (男/女):", userProfile.gender === 'male' ? '男' : '女');
-            if (newGenderInput !== null) { // If user didn't cancel
+            if (newGenderInput !== null) { 
                 if (newGenderInput.trim() === '男') {
                     userProfile.gender = 'male';
                 } else if (newGenderInput.trim() === '女') {
@@ -768,4 +777,4 @@
     }
     </script>
 </body>
-</html> 
+</html>
