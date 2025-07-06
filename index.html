@@ -44,6 +44,9 @@
             overflow-y: auto;
             overflow-x: hidden;
             display: none; /* 默认所有页面都隐藏 */
+            /* 关键改动：为所有页面添加顶部内边距，实现下拉效果 */
+            padding-top: 50px; 
+            box-sizing: border-box; /* 确保padding不会增加总高度 */
         }
         #home-page {
             display: block; /* 默认只显示首页 */
@@ -62,6 +65,7 @@
         /* --- 首页样式 --- */
         #home-page {
             background: linear-gradient(to bottom, var(--header-start-blue), var(--bg-color) 350px);
+            padding-top: 0; /* 首页的下拉效果由header的高度决定，不需要额外padding */
         }
 
         .home-header {
@@ -156,7 +160,7 @@
         .nav-item .badge { position: absolute; top: 5px; right: 12px; background-color: #e74c3c; color: white; font-size: 10px; padding: 1px 5px; border-radius: 10px; border: 1px solid white; }
 
         /* --- 新增：查询页和结果页样式 --- */
-        .page-header { background-color: var(--card-bg); padding: 10px 15px; display: flex; align-items: center; justify-content: center; border-bottom: 1px solid var(--border-color); position: sticky; top: 0; z-index: 5; }
+        .page-header { background-color: var(--card-bg); padding: 10px 15px; display: flex; align-items: center; justify-content: center; border-bottom: 1px solid var(--border-color); position: sticky; top: -50px; /* 关键：让sticky header在滚动后回到顶部 */ z-index: 5; }
         .page-header .back-btn { position: absolute; left: 15px; color: #555; font-size: 14px; cursor: pointer; }
         .page-header h1 { margin: 0; font-size: 17px; font-weight: 600; color: var(--text-color); }
         .page-header .right-action { position: absolute; right: 15px; color: var(--primary-blue); font-size: 14px; cursor: pointer; }
@@ -194,6 +198,7 @@
         .result-detail-label { color: var(--text-light); }
         .result-detail-value { color: var(--text-color); }
         .result-card-arrow { position: absolute; right: 15px; top: 50%; transform: translateY(-50%); color: #ccc; }
+
     </style>
 </head>
 <body>
@@ -452,7 +457,7 @@
                 submitQueryBtn.addEventListener('click', () => {
                     const yearSelect = document.getElementById('year-select');
                     const selectedYear = yearSelect.value;
-                    generateSalaryData(selectedYear); // 传递选中的年份
+                    generateSalaryData(selectedYear);
                     showPage('result-page');
                 });
             }
