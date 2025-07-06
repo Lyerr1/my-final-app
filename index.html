@@ -34,17 +34,45 @@
         #auth-overlay .message { padding: 20px; }
 
         /* --- 顶部状态栏 --- */
-        .status-bar { height: 44px; display: flex; justify-content: space-between; align-items: center; padding: 0 15px; font-size: 15px; font-weight: 500; position: sticky; top: 0; z-index: 101; background-color: #fff; border-bottom: 1px solid #f0f0f0; /* Add a subtle border */ }
-        .status-bar.no-border { border-bottom: none; } /* For pages where header already has a border */
-        .status-bar .time { }
-        .status-bar .right-icons { display: flex; align-items: center; gap: 5px; color: #333; }
-        .status-bar .right-icons span { font-size: 14px; }
+        #global-status-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 44px; /* Standard iPhone status bar height */
+            z-index: 200; /* Above all content */
+            background-color: rgba(255, 255, 255, 0); /* Default transparent */
+            backdrop-filter: blur(0); /* Default no blur */
+            -webkit-backdrop-filter: blur(0);
+            display: flex; /* Ensure it's active */
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 15px;
+            font-size: 15px;
+            font-weight: 500;
+            color: #fff; /* Default text color (for home page over blue) */
+            transition: background-color 0.3s ease, color 0.3s ease, backdrop-filter 0.3s ease;
+        }
+        #global-status-bar.on-white-bg {
+            background-color: #fff;
+            color: #333;
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
+        }
+
+        /* Adjust page content to be below the fixed status bar */
+        body {
+            padding-top: 44px; /* Height of the status bar */
+        }
         /* Placeholder for actual icons */
+        .status-bar .right-icons { display: flex; align-items: center; gap: 5px; }
+        .status-bar .right-icons span { font-size: 14px; }
         .status-bar .right-icons .signal { width: 16px; height: 12px; background: currentColor; mask-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1L3 9v11a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V9L12 1z"></path></svg>'); }
         .status-bar .right-icons .wifi { width: 16px; height: 12px; background: currentColor; mask-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.55a11 11 0 0 1 14 0"></path><path d="M1.42 8.63a15 15 0 0 1 21.16 0"></path><path d="M8.53 16.14a5 5 0 0 1 6.95 0"></path><line x1="12" y1="20" x2="12.01" y2="20"></line></svg>'); }
         .status-bar .right-icons .battery { width: 22px; height: 12px; border: 1px solid currentColor; border-radius: 2px; position: relative; }
         .status-bar .right-icons .battery::after { content: ''; position: absolute; top: 2px; left: 2px; right: 2px; bottom: 2px; background-color: currentColor; width: 80%; /* Simulate charge level */ }
         .status-bar .right-icons .battery::before { content: ''; position: absolute; right: -4px; top: 3px; width: 2px; height: 6px; background-color: currentColor; border-radius: 0 1px 1px 0; }
+
 
         /* --- SVG图标 (用于通用线稿图标，彩色图标使用<img>) --- */
         .icon { display: inline-block; width: 1em; height: 1em; background-color: currentColor; mask-repeat: no-repeat; mask-size: contain; mask-position: center; vertical-align: middle; }
@@ -156,13 +184,12 @@
         .icon-nav-profile .active { mask-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>'); }
     
         /* --- 页面三/四：收入纳税明细（查询页面）样式 --- */
-        #page-query { background-color: #fff; padding-top: 44px; /* Space for status bar */ }
+        #page-query { background-color: #fff; }
         #page-query .header { display: flex; align-items: center; position: relative; padding: 15px; background-color: #ffffff; height: 50px; border-bottom: 1px solid #e8e8e8; } 
-        #page-query .header .back-link { position: absolute; left: 15px; font-size: 16px; color: #333; text-decoration: none; cursor: pointer; } 
-        #page-query .header .title { flex-grow: 1; text-align: center; font-size: 18px; font-weight: bold; }
+        #page-query .header .back-link { flex-grow: 1; text-align: left; font-size: 16px; color: #333; text-decoration: none; cursor: pointer; padding-left: 5px; } /* Adjust padding-left to give space from edge */
         
         #page-query .main-content { padding: 0 20px; }
-        #page-query .section-title { font-size: 15px; color: #333; margin: 20px 0 10px; font-weight: bold; }
+        #page-query .section-title { font-size: 15px; color: #333; margin: 20px 0 10px; font-weight: normal; /* As per new screenshot, no bold */ }
         
         #page-query .list-item { display: flex; justify-content: space-between; align-items: center; padding: 18px 0; font-size: 16px; color: #333; border-bottom: 1px solid #f0f0f0; cursor: pointer; }
         #page-query .list-item:last-child { border-bottom: none; }
@@ -171,8 +198,8 @@
 
         #page-query .checkbox-item { display: flex; align-items: center; padding: 15px 0; font-size: 16px; color: #333; border-bottom: 1px solid #f0f0f0; cursor: pointer; }
         #page-query .checkbox-item:last-of-type { border-bottom: none; } /* Fix for the last checkbox in its section */
-        #page-query .custom-checkbox { display: inline-block; width: 22px; height: 22px; background-color: #e3f2fd; border: 1px solid #a8d5ff; border-radius: 50%; position: relative; margin-right: 12px; cursor: pointer; transition: background-color 0.2s, border-color 0.2s; flex-shrink: 0; }
-        #page-query .custom-checkbox.checked { background-color: var(--primary-blue); border-color: var(--primary-blue); }
+        #page-query .custom-checkbox { display: inline-block; width: 22px; height: 22px; background-color: #e3f2fd; border: 1px solid #a8d5ff; border-radius: 50%; position: relative; margin-right: 12px; cursor: pointer; transition: background-color 0.2s, border-color 0.2s; flex-shrink: 0; box-shadow: inset 0 1px 2px rgba(0,0,0,0.1); /* Subtle inner shadow */ }
+        #page-query .custom-checkbox.checked { background-color: var(--primary-blue); border-color: var(--primary-blue); box-shadow: none; /* Remove inner shadow when checked */ }
         #page-query .custom-checkbox.checked::after { content: ''; position: absolute; left: 7px; top: 4px; width: 6px; height: 10px; border: solid white; border-width: 0 2px 2px 0; transform: rotate(45deg); }
         #page-query .label { flex-grow: 1; }
         
@@ -181,7 +208,7 @@
         #page-query .more-types .arrow-down { display: inline-block; width: 0; height: 0; border-left: 5px solid transparent; border-right: 5px solid transparent; border-top: 6px solid var(--primary-blue); margin-left: 5px; }
 
         /* --- 页面四：结果页面样式 --- */
-        #page-results { background-color: var(--bg-gray); padding-top: 44px; /* Space for status bar */ }
+        #page-results { background-color: var(--bg-gray); }
         #page-results .header { background-color: #ffffff; border-bottom: 1px solid #e8e8e8; } 
         #page-results .summary-section { background-color: #ffffff; padding: 20px 15px; margin-bottom: 10px; } 
         #page-results .summary-item { display: flex; justify-content: space-between; align-items: center; font-size: 16px; margin-bottom: 15px; } 
@@ -217,13 +244,15 @@
     <div id="auth-overlay">
         <div class="message">正在验证使用权限...</div>
     </div>
+
+    <!-- 全局状态栏 -->
+    <div id="global-status-bar" class="status-bar">
+        <span class="time">13:55</span>
+        <div class="right-icons">... <i class="wifi icon"></i><span class="battery"></span> 95</div>
+    </div>
     
     <!-- 页面一：首页 -->
     <div id="page-home" class="page">
-        <div class="status-bar">
-            <span class="time">13:57</span>
-            <div class="right-icons">... <i class="wifi icon"></i><span class="battery"></span> 95</div>
-        </div>
         <div class="home-header-bg">
             <div class="search-bar">
                 <i class="icon"></i>
@@ -309,10 +338,6 @@
 
     <!-- 页面二：我的 -->
     <div id="page-profile" class="page">
-        <div class="status-bar">
-            <span class="time">11:34</span>
-            <div class="right-icons">... <i class="wifi icon"></i><span class="battery"></span> 95</div>
-        </div>
         <div class="profile-bg"></div>
         <div class="profile-content">
             <div class="profile-main-info">
@@ -352,13 +377,8 @@
     
     <!-- 页面三：查询页面 (收入纳税明细) -->
     <div id="page-query" class="page">
-        <div class="status-bar">
-            <span class="time">13:55</span>
-            <div class="right-icons">... <i class="wifi icon"></i><span class="battery"></span> 95</div>
-        </div>
         <div class="header">
             <a id="back-to-home-from-query" class="back-link">< 返回 收入纳税明细</a>
-            <!-- No title here, title is part of the back link in this design -->
         </div>
         <div class="main-content">
             <div class="section-title">请选择纳税年度</div>
@@ -384,15 +404,10 @@
                 <a href="#">其他类型 <span class="arrow-down"></span></a>
             </div>
         </div>
-        <!-- Query button is removed from this page as per new screenshot -->
     </div>
 
     <!-- 页面四：结果页面 (收入纳税明细结果) -->
     <div id="page-results" class="page">
-        <div class="status-bar">
-            <span class="time">13:55</span>
-            <div class="right-icons">... <i class="wifi icon"></i><span class="battery"></span> 95</div>
-        </div>
         <div class="header">
             <a id="back-button" class="back-link">< 返回</a>
             <span class="title">收入纳税明细</span>
@@ -561,6 +576,7 @@
             query: document.getElementById('page-query'),
             results: document.getElementById('page-results')
         };
+        const globalStatusBar = document.getElementById('global-status-bar');
         const bottomNav = document.getElementById('bottom-nav');
         const navItems = document.querySelectorAll('.nav-item');
         const displayNameEl = document.getElementById('display-name');
@@ -589,13 +605,17 @@
             // 底部导航栏显示逻辑
             if (pageId === 'home' || pageId === 'profile') {
                 bottomNav.style.display = 'block';
-                // Home page status bar might need a different treatment (e.g. transparent background)
-                document.querySelector('#page-home .status-bar').classList.add('no-border');
             } else {
                 bottomNav.style.display = 'none';
-                // Other pages usually have a solid status bar background
-                document.querySelector('#page-query .status-bar').classList.remove('no-border');
-                document.querySelector('#page-results .status-bar').classList.remove('no-border');
+            }
+
+            // 状态栏颜色切换 (根据页面背景模拟)
+            if (pageId === 'home') {
+                globalStatusBar.classList.remove('on-white-bg');
+                // You might need a scroll listener here for true dynamic color based on scroll
+                // For simplicity, it starts transparent/white text and assumes the blue background
+            } else {
+                globalStatusBar.classList.add('on-white-bg');
             }
             
             navItems.forEach(item => {
@@ -698,7 +718,7 @@
                 selectedYearDisplay.textContent = currentYear; 
                 yearSelectorModal.classList.remove('active'); 
                 
-                // 自动触发查询并跳转到结果页
+                // 自动触发查询并跳转到结果页 (因为查询页面没有查询按钮)
                 renderResultsPage(currentYear); 
                 showPage('results');
             } 
