@@ -41,26 +41,29 @@
             width: 100%;
             height: 44px; /* Standard iPhone status bar height */
             z-index: 200; /* Above all content */
-            background-color: transparent; /* Default for home page */
-            color: #fff; /* Default text color for home page */
-            display: flex;
+            background-color: rgba(255, 255, 255, 0); /* Default transparent */
+            backdrop-filter: blur(0); /* Default no blur */
+            -webkit-backdrop-filter: blur(0);
+            display: flex; /* Ensure it's active */
             justify-content: space-between;
             align-items: center;
             padding: 0 15px;
             font-size: 15px;
             font-weight: 500;
-            transition: background-color 0.3s ease, color 0.3s ease;
+            color: #fff; /* Default text color (for home page over blue) */
+            transition: background-color 0.3s ease, color 0.3s ease, backdrop-filter 0.3s ease;
         }
         #global-status-bar.on-white-bg {
             background-color: #fff;
             color: #333;
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
         }
 
         /* Adjust page content to be below the fixed status bar */
-        .page > div:first-child:not(#profile-bg) { /* Target first direct child, excluding profile-bg */
-            margin-top: 44px; /* Push content down below fixed status bar */
+        body {
+            padding-top: 44px; /* Height of the status bar */
         }
-        
         /* Placeholder for actual icons */
         .status-bar .right-icons { display: flex; align-items: center; gap: 5px; }
         .status-bar .right-icons span { font-size: 14px; }
@@ -183,10 +186,10 @@
         /* --- 页面三/四：收入纳税明细（查询页面）样式 --- */
         #page-query { background-color: #fff; }
         #page-query .header { display: flex; align-items: center; position: relative; padding: 15px; background-color: #ffffff; height: 50px; border-bottom: 1px solid #e8e8e8; } 
-        #page-query .header .back-link { flex-grow: 1; text-align: left; font-size: 16px; color: #333; text-decoration: none; cursor: pointer; padding-left: 5px; } 
+        #page-query .header .back-link { flex-grow: 1; text-align: left; font-size: 16px; color: #333; text-decoration: none; cursor: pointer; padding-left: 5px; } /* Adjust padding-left to give space from edge */
         
         #page-query .main-content { padding: 0 20px; }
-        #page-query .section-title { font-size: 15px; color: #333; margin: 20px 0 10px; font-weight: normal; }
+        #page-query .section-title { font-size: 15px; color: #333; margin: 20px 0 10px; font-weight: normal; /* As per new screenshot, no bold */ }
         
         #page-query .list-item { display: flex; justify-content: space-between; align-items: center; padding: 18px 0; font-size: 16px; color: #333; border-bottom: 1px solid #f0f0f0; cursor: pointer; }
         #page-query .list-item:last-child { border-bottom: none; }
@@ -194,17 +197,15 @@
         #page-query .arrow { color: #ccc; margin-left: 8px; font-size: 20px; }
 
         #page-query .checkbox-item { display: flex; align-items: center; padding: 15px 0; font-size: 16px; color: #333; border-bottom: 1px solid #f0f0f0; cursor: pointer; }
-        #page-query .checkbox-item:last-of-type { border-bottom: none; }
-        #page-query .custom-checkbox { display: inline-block; width: 22px; height: 22px; background-color: #e3f2fd; border: 1px solid #a8d5ff; border-radius: 50%; position: relative; margin-right: 12px; cursor: pointer; transition: background-color 0.2s, border-color 0.2s; flex-shrink: 0; box-shadow: inset 0 1px 2px rgba(0,0,0,0.1); }
-        #page-query .custom-checkbox.checked { background-color: var(--primary-blue); border-color: var(--primary-blue); box-shadow: none; }
+        #page-query .checkbox-item:last-of-type { border-bottom: none; } /* Fix for the last checkbox in its section */
+        #page-query .custom-checkbox { display: inline-block; width: 22px; height: 22px; background-color: #e3f2fd; border: 1px solid #a8d5ff; border-radius: 50%; position: relative; margin-right: 12px; cursor: pointer; transition: background-color 0.2s, border-color 0.2s; flex-shrink: 0; box-shadow: inset 0 1px 2px rgba(0,0,0,0.1); /* Subtle inner shadow */ }
+        #page-query .custom-checkbox.checked { background-color: var(--primary-blue); border-color: var(--primary-blue); box-shadow: none; /* Remove inner shadow when checked */ }
         #page-query .custom-checkbox.checked::after { content: ''; position: absolute; left: 7px; top: 4px; width: 6px; height: 10px; border: solid white; border-width: 0 2px 2px 0; transform: rotate(45deg); }
         #page-query .label { flex-grow: 1; }
         
         #page-query .more-types { text-align: left; padding: 15px 0; }
         #page-query .more-types a { color: var(--primary-blue); text-decoration: none; font-size: 15px; }
         #page-query .more-types .arrow-down { display: inline-block; width: 0; height: 0; border-left: 5px solid transparent; border-right: 5px solid transparent; border-top: 6px solid var(--primary-blue); margin-left: 5px; }
-        #page-query .footer { padding: 30px 15px; background-color: var(--bg-gray); } /* Added back footer for query button */
-        #page-query .query-button { width: 100%; padding: 15px; background-color: var(--primary-blue); color: white; border: none; border-radius: 8px; font-size: 18px; cursor: pointer; }
 
         /* --- 页面四：结果页面样式 --- */
         #page-results { background-color: var(--bg-gray); }
@@ -345,9 +346,9 @@
                 </div>
                 <div id="profile-info-trigger" class="profile-card">
                     <div class="profile-details">
-                        <div id="display-name" class="profile-name">黄梓良</div>
+                        <div id="display-name" class="profile-name">111</div>
                         <div class="profile-taxid">
-                            <span id="display-taxid">纳税人识别号 4****************X</span>
+                            <span id="display-taxid">纳税人识别号 4****************4</span>
                             <i class="icon icon-eye"></i>
                         </div>
                     </div>
@@ -402,9 +403,6 @@
             <div class="more-types">
                 <a href="#">其他类型 <span class="arrow-down"></span></a>
             </div>
-        </div>
-        <div class="footer">
-            <button id="query-button" class="query-button">查询</button>
         </div>
     </div>
 
@@ -501,7 +499,7 @@
     // --- 主应用逻辑 ---
     function initializeApp() {
         // --- 1. 数据动态生成模块 (模拟数据，与实际无关) ---
-        function getRandomSalary() { return (Math.random() * (5000 - 6000) + 6000).toFixed(2); } /* Corrected salary range */
+        function getRandomSalary() { return (Math.random() * (6000 - 5000) + 5000).toFixed(2); }
         function getRandomCompany() {
             const companyNames = [ '安徽众包企业管理咨询有限公司', '北京数字科技有限公司', '上海智能云服务有限公司', '深圳创新信息咨询合伙企业(有限合伙)', '广州众包平台管理有限公司', '杭州数据处理中心有限公司', '江苏省人力资源服务外包有限公司', '浙江灵活共享经济信息技术有限公司' ];
             const randomIndex = Math.floor(Math.random() * companyNames.length);
@@ -512,8 +510,8 @@
         function calculateTaxForYear(records) {
             let cumulativeIncome = 0;
             let cumulativeTaxPaid = 0;
-            const standardDeduction = 5000; /* 每月5000元免征额 */
-            records.sort((a, b) => parseInt(a.month) - parseInt(b.month)); /* 确保按月份升序计算 */
+            const standardDeduction = 5000; // 每月5000元免征额
+            records.sort((a, b) => parseInt(a.month) - parseInt(b.month)); // 确保按月份升序计算
 
             records.forEach((record, index) => {
                 const monthNumber = index + 1;
@@ -525,11 +523,11 @@
                 let taxRate = 0;
                 let quickDeduction = 0;
 
-                /* 累进税率表（简化版，仅包含常见税率） */
+                // 累进税率表（简化版，仅包含常见税率）
                 if (taxableIncome <= 36000) { taxRate = 0.03; quickDeduction = 0; } 
                 else if (taxableIncome <= 144000) { taxRate = 0.10; quickDeduction = 2520; } 
                 else if (taxableIncome <= 300000) { taxRate = 0.20; quickDeduction = 16920; }
-                /* 更高的税率档次在此范围内不常用，故省略 */
+                // 更高的税率档次在此范围内不常用，故省略
 
                 const totalTaxDue = (taxableIncome * taxRate) - quickDeduction;
                 const currentMonthTax = Math.max(0, totalTaxDue - cumulativeTaxPaid);
@@ -537,21 +535,21 @@
                 record.tax = currentMonthTax.toFixed(2);
                 cumulativeTaxPaid += currentMonthTax;
             });
-            records.sort((a, b) => parseInt(b.month) - parseInt(a.month)); /* 重新按月份降序显示 */
+            records.sort((a, b) => parseInt(b.month) - parseInt(a.month)); // 重新按月份降序显示
             return records;
         }
         function generateDynamicData() {
             const data = {};
-            const companyName = getRandomCompany(); /* 确保所有年份都使用同一家公司 */
+            const companyName = getRandomCompany(); // 确保所有年份都使用同一家公司
             const years = ['2025', '2024', '2023'];
             years.forEach(year => {
                 let records = [];
-                const monthCount = (year === '2024') ? 12 : 6; /* 2024年有12个月数据，其他年份6个月 */
+                const monthCount = (year === '2024') ? 12 : 6; // 2024年有12个月数据，其他年份6个月
 
                 for (let i = 1; i <= monthCount; i++) {
                     records.push({ month: i.toString().padStart(2, '0'), company: companyName, income: getRandomSalary(), tax: '0.00' });
                 }
-                records = calculateTaxForYear(records); /* 计算税额 */
+                records = calculateTaxForYear(records); // 计算税额
                 const totalIncome = records.reduce((sum, rec) => sum + parseFloat(rec.income), 0);
                 const totalTax = records.reduce((sum, rec) => sum + parseFloat(rec.tax), 0);
                 data[year] = { totalIncome: totalIncome.toFixed(2) + '元', totalTax: totalTax.toFixed(2) + '元', records: records };
@@ -565,8 +563,8 @@
         // --- 3. 状态管理 (包含个人信息本地存储) ---
         const userProfileKey = 'taxAppUserProfile';
         const defaultProfile = {
-            name: "黄梓良", /* 默认名称 */
-            taxId: "4****************X" /* 默认识别号 */
+            name: "黄梓良", // 默认名称
+            taxId: "4****************X" // 默认识别号
         };
         let userProfile = JSON.parse(localStorage.getItem(userProfileKey)) || defaultProfile;
         let currentYear = new Date().getFullYear(); 
@@ -584,8 +582,8 @@
         const displayNameEl = document.getElementById('display-name');
         const displayTaxIdEl = document.getElementById('display-taxid');
 
-        /* 查询页面相关元素 */
-        const queryButton = document.getElementById('query-button'); /* Re-added queryButton */
+        // 查询页面相关元素
+        // Removed queryButton as per new screenshot
         const backButtonResults = document.getElementById('back-button'); 
         const backButtonQuery = document.getElementById('back-to-home-from-query'); 
         const yearSelectorTrigger = document.getElementById('year-selector-trigger');
@@ -604,16 +602,18 @@
             Object.values(pages).forEach(p => p.style.display = 'none');
             pages[pageId].style.display = 'block';
             
-            /* 底部导航栏显示逻辑 */
+            // 底部导航栏显示逻辑
             if (pageId === 'home' || pageId === 'profile') {
                 bottomNav.style.display = 'block';
             } else {
                 bottomNav.style.display = 'none';
             }
 
-            /* 状态栏颜色切换 (根据页面背景模拟) */
+            // 状态栏颜色切换 (根据页面背景模拟)
             if (pageId === 'home') {
                 globalStatusBar.classList.remove('on-white-bg');
+                // You might need a scroll listener here for true dynamic color based on scroll
+                // For simplicity, it starts transparent/white text and assumes the blue background
             } else {
                 globalStatusBar.classList.add('on-white-bg');
             }
@@ -680,12 +680,12 @@
             });
         });
 
-        /* 首页 "收入纳税明细" 跳转到查询页 */
+        // 首页 "收入纳税明细" 跳转到查询页
         document.getElementById('nav-to-query').addEventListener('click', () => {
             showPage('query');
         });
 
-        /* "我的" 页面修改个人信息 */
+        // "我的" 页面修改个人信息
         document.getElementById('profile-info-trigger').addEventListener('click', () => {
             const newName = prompt("请输入新的姓名:", userProfile.name);
             if (newName && newName.trim()) {
@@ -696,66 +696,64 @@
                 userProfile.taxId = newTaxId.trim();
             }
             updateProfileDisplay();
-            saveProfile(); /* 保存到本地存储 */
+            saveProfile(); // 保存到本地存储
         });
 
-        /* 查询页面的年份选择器点击 */
+        // 查询页面的年份选择器点击
         yearSelectorTrigger.addEventListener('click', () => { 
             populateYearSelector(); 
             yearSelectorModal.classList.add('active'); 
         });
 
-        /* 年份选择器Modal的取消按钮 */
+        // 年份选择器Modal的取消按钮
         modalCancelButton.addEventListener('click', () => { 
             yearSelectorModal.classList.remove('active'); 
         });
 
-        /* 年份选择器Modal的年份点击 */
+        // 年份选择器Modal的年份点击
         yearList.addEventListener('click', (event) => { 
             if (event.target.tagName === 'LI') { 
                 const selectedYear = parseInt(event.target.dataset.year); 
                 currentYear = selectedYear; 
                 selectedYearDisplay.textContent = currentYear; 
                 yearSelectorModal.classList.remove('active'); 
+                
+                // 自动触发查询并跳转到结果页 (因为查询页面没有查询按钮)
+                renderResultsPage(currentYear); 
+                showPage('results');
             } 
         });
 
-        /* 模态框外部点击关闭 */
+        // 模态框外部点击关闭
         yearSelectorModal.addEventListener('click', (event) => { 
             if (event.target === yearSelectorModal) { 
                 yearSelectorModal.classList.remove('active'); 
             } 
         });
 
-        /* 查询页面复选框点击切换状态 */
+        // 查询页面复选框点击切换状态
         checkboxItems.forEach(item => {
             item.addEventListener('click', () => {
                 const checkbox = item.querySelector('.custom-checkbox');
                 checkbox.classList.toggle('checked');
-                /* You might want to store the selected types in a state variable here */
+                // You might want to store the selected types in a state variable here
             });
         });
 
-        /* 查询页面 "查询" 按钮 */
-        queryButton.addEventListener('click', () => { 
-            renderResultsPage(currentYear); 
-            showPage('results');
-        });
-
-        /* 结果页面 "返回" 按钮 -> 返回查询页面 */
+        // 结果页面 "返回" 按钮 -> 返回查询页面
         backButtonResults.addEventListener('click', () => { 
             showPage('query');
         });
 
-        /* 查询页面 "返回" 按钮 -> 返回首页 */
+        // 查询页面 "返回" 按钮 -> 返回首页
         backButtonQuery.addEventListener('click', () => {
             showPage('home');
         });
 
-        /* --- 初始化应用状态 --- */
+        // --- 初始化应用状态 ---
         showPage('home');
         updateProfileDisplay();
-        selectedYearDisplay.textContent = currentYear; /* 确保初始年份显示正确 */
+        selectedYearDisplay.textContent = currentYear; // 确保初始年份显示正确
     }
     </script>
 </body>
