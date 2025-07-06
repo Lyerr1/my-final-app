@@ -214,7 +214,7 @@
         /* “我要填报”按钮样式 */
         .deduction-card .fill-btn {
             background-color: white;
-            color: #5587e2;
+            color: #5587e2; /* 默认颜色，会被下面的last-child覆盖 */
             border: 1px solid #cce0ff; /* 添加浅蓝色边框 */
             width: 100%;
             padding: 12px;
@@ -226,21 +226,42 @@
             align-items: center;
             gap: 10px; /* 项目间距 */
         }
-        .fill-btn span:first-child {
-            font-size: 12px;
-            background-color: #ffe6e6;
-            color: #e27d7d;
-            padding: 2px 8px;
-            border-radius: 10px;
-            white-space: nowrap;
+        /* “超1亿人参与”部分的新样式 */
+        .fill-btn-content {
+            background-color: #ffe6e6; /* 粉色背景 */
+            color: #e27d7d; /* 红色文字 */
+            padding: 2px 8px; /* 内边距 */
+            border-radius: 10px; /* 圆角 */
+            margin-right: 10px; /* 和分隔符的间距 */
+            white-space: nowrap; /* 防止换行 */
+            display: flex; /* 内部flex布局 */
+            align-items: center; /* 垂直居中 */
         }
+        .fill-btn-icons {
+            display: flex; /* 内部flex布局，排列两个图标 */
+            align-items: center; /* 确保两个图标垂直居中对齐 */
+        }
+        /* 圆形图标样式，无垂直偏移，大小一致 */
+        .fill-btn-icon {
+            width: 16px; /* 图标大小 */
+            height: 16px;
+            object-fit: cover; /* 填充整个圆形区域，可能裁剪 */
+            border-radius: 50%; /* 变成圆形 */
+        }
+        .fill-btn-icon.second-icon {
+            margin-left: -5px; /* 第二个图标向左移动，实现重叠 */
+        }
+
         .fill-btn span:nth-child(2) { /* 分隔符 "|" */
             color: #d0d0d0; /* 灰色 */
             font-size: 18px; /* 稍微大一点 */
             line-height: 1; /* 确保垂直居中 */
         }
+        /* 关键改动：“我要填报”的字体样式 */
         .fill-btn span:last-child {
             white-space: nowrap;
+            color: #333; /* 黑色 */
+            font-weight: 600; /* 加粗 */
         }
 
         /* --- 服务卡片容器 (水平滚动) --- */
@@ -301,7 +322,7 @@
             color: #5587e2;
         }
 
-        /* --- 新增：底部图片推广卡片样式 --- */
+        /* --- 底部图片推广卡片样式 --- */
         .bottom-banner-card {
             margin: 15px 4vw; /* 与其他卡片相同的左右边距 */
             border-radius: 12px; /* 圆角 */
@@ -319,8 +340,25 @@
         /* --- 个人中心页样式 --- */
         #profile-page { display: none; background-color: #f4f6f9; }
         .profile-header { background: linear-gradient(to bottom, #5d9cec, #a0c7f8); padding: 40px 20px 80px; text-align: center; position: relative; }
-        .avatar-container { width: 80px; height: 80px; border-radius: 50%; background-color: rgba(255,255,255,0.8); margin: 0 auto; display: flex; justify-content: center; align-items: center; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
-        .avatar-container img { width: 90%; height: 90%; }
+        .avatar-container { 
+            width: 80px; 
+            height: 80px; 
+            border-radius: 50%; 
+            background-color: rgba(255,255,255,0.8); /* 容器背景色，如果图片不完全覆盖则可见 */
+            margin: 0 auto; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            overflow: hidden; /* 确保图片超出部分被裁剪 */
+        }
+        /* 个人中心头像图片样式 */
+        .avatar-container img#profile-avatar { /* 使用ID确保精确性 */
+            width: 100%; /* 图片充满容器 */
+            height: 100%; /* 图片充满容器 */
+            object-fit: cover; /* 确保图片覆盖整个区域，可能裁剪 */
+            border-radius: 50%; /* 确保图片本身也呈圆形 */
+        }
         .profile-main-content { margin-top: -60px; padding: 0 4vw; position: relative; z-index: 2; }
         .info-card { background-color: var(--card-bg); border-radius: 12px; padding: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); display: flex; align-items: center; margin-bottom: 15px; }
         .info-card-details { flex-grow: 1; }
@@ -365,8 +403,16 @@
         }
         .nav-item { display: flex; flex-direction: column; align-items: center; justify-content: center; flex-grow: 1; font-size: 11px; color: #555555; cursor: pointer; position: relative; height: 100%; }
         .nav-item .nav-icon { width: 26px; height: 26px; margin-bottom: 3px; }
+        /* 激活状态下，其他图标变为蓝色，首页图标不变色，"我的"图标也不变色 */
+        .nav-item.active:not([data-page="home-page"]):not([data-page="profile-page"]) .nav-icon { 
+            filter: invert(38%) sepia(98%) saturate(1354%) hue-rotate(195deg) brightness(93%) contrast(87%);
+        }
+        /* "我的"图标激活时不需要滤镜 */
+        .nav-item[data-page="profile-page"].active .nav-icon {
+            filter: none;
+        }
+
         .nav-item.active .nav-text { color: var(--primary-blue); }
-        .nav-item.active:not(:first-child) .nav-icon { filter: invert(38%) sepia(98%) saturate(1354%) hue-rotate(195deg) brightness(93%) contrast(87%); }
         .nav-item .badge { position: absolute; top: 5px; right: 12px; background-color: #e74c3c; color: white; font-size: 10px; padding: 1px 5px; border-radius: 10px; border: 1px solid white; }
 
         /* 媒体查询：窄屏幕适配 (max-width) */
@@ -585,7 +631,7 @@
             
             <h3 class="section-title">重点服务推荐</h3>
 
-            <!-- 专项附加扣除卡片 (已恢复) -->
+            <!-- 专项附加扣除卡片 -->
             <div class="deduction-card">
                 <div class="deduction-card-header">
                     <div class="title">专项附加扣除</div>
@@ -593,7 +639,14 @@
                 </div>
                 <p>若符合条件，您可点击下方填报</p>
                 <button class="fill-btn">
-                    <span>👫 超1亿人参与</span>
+                    <!-- 带图片和文字的“超1亿人参与”区域 -->
+                    <span class="fill-btn-content">
+                        <span class="fill-btn-icons">
+                            <img src="imge/52ccf66bdc8c3e37acac6ed8c9846c2.jpg" alt="人1" class="fill-btn-icon">
+                            <img src="imge/0d89a73cd25b3e3b21829ca1912e53e.jpg" alt="人2" class="fill-btn-icon second-icon">
+                        </span>
+                        超1亿人参与
+                    </span>
                     <span>|</span>
                     <span>我要填报</span>
                 </button>
@@ -629,7 +682,7 @@
                 </div>
             </div>
 
-            <!-- 新增：底部图片推广卡片 -->
+            <!-- 底部图片推广卡片 -->
             <div class="bottom-banner-card">
                 <img src="imge/08745dc646f6b702c72f60990e40025.jpg" alt="广告图" class="banner-img">
             </div>
@@ -639,7 +692,8 @@
         <div class="page" id="profile-page">
             <header class="profile-header">
                 <div class="avatar-container">
-                    <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIj48Y2lyY2xlIGN4PSI1MCIgY3k9IjUwIiByPSI1MCIgZmlsbD0iI2YwZjBmMCIvPjxwYXRoIGZpbGw9IiMzOTM5MzkiIGQ9Ik01MiwzMGMyLjIsMCA0LDEuOCA0LDRjMCwyLjItMS44LDQtNCw0cy00LTEuOC00LTQtMS44LTQtNC00UzQ0LDMyLjIsNDQsMzRjMCwyLjIsMS44LDQsNCw0aDRjMi4yLDAsNC0xLjIsNC0xLjJWMzB6TDUyLDE4Yy02LjYsMC0xMiwwLTExLjUsMTEuNXMyMS42LDUuNCwyMS42LDEyUzU0LjQsNzgsNDcsNzguNFY1NC45YzAtMi40LTIuMS00LjMtNC41LTQuNVMzOC41LDUyLjUsMzguNSw1NC45djIuNmMwLDguNi02LjYsMTUuMi0xNS4yLDE1LjJTOC4xLDYwLjQsOC4xLDUxLjhWMzBjMC0yLjItMS44LTQtNC00UzIuMywyNi4yLDIsMThjMC04LjgsNi4xLTE1LDIxLjUtMTZoNC43YzIuMiwwLDQsMS44LDQsNFYzMnoiLz48cGF0aCBmaWxsPSIjMzQ0OTVlIiBkPSJNNzgsNjVjMC0xMS41LTkuNS0yMS0yMS0yM2MtMS41LS4yLTMtLjMtNC41LS4zcy0zLC4xLTQuNSwuM0MzNyw0NCwyNy41LDUzLjUsMjcuNSw2NWMwLDAsMCw0LjUsMCw4aDUwLjVDNzgsNjkuNSw3OCw2NSw3OCw2NXoiLz48cGF0aCBmaWxsPSIjMzkzOTM5IiBkPSJNNTIsMzQuOWMtNC40LDAtOCwzLjYtOCw4czMuNiw4LDgsOHM4LTMuNiw4LThTNTYuNCwzNC45LDUyLDM0Ljl6Ii8+PC9zdmc+" alt="avatar">
+                    <!-- 个人中心头像，默认是男性，将由JS动态更改 -->
+                    <img id="profile-avatar" src="imge/52ccf66bdc8c3e37acac6ed8c9846c2.jpg" alt="avatar">
                 </div>
             </header>
             <div class="profile-main-content">
@@ -674,11 +728,16 @@
         
         <!-- 底部导航栏 -->
         <nav class="bottom-nav">
-            <div class="nav-item active" data-page="home-page"><img src="imge/e474e0ab2f7f3567bfa20908f2fe029.jpg" alt="首页" class="nav-icon"><div class="nav-text">首页</div></div>
+            <!-- 关键改动：首页图标路径更新 -->
+            <div class="nav-item active" data-page="home-page"><img src="imge/e71a9e9487a9cf88b140cb788abe30c.jpg" alt="首页" class="nav-icon"><div class="nav-text">首页</div></div>
             <div class="nav-item" data-page="todo-page"><img src="imge/d3dc02ec7af1f8a8ca3671c25b612d6.jpg" alt="待办" class="nav-icon"><div class="nav-text">待办</div></div>
             <div class="nav-item" data-page="search-page"><img src="imge/e722c4b0deb679803b6a303e59d3c96.jpg" alt="办&查" class="nav-icon"><div class="nav-text">办&查</div></div>
             <div class="nav-item" data-page="message-page"><img src="imge/b9dc6613a5323b87754bd4fc8f7b544.jpg" alt="消息" class="nav-icon"><div class="nav-text">消息</div><div class="badge">4</div></div>
-            <div class="nav-item" data-page="profile-page"><img src="imge/a57b665eec018a5593120bf4f907837.jpg" alt="我的" class="nav-icon"><div class="nav-text">我的</div></div>
+            <!-- 关键改动：底部导航栏“我的”图标替换 -->
+            <div class="nav-item" data-page="profile-page">
+                <img src="imge/1775e13a08d207c89b12b6e732f56cd.jpg" alt="我的" class="nav-icon">
+                <div class="nav-text">我的</div>
+            </div>
         </nav>
     </div>
 
@@ -690,13 +749,27 @@
             const editInfoBtn = document.getElementById('edit-info-btn');
             const userNameEl = document.getElementById('user-name');
             const taxIdEl = document.getElementById('tax-id-number');
+            const profileAvatarEl = document.getElementById('profile-avatar'); // 获取个人中心头像元素
+
+            // 定义男女头像路径
+            const maleAvatarPath = 'imge/52ccf66bdc8c3e37acac6ed8c9846c2.jpg';
+            const femaleAvatarPath = 'imge/0d89a73cd25b3e3b21829ca1912e53e.jpg';
             
             // 加载用户信息的函数
             function loadUserInfo() {
                 const savedName = localStorage.getItem('taxAppName');
                 const savedId = localStorage.getItem('taxAppId');
+                const savedGender = localStorage.getItem('taxAppGender'); // 获取保存的性别
+
                 userNameEl.textContent = savedName || '某某';
                 taxIdEl.textContent = savedId || '4****************X';
+
+                // 根据保存的性别设置头像，默认男性
+                if (savedGender === 'female') {
+                    profileAvatarEl.src = femaleAvatarPath;
+                } else {
+                    profileAvatarEl.src = maleAvatarPath; // 默认或'male'都显示男性头像
+                }
             }
             loadUserInfo(); // 页面加载时执行一次
 
@@ -736,23 +809,59 @@
             editInfoBtn.addEventListener('click', () => {
                 const currentName = userNameEl.textContent;
                 const currentId = taxIdEl.textContent;
-                
+                const currentGender = localStorage.getItem('taxAppGender') || 'male'; // 获取当前性别，默认为male
+
                 const newName = prompt('请输入新的名字:', currentName);
                 
-                if (newName !== null && newName.trim() !== '') {
-                    const newId = prompt('请输入新的纳税人识别号:', currentId);
-                    if (newId !== null && newId.trim() !== '') {
-                        userNameEl.textContent = newName;
-                        taxIdEl.textContent = newId;
-                        localStorage.setItem('taxAppName', newName); // 保存到本地存储
-                        localStorage.setItem('taxAppId', newId);     // 保存到本地存储
-                        alert('信息更新成功！');
-                    } else {
-                         alert('已取消修改纳税人识别号。');
-                    }
-                } else {
+                if (newName === null || newName.trim() === '') {
                     alert('已取消修改名字。');
+                    return; // 用户取消了名字输入，退出整个编辑流程
                 }
+
+                const newId = prompt('请输入新的纳税人识别号:', currentId);
+                
+                if (newId === null || newId.trim() === '') {
+                    alert('已取消修改纳税人识别号。');
+                    return; // 用户取消了识别号输入，退出整个编辑流程
+                }
+
+                let newGender = '';
+                let genderInputValid = false;
+                while (!genderInputValid) {
+                    const input = prompt('请输入性别 (男/女):', currentGender === 'male' ? '男' : '女');
+                    if (input === null) { // 用户取消
+                        alert('已取消修改性别。');
+                        return; // 退出整个编辑流程
+                    }
+                    const trimmedInput = input.trim().toLowerCase();
+                    if (trimmedInput === '男' || trimmedInput === 'nan') {
+                        newGender = 'male';
+                        genderInputValid = true;
+                    } else if (trimmedInput === '女' || trimmedInput === 'nv') {
+                        newGender = 'female';
+                        genderInputValid = true;
+                    } else {
+                        alert('性别输入无效，请重新输入 "男" 或 "女"。');
+                    }
+                }
+
+                // 更新页面显示
+                userNameEl.textContent = newName;
+                taxIdEl.textContent = newId;
+                
+                // 根据新性别设置头像
+                if (newGender === 'female') {
+                    profileAvatarEl.src = femaleAvatarPath;
+                } else {
+                    profileAvatarEl.src = maleAvatarPath;
+                }
+
+                // 保存到 localStorage
+                localStorage.setItem('taxAppName', newName);
+                localStorage.setItem('taxAppId', newId);
+                localStorage.setItem('taxAppGender', newGender); // 保存新性别
+
+                alert('信息更新成功！');
             });
         });
     </script>
