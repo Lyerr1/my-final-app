@@ -132,61 +132,134 @@
         
         // --- 主应用逻辑 ---
         function initializeApp() {
-            // --- 1. 数据中心：存放所有年份的模拟数据 (已按要求更新) ---
-            const COMPANY_NAME = '安徽众包企业管理咨询有...';
-            const dummyData = {
-                '2025': {
-                    totalIncome: '36864.21元',
-                    totalTax: '0.00元',
-                    records: [
-                        { month: '06', company: COMPANY_NAME, income: '6363.93', tax: '0.00' },
-                        { month: '05', company: COMPANY_NAME, income: '6150.13', tax: '0.00' },
-                        { month: '04', company: COMPANY_NAME, income: '5864.48', tax: '0.00' },
-                        { month: '03', company: COMPANY_NAME, income: '6200.00', tax: '0.00' },
-                        { month: '02', company: COMPANY_NAME, income: '6085.87', tax: '0.00' },
-                        { month: '01', company: COMPANY_NAME, income: '6199.80', tax: '0.00' },
-                    ]
-                },
-                '2024': {
-                    totalIncome: '65943.40元',
-                    totalTax: '178.30元',
-                    records: [
-                        { month: '12', company: COMPANY_NAME, income: '6890.00', tax: '178.30' },
-                        { month: '11', company: COMPANY_NAME, income: '6753.80', tax: '0.00' },
-                        { month: '10', company: COMPANY_NAME, income: '4900.50', tax: '0.00' },
-                        { month: '09', company: COMPANY_NAME, income: '6450.00', tax: '0.00' },
-                        { month: '08', company: COMPANY_NAME, income: '4899.60', tax: '0.00' },
-                        { month: '07', company: COMPANY_NAME, income: '6000.00', tax: '0.00' },
-                        { month: '06', company: COMPANY_NAME, income: '5890.00', tax: '0.00' },
-                        { month: '05', company: COMPANY_NAME, income: '5999.50', tax: '0.00' },
-                        { month: '04', company: COMPANY_NAME, income: '6160.00', tax: '0.00' },
-                        { month: '03', company: COMPANY_NAME, income: '6000.00', tax: '0.00' },
-                        { month: '02', company: COMPANY_NAME, income: '5500.00', tax: '0.00' },
-                        { month: '01', company: COMPANY_NAME, income: '4500.00', tax: '0.00' },
-                    ]
-                },
-                '2023': {
-                    totalIncome: '30250.00元',
-                    totalTax: '0.00元',
-                    records: [
-                        { month: '06', company: COMPANY_NAME, income: '5200.00', tax: '0.00' },
-                        { month: '05', company: COMPANY_NAME, income: '4800.00', tax: '0.00' },
-                        { month: '04', company: COMPANY_NAME, income: '4500.00', tax: '0.00' },
-                        { month: '03', company: COMPANY_NAME, income: '5100.00', tax: '0.00' },
-                        { month: '02', company: COMPANY_NAME, income: '4950.00', tax: '0.00' },
-                        { month: '01', company: COMPANY_NAME, income: '5700.00', tax: '0.00' },
-                    ]
-                }
-            };
-            // 重新排序记录，确保按月份降序显示
-            for (const year in dummyData) {
-                dummyData[year].records.sort((a, b) => parseInt(b.month) - parseInt(a.month));
+
+            // --- 1. 数据动态生成模块 (MODIFIED) ---
+            
+            /**
+             * @returns {string} a random salary between 5000.00 and 6000.00
+             */
+            function getRandomSalary() {
+                return (Math.random() * (6000 - 5000) + 5000).toFixed(2);
             }
 
-            // --- 2. 状态管理 ---
+            /**
+             * @returns {string} a random company name from a predefined list.
+             */
+            function getRandomCompany() {
+                const companyNames = [
+                    '北京数字科技有限公司',
+                    '上海智能云服务有限公司',
+                    '深圳创新信息咨询合伙企业(有限合伙)',
+                    '广州众包平台管理有限公司',
+                    '杭州数据处理中心有限公司',
+                    '安徽众包企业管理咨询有限公司',
+                    '江苏省人力资源服务外包有限公司',
+                    '浙江灵活共享经济信息技术有限公司'
+                ];
+                const randomIndex = Math.floor(Math.random() * companyNames.length);
+                // Truncate name to simulate the UI like in the original example
+                let name = companyNames[randomIndex];
+                if (name.length > 15) {
+                    name = name.substring(0, 15) + '...';
+                }
+                return name;
+            }
+
+            /**
+             * Calculates cumulative tax for a given year's records.
+             * @param {Array} records - Array of income records for a year.
+             * @returns {Array} The records array with calculated tax.
+             */
+            function calculateTaxForYear(records) {
+                let cumulativeIncome = 0;
+                let cumulativeTaxPaid = 0;
+                const standardDeduction = 5000;
+
+                // Sort records by month ascending (01, 02, ...) for correct calculation
+                records.sort((a, b) => parseInt(a.month) - parseInt(b.month));
+
+                records.forEach((record, index) => {
+                    const monthNumber = index + 1;
+                    cumulativeIncome += parseFloat(record.income);
+                    
+                    const cumulativeDeductionTotal = standardDeduction * monthNumber;
+                    // Taxable income cannot be negative
+                    const taxableIncome = Math.max(0, cumulativeIncome - cumulativeDeductionTotal);
+
+                    let taxRate = 0;
+                    let quickDeduction = 0;
+
+                    if (taxableIncome <= 36000) {
+                        taxRate = 0.03;
+                        quickDeduction = 0;
+                    } else if (taxableIncome <= 144000) {
+                        taxRate = 0.10;
+                        quickDeduction = 2520;
+                    } else if (taxableIncome <= 300000) {
+                        taxRate = 0.20;
+                        quickDeduction = 16920;
+                    } // Higher brackets omitted as they are unlikely to be reached with this salary range
+
+                    const totalTaxDue = (taxableIncome * taxRate) - quickDeduction;
+                    const currentMonthTax = Math.max(0, totalTaxDue - cumulativeTaxPaid);
+                    
+                    record.tax = currentMonthTax.toFixed(2);
+                    cumulativeTaxPaid += currentMonthTax;
+                });
+
+                // Sort back to descending month for display (12, 11, ...)
+                records.sort((a, b) => parseInt(b.month) - parseInt(a.month));
+
+                return records;
+            }
+
+            /**
+             * Generates the entire data structure for all years.
+             * @returns {Object} The complete data object for the application.
+             */
+            function generateDynamicData() {
+                const data = {};
+                const companyName = getRandomCompany();
+                const years = ['2025', '2024', '2023'];
+                
+                years.forEach(year => {
+                    let records = [];
+                    // Define how many months of records to generate for each year
+                    const monthCount = (year === '2024') ? 12 : 6;
+
+                    for (let i = 1; i <= monthCount; i++) {
+                        records.push({
+                            month: i.toString().padStart(2, '0'),
+                            company: companyName,
+                            income: getRandomSalary(),
+                            tax: '0.00' // Placeholder, will be calculated next
+                        });
+                    }
+                    
+                    // Calculate tax for the generated records of the year
+                    records = calculateTaxForYear(records);
+
+                    // Calculate annual totals from the processed records
+                    const totalIncome = records.reduce((sum, rec) => sum + parseFloat(rec.income), 0);
+                    const totalTax = records.reduce((sum, rec) => sum + parseFloat(rec.tax), 0);
+                    
+                    data[year] = {
+                        totalIncome: totalIncome.toFixed(2) + '元',
+                        totalTax: totalTax.toFixed(2) + '元',
+                        records: records
+                    };
+                });
+                
+                return data;
+            }
+            
+            // --- 2. 数据中心：调用生成器，替换静态数据 ---
+            const dummyData = generateDynamicData();
+
+            // --- 3. 状态管理 ---
             let currentYear = 2025;
 
-            // --- 3. 获取DOM元素 ---
+            // --- 4. 获取DOM元素 ---
             const pageQuery = document.getElementById('page-query');
             const pageResults = document.getElementById('page-results');
             pageQuery.style.display = 'block';
@@ -202,7 +275,7 @@
             const totalTaxEl = document.getElementById('total-tax');
             const resultsListContainer = document.getElementById('results-list-container');
             
-            // --- 4. 核心功能函数 ---
+            // --- 5. 核心功能函数 ---
             function renderResultsPage(year) {
                 const data = dummyData[year];
                 if (!data) return; 
@@ -238,7 +311,7 @@
                 });
             }
 
-            // --- 5. 事件监听器绑定 ---
+            // --- 6. 事件监听器绑定 ---
             queryButton.addEventListener('click', () => { renderResultsPage(currentYear); pageQuery.style.display = 'none'; pageResults.style.display = 'block'; window.scrollTo(0, 0); });
             backButton.addEventListener('click', () => { pageResults.style.display = 'none'; pageQuery.style.display = 'block'; window.scrollTo(0, 0); });
             yearSelectorTrigger.addEventListener('click', () => { populateYearSelector(); yearSelectorModal.classList.add('active'); });
