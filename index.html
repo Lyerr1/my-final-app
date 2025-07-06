@@ -41,7 +41,7 @@
             width: 100%;
             height: 44px; /* Standard iPhone status bar height */
             z-index: 200; /* Above all content */
-            background-color: transparent; /* Default for home page (over blue bg) */
+            background-color: transparent; /* Default for home page */
             color: #fff; /* Default text color for home page */
             display: flex;
             justify-content: space-between;
@@ -57,43 +57,18 @@
         }
 
         /* Adjust page content to be below the fixed status bar */
-        .page > div:first-child { /* Target first direct child of each page */
+        .page > div:first-child:not(#profile-bg) { /* Target first direct child, excluding profile-bg */
             margin-top: 44px; /* Push content down below fixed status bar */
         }
-        /* Special case for profile page where .profile-bg is first child and needs to be full height */
-        #page-profile .profile-bg { margin-top: 0 !important; }
-
-        /* General header style for white-background pages under status bar */
-        .header { 
-            display: flex; 
-            align-items: center; 
-            justify-content: center; 
-            position: relative; 
-            padding: 15px; 
-            background-color: #ffffff; 
-            border-bottom: 1px solid #e8e8e8; 
-            height: 50px; 
-        } 
-        .header .back-link { 
-            position: absolute; 
-            left: 15px; 
-            font-size: 16px; 
-            color: var(--primary-blue); /* Blue for back link */
-            text-decoration: none; 
-            cursor: pointer; 
-        } 
-        .header .title { 
-            font-size: 18px; 
-            font-weight: bold; 
-            color: #333; /* Black for title */
-        } 
-        .header .action-link { 
-            position: absolute; 
-            right: 15px; 
-            font-size: 16px; 
-            color: var(--primary-blue); 
-            text-decoration: none; 
-        }
+        
+        /* Placeholder for actual icons */
+        .status-bar .right-icons { display: flex; align-items: center; gap: 5px; }
+        .status-bar .right-icons span { font-size: 14px; }
+        .status-bar .right-icons .signal { width: 16px; height: 12px; background: currentColor; mask-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1L3 9v11a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V9L12 1z"></path></svg>'); }
+        .status-bar .right-icons .wifi { width: 16px; height: 12px; background: currentColor; mask-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.55a11 11 0 0 1 14 0"></path><path d="M1.42 8.63a15 15 0 0 1 21.16 0"></path><path d="M8.53 16.14a5 5 0 0 1 6.95 0"></path><line x1="12" y1="20" x2="12.01" y2="20"></line></svg>'); }
+        .status-bar .right-icons .battery { width: 22px; height: 12px; border: 1px solid currentColor; border-radius: 2px; position: relative; }
+        .status-bar .right-icons .battery::after { content: ''; position: absolute; top: 2px; left: 2px; right: 2px; bottom: 2px; background-color: currentColor; width: 80%; /* Simulate charge level */ }
+        .status-bar .right-icons .battery::before { content: ''; position: absolute; right: -4px; top: 3px; width: 2px; height: 6px; background-color: currentColor; border-radius: 0 1px 1px 0; }
 
 
         /* --- SVG图标 (用于通用线稿图标，彩色图标使用<img>) --- */
@@ -205,32 +180,10 @@
         .icon-nav-profile .inactive { mask-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>'); }
         .icon-nav-profile .active { mask-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>'); }
     
-        /* --- 页面三：收入纳税明细（查询页面）样式 --- */
-        #page-query .header { 
-            display: flex; 
-            align-items: center; 
-            position: relative; 
-            padding: 15px 0; /* Adjust padding for screenshot match */
-            background-color: #ffffff; 
-            border-bottom: 1px solid #e8e8e8; 
-            height: 50px; /* Header height */
-        } 
-        #page-query .header .back-link { 
-            position: absolute; 
-            left: 0; /* Align to screen edge */
-            font-size: 16px; 
-            color: var(--primary-blue); 
-            text-decoration: none; 
-            cursor: pointer; 
-            padding-left: 15px; /* Indent text from edge */
-        } 
-        #page-query .header .title { /* Middle title for query page */
-            flex-grow: 1; 
-            text-align: center; 
-            font-size: 18px; 
-            font-weight: bold; 
-            color: #333; 
-        }
+        /* --- 页面三/四：收入纳税明细（查询页面）样式 --- */
+        #page-query { background-color: #fff; }
+        #page-query .header { display: flex; align-items: center; position: relative; padding: 15px; background-color: #ffffff; height: 50px; border-bottom: 1px solid #e8e8e8; } 
+        #page-query .header .back-link { flex-grow: 1; text-align: left; font-size: 16px; color: #333; text-decoration: none; cursor: pointer; padding-left: 5px; } 
         
         #page-query .main-content { padding: 0 20px; }
         #page-query .section-title { font-size: 15px; color: #333; margin: 20px 0 10px; font-weight: normal; }
@@ -242,49 +195,20 @@
 
         #page-query .checkbox-item { display: flex; align-items: center; padding: 15px 0; font-size: 16px; color: #333; border-bottom: 1px solid #f0f0f0; cursor: pointer; }
         #page-query .checkbox-item:last-of-type { border-bottom: none; }
-        #page-query .custom-checkbox { 
-            display: inline-block; 
-            width: 22px; 
-            height: 22px; 
-            background-color: #e3f2fd; /* Light blue background when unchecked */
-            border: 1px solid #a8d5ff; /* Light blue border */
-            border-radius: 50%; 
-            position: relative; 
-            margin-right: 12px; 
-            cursor: pointer; 
-            transition: background-color 0.2s, border-color 0.2s; 
-            flex-shrink: 0; 
-            box-shadow: inset 0 1px 2px rgba(0,0,0,0.1); /* Subtle inner shadow */
-        }
-        #page-query .custom-checkbox.checked { 
-            background-color: var(--primary-blue); /* Primary blue when checked */
-            border-color: var(--primary-blue); 
-            box-shadow: none; /* Remove inner shadow when checked */
-        }
-        #page-query .custom-checkbox.checked::after { 
-            content: ''; 
-            position: absolute; 
-            left: 7px; /* Adjust checkmark position */
-            top: 4px; /* Adjust checkmark position */
-            width: 6px; 
-            height: 10px; 
-            border: solid white; 
-            border-width: 0 2px 2px 0; 
-            transform: rotate(45deg); 
-        }
+        #page-query .custom-checkbox { display: inline-block; width: 22px; height: 22px; background-color: #e3f2fd; border: 1px solid #a8d5ff; border-radius: 50%; position: relative; margin-right: 12px; cursor: pointer; transition: background-color 0.2s, border-color 0.2s; flex-shrink: 0; box-shadow: inset 0 1px 2px rgba(0,0,0,0.1); }
+        #page-query .custom-checkbox.checked { background-color: var(--primary-blue); border-color: var(--primary-blue); box-shadow: none; }
+        #page-query .custom-checkbox.checked::after { content: ''; position: absolute; left: 7px; top: 4px; width: 6px; height: 10px; border: solid white; border-width: 0 2px 2px 0; transform: rotate(45deg); }
         #page-query .label { flex-grow: 1; }
         
-        #page-query .more-types { text-align: center; padding: 20px 0; } /* Centered as per new screenshot */
+        #page-query .more-types { text-align: left; padding: 15px 0; }
         #page-query .more-types a { color: var(--primary-blue); text-decoration: none; font-size: 15px; }
         #page-query .more-types .arrow-down { display: inline-block; width: 0; height: 0; border-left: 5px solid transparent; border-right: 5px solid transparent; border-top: 6px solid var(--primary-blue); margin-left: 5px; }
-        #page-query .footer { padding: 30px 15px; background-color: var(--bg-gray); } /* Footer style */
+        #page-query .footer { padding: 30px 15px; background-color: var(--bg-gray); } /* Added back footer for query button */
         #page-query .query-button { width: 100%; padding: 15px; background-color: var(--primary-blue); color: white; border: none; border-radius: 8px; font-size: 18px; cursor: pointer; }
 
         /* --- 页面四：结果页面样式 --- */
         #page-results { background-color: var(--bg-gray); }
-        /* Header style same as query page header, but with right action link */
-        #page-results .header .back-link { left: 15px; flex-grow: unset; } /* Reset flex-grow for back link */
-        #page-results .header .title { flex-grow: 1; text-align: center; } /* Make title centered between links */
+        #page-results .header { background-color: #ffffff; border-bottom: 1px solid #e8e8e8; } 
         #page-results .summary-section { background-color: #ffffff; padding: 20px 15px; margin-bottom: 10px; } 
         #page-results .summary-item { display: flex; justify-content: space-between; align-items: center; font-size: 16px; margin-bottom: 15px; } 
         #page-results .summary-item:last-child { margin-bottom: 0; } 
@@ -323,7 +247,7 @@
     <!-- 全局状态栏 -->
     <div id="global-status-bar" class="status-bar">
         <span class="time">13:55</span>
-        <div class="right-icons">... <span class="wifi"></span><span class="battery"></span> 95</div>
+        <div class="right-icons">... <i class="wifi icon"></i><span class="battery"></span> 95</div>
     </div>
     
     <!-- 页面一：首页 -->
@@ -453,8 +377,7 @@
     <!-- 页面三：查询页面 (收入纳税明细) -->
     <div id="page-query" class="page">
         <div class="header">
-            <a id="back-to-home-from-query" class="back-link">< 返回</a>
-            <span class="title">收入纳税明细</span>
+            <a id="back-to-home-from-query" class="back-link">< 返回 收入纳税明细</a>
         </div>
         <div class="main-content">
             <div class="section-title">请选择纳税年度</div>
@@ -577,12 +500,14 @@
 
     // --- 主应用逻辑 ---
     function initializeApp() {
-        // --- 1. 数据动态生成模块 (模拟数据) ---
-        function getRandomSalary(min = 5000, max = 6000) { 
-            return (Math.random() * (max - min) + min).toFixed(2); 
-        } 
+        // --- 1. 数据动态生成模块 (模拟数据，与实际无关) ---
+        function getRandomSalary() { return (Math.random() * (5000 - 6000) + 6000).toFixed(2); } /* Corrected salary range */
         function getRandomCompany() {
-            return '江西拓城人力资源有限公司'; /* 固定公司名称 */
+            const companyNames = [ '安徽众包企业管理咨询有限公司', '北京数字科技有限公司', '上海智能云服务有限公司', '深圳创新信息咨询合伙企业(有限合伙)', '广州众包平台管理有限公司', '杭州数据处理中心有限公司', '江苏省人力资源服务外包有限公司', '浙江灵活共享经济信息技术有限公司' ];
+            const randomIndex = Math.floor(Math.random() * companyNames.length);
+            let name = companyNames[randomIndex];
+            if (name.length > 15) { name = name.substring(0, 15) + '...'; }
+            return name;
         }
         function calculateTaxForYear(records) {
             let cumulativeIncome = 0;
@@ -617,29 +542,18 @@
         }
         function generateDynamicData() {
             const data = {};
-            const companyName = getRandomCompany(); 
+            const companyName = getRandomCompany(); /* 确保所有年份都使用同一家公司 */
             const years = ['2025', '2024', '2023'];
             years.forEach(year => {
                 let records = [];
                 const monthCount = (year === '2024') ? 12 : 6; /* 2024年有12个月数据，其他年份6个月 */
 
                 for (let i = 1; i <= monthCount; i++) {
-                    let income = getRandomSalary();
-                    if (year === '2025' && i === 1) { /* For 2025-01, set income to 1846.50 */
-                        income = '1846.50';
-                    }
-                    records.push({ month: i.toString().padStart(2, '0'), company: companyName, income: income, tax: '0.00' });
+                    records.push({ month: i.toString().padStart(2, '0'), company: companyName, income: getRandomSalary(), tax: '0.00' });
                 }
                 records = calculateTaxForYear(records); /* 计算税额 */
-                let totalIncome = records.reduce((sum, rec) => sum + parseFloat(rec.income), 0);
-                let totalTax = records.reduce((sum, rec) => sum + parseFloat(rec.tax), 0);
-
-                /* Specific override for 2025 based on screenshot */
-                if (year === '2025') {
-                    totalIncome = 1846.50;
-                    totalTax = 0.00;
-                }
-
+                const totalIncome = records.reduce((sum, rec) => sum + parseFloat(rec.income), 0);
+                const totalTax = records.reduce((sum, rec) => sum + parseFloat(rec.tax), 0);
                 data[year] = { totalIncome: totalIncome.toFixed(2) + '元', totalTax: totalTax.toFixed(2) + '元', records: records };
             });
             return data;
@@ -671,7 +585,7 @@
         const displayTaxIdEl = document.getElementById('display-taxid');
 
         /* 查询页面相关元素 */
-        const queryButton = document.getElementById('query-button'); 
+        const queryButton = document.getElementById('query-button'); /* Re-added queryButton */
         const backButtonResults = document.getElementById('back-button'); 
         const backButtonQuery = document.getElementById('back-to-home-from-query'); 
         const yearSelectorTrigger = document.getElementById('year-selector-trigger');
