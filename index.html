@@ -50,7 +50,8 @@
             flex-grow: 1;
             overflow-y: auto;
             overflow-x: hidden;
-            padding-bottom: 95px; /* 为底部导航栏留出空间 */
+            /* 调整为更保守的底部填充，让更多内容显示 */
+            padding-bottom: 85px; 
         }
 
         .page::-webkit-scrollbar { display: none; } /* 隐藏滚动条 */
@@ -195,7 +196,16 @@
 
         /* 全局垂直间距微调 */
         .section-title { margin: 20px 4vw 8px; font-size: clamp(17px, 4.5vw, 19px); font-weight: bold; color: var(--text-color); } /* 减少上下外边距 */
-        .deduction-card { margin: 0 4vw; padding: 15px; background: linear-gradient(to right, #6ba6f8, #5587e2); border-radius: 12px; color: white; }
+        
+        /* --- 专项附加扣除卡片样式 --- */
+        .deduction-card {
+            margin: 0 4vw; /* 外部左右间距 */
+            padding: 15px; /* 默认内边距 */
+            background: linear-gradient(to right, #6ba6f8, #5587e2);
+            border-radius: 12px;
+            color: white;
+            margin-bottom: 15px; /* 卡片底部外边距，与其他元素隔开 */
+        }
         .deduction-card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; } /* 减少底部外边距 */
         .deduction-card-header .title { font-size: clamp(16px, 4.2vw, 18px); font-weight: bold; }
         .deduction-card-header .policy-link { font-size: clamp(12px, 3vw, 14px); background-color: rgba(255,255,255,0.2); padding: 5px 10px; border-radius: 15px; }
@@ -233,7 +243,7 @@
             white-space: nowrap;
         }
 
-        /* --- 新增：服务卡片容器 (水平滚动) --- */
+        /* --- 服务卡片容器 (水平滚动) --- */
         .services-container {
             margin: 0 4vw; /* 外部左右间距 */
             overflow-x: auto; /* 允许水平滚动 */
@@ -291,6 +301,20 @@
             color: #5587e2;
         }
 
+        /* --- 新增：底部图片推广卡片样式 --- */
+        .bottom-banner-card {
+            margin: 15px 4vw; /* 与其他卡片相同的左右边距 */
+            border-radius: 12px; /* 圆角 */
+            overflow: hidden; /* 确保图片随圆角裁切 */
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05); /* 阴影 */
+            margin-bottom: 20px; /* 底部外边距，与底部导航栏保持间距 */
+            background-color: var(--card-bg); /* 背景色，防止图片透明部分显示下层 */
+        }
+        .bottom-banner-card .banner-img {
+            display: block; /* 移除图片下方可能存在的额外空间 */
+            width: 100%; /* 宽度填充父容器 */
+            height: auto; /* 保持图片比例 */
+        }
 
         /* --- 个人中心页样式 --- */
         #profile-page { display: none; background-color: #f4f6f9; }
@@ -347,7 +371,6 @@
 
         /* 媒体查询：窄屏幕适配 (max-width) */
         @media (max-width: 360px) {
-            .services-grid { grid-template-columns: repeat(2, 1fr); } /* 变为2列 */
             .deduction-card .fill-btn { flex-direction: column; gap: 5px; } /* 按钮内容垂直排列 */
             .deduction-card .fill-btn span:nth-child(2) { display: none; } /* 隐藏分隔符 */
         }
@@ -355,7 +378,7 @@
         /* 媒体查询：短屏幕适配 (max-height) - 最激进的压缩 */
         @media (max-height: 700px) { /* 调整断点 */
             .page {
-                padding-bottom: 80px; /* 进一步减少底部留白，更紧凑 */
+                padding-bottom: 75px; /* 进一步减少底部留白，更紧凑 */
             }
             .home-header {
                 padding-top: 8px; /* 压缩顶部Header垂直内边距 */
@@ -396,6 +419,7 @@
             }
             .deduction-card {
                 padding: 8px; /* 压缩扣除卡片内边距 */
+                margin-bottom: 10px; /* 调整底部间距 */
             }
             .deduction-card-header {
                 margin-bottom: 6px; /* 压缩扣除卡片头部外边距 */
@@ -407,9 +431,11 @@
                 padding: 6px; /* 压缩填报按钮内边距 */
                 font-size: clamp(13px, 3.5vw, 15px);
             }
-            .services-grid { /* Applies to services-grid within services-container */
+            .services-container { /* Applies to services-grid within services-container */
                 padding-top: 8px; /* 压缩服务网格垂直内边距 */
                 padding-bottom: 8px;
+            }
+            .services-grid {
                 gap: 6px; /* 缩小网格间距 */
             }
             .service-item {
@@ -421,12 +447,16 @@
             .service-item p {
                 font-size: 11px; /* 进一步缩小服务项描述字体 */
             }
+            .bottom-banner-card {
+                margin-top: 10px; /* 压缩顶部外边距 */
+                margin-bottom: 15px; /* 压缩底部外边距 */
+            }
         }
 
         /* 针对 iPhone SE (第一代) 等极短屏幕的额外优化 */
         @media (max-height: 600px) { /* 更低的断点 */
             .page {
-                padding-bottom: 70px; /* 底部导航栏更贴近底部 */
+                padding-bottom: 65px; /* 底部导航栏更贴近底部，仅露出底部背景 */
             }
             .home-header {
                 padding-top: 5px;
@@ -467,6 +497,7 @@
             }
             .deduction-card {
                 padding: 6px;
+                margin-bottom: 8px; /* 调整底部间距 */
             }
             .deduction-card-header {
                 margin-bottom: 4px;
@@ -478,9 +509,11 @@
                 padding: 5px;
                 font-size: clamp(12px, 3vw, 14px);
             }
-            .services-grid {
+            .services-container {
                 padding-top: 6px;
                 padding-bottom: 6px;
+            }
+            .services-grid {
                 gap: 4px;
             }
             .service-item {
@@ -501,6 +534,10 @@
             .service-item .action {
                 font-size: 10px;
                 margin-top: 3px;
+            }
+            .bottom-banner-card {
+                margin-top: 8px; /* 再次压缩顶部外边距 */
+                margin-bottom: 10px; /* 再次压缩底部外边距 */
             }
         }
     </style>
@@ -547,7 +584,22 @@
             </div>
             
             <h3 class="section-title">重点服务推荐</h3>
-            <!-- 新增容器，用于实现水平滚动 -->
+
+            <!-- 专项附加扣除卡片 (已恢复) -->
+            <div class="deduction-card">
+                <div class="deduction-card-header">
+                    <div class="title">专项附加扣除</div>
+                    <div class="policy-link">相关政策 ></div>
+                </div>
+                <p>若符合条件，您可点击下方填报</p>
+                <button class="fill-btn">
+                    <span>👫 超1亿人参与</span>
+                    <span>|</span>
+                    <span>我要填报</span>
+                </button>
+            </div>
+
+            <!-- 服务卡片容器，用于实现水平滚动 -->
             <div class="services-container">
                 <div class="services-grid">
                     <div class="service-item">
@@ -575,6 +627,11 @@
                         <!-- 原图这里没有“去...”的action文字，保持一致 -->
                     </div>
                 </div>
+            </div>
+
+            <!-- 新增：底部图片推广卡片 -->
+            <div class="bottom-banner-card">
+                <img src="imge/08745dc646f6b702c72f60990e40025.jpg" alt="广告图" class="banner-img">
             </div>
         </div>
 
