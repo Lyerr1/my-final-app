@@ -8,8 +8,8 @@
         /* --- 全局和基本样式 --- */
         :root {
             --primary-blue: #4A90E2;
-            --header-start-blue: #5d9cec; /* 渐变起始颜色 */
-            --bg-color: #f4f6f9; /* 渐变结束颜色 */
+            --header-start-blue: #5d9cec; /* 顶部背景起始蓝色 */
+            --bg-color: #f4f6f9; /* 页面背景和渐变结束颜色 */
             --card-bg: #ffffff;
             --text-color: #333;
             --text-light: #888;
@@ -21,7 +21,7 @@
             padding: 0;
             height: 100%;
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-            background-color: #f0f0f0;
+            background-color: #f0f0f0; /* 外部背景色，更好地衬托手机壳 */
             display: flex;
             justify-content: center;
             align-items: center;
@@ -30,7 +30,7 @@
         .mobile-shell {
             width: 100%;
             height: 100vh;
-            max-width: 500px;
+            max-width: 500px; /* 桌面端预览时限制宽度 */
             background-color: var(--bg-color);
             position: relative;
             overflow: hidden;
@@ -38,6 +38,7 @@
             flex-direction: column;
         }
         
+        /* 桌面端预览时，给手机壳添加圆角和阴影 */
         @media (min-width: 501px) {
             .mobile-shell {
                 border-radius: 40px;
@@ -49,37 +50,38 @@
             flex-grow: 1;
             overflow-y: auto;
             overflow-x: hidden;
-            padding-bottom: 95px; 
+            padding-bottom: 95px; /* 为底部导航栏留出空间 */
         }
 
-        .page::-webkit-scrollbar { display: none; }
+        .page::-webkit-scrollbar { display: none; } /* 隐藏滚动条 */
 
         /* --- 首页样式 --- */
         #home-page {
             display: block;
+            /* 整个页面背景为从蓝色到背景色的渐变 */
             background: linear-gradient(to bottom, var(--header-start-blue), var(--bg-color) 350px);
         }
 
         .home-header {
             padding: 15px 4vw;
-            position: sticky;
+            position: sticky; /* 使Header在滚动时固定在顶部 */
             top: 0;
-            z-index: 5;
-            background-color: var(--header-start-blue);
+            z-index: 5; /* 确保它在其他内容之上 */
+            background-color: var(--header-start-blue); /* Header自身的背景色 */
             display: flex;
             align-items: center;
-            gap: 15px;
+            gap: 15px; /* 搜索框和扫一扫图标的间距 */
         }
         
         .search-bar {
             flex-grow: 1;
-            background-color: #d8e5fa;
-            border-radius: 8px;
+            background-color: #d8e5fa; /* 根据截图调整的背景色 */
+            border-radius: 8px; /* 圆角矩形 */
             padding: 8px 12px;
             display: flex;
             align-items: center;
-            color: #6a7db1;
-            font-size: clamp(13px, 3.5vw, 15px);
+            color: #6a7db1; /* 文字颜色 */
+            font-size: clamp(13px, 3.5vw, 15px); /* 流式字体 */
         }
         
         .search-bar .search-svg { width: 16px; height: 16px; stroke: #6a7db1; stroke-width: 2.5; margin-right: 8px; }
@@ -89,24 +91,39 @@
             background-color: #fffbe8;
             border: 1px solid #fde4a0;
             border-radius: 8px;
-            padding: 10px 15px;
-            margin: 10px 4vw 0;
+            padding: 10px 15px; /* 内部左右间距 */
+            margin: 10px 4vw 0; /* 外部左右间距 */
             display: flex;
             align-items: center;
             font-size: clamp(12px, 3vw, 14px);
             color: #d9862a;
-            overflow: hidden; 
+            overflow: hidden; /* 隐藏超出部分，用于跑马灯 */
         }
         .notification-bar .icon { margin-right: 8px; font-size: 1.2em; flex-shrink: 0; }
         .notification-bar .arrow { margin-left: auto; color: #ccc; flex-shrink: 0; }
-        .marquee-wrapper { flex-grow: 1; overflow: hidden; white-space: nowrap; }
-        .marquee-text { display: inline-block; padding-left: 100%; animation: marquee 15s linear infinite; }
 
-        @keyframes marquee {
-            0%   { transform: translateX(0); }
-            100% { transform: translateX(-200%); }
+        /* 跑马灯效果容器 */
+        .marquee-wrapper {
+            flex-grow: 1; /* 占据剩余空间 */
+            overflow: hidden; /* 隐藏超出部分 */
+            white-space: nowrap; /* 文本不换行 */
+            padding-right: 15px; /* 文本和箭头之间的间距 */
+            box-sizing: border-box;
         }
 
+        .marquee-text {
+            display: inline-block; /* 允许transform动画 */
+            white-space: nowrap; /* 确保文本不换行 */
+            animation: marquee 15s linear infinite; /* 动画：marquee名称，15秒，匀速，无限循环 */
+        }
+
+        /* 跑马灯动画定义 */
+        @keyframes marquee {
+            0%   { transform: translateX(100%); } /* 文本从容器右侧完全移入 */
+            100% { transform: translateX(-150%); } /* 文本向左移动，-150% 确保文本完全移出左侧，具体值可能需要根据实际文本长度微调 */
+        }
+
+        /* 主卡片样式 */
         .main-card {
             margin: 15px 4vw;
             padding: 20px;
@@ -115,20 +132,20 @@
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
             position: relative;
             overflow: hidden;
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-end;
+            display: flex; /* 使用flex布局对齐内容和图片 */
+            justify-content: space-between; /* 内容和图片分列 */
+            align-items: flex-end; /* 内容和图片底部对齐 */
         }
         
         .card-content {
-            max-width: 60%;
+            max-width: 60%; /* 限制左侧内容宽度，为右侧图片留出空间 */
         }
 
         .main-card h2 {
             font-size: clamp(18px, 5vw, 20px);
             margin: 0 0 8px 0;
-            color: #333;
-            font-weight: 600;
+            color: #333; /* 黑色字体 */
+            font-weight: 600; /* 加粗 */
         }
 
         .main-card p {
@@ -147,18 +164,20 @@
             cursor: pointer;
         }
         
+        /* “进入专题页”按钮样式 */
         .special-topic-btn {
             position: absolute;
             top: 15px;
             right: 15px;
-            background-color: #4a77d4;
-            color: white;
+            background-color: #4a77d4; /* 深蓝色背景 */
+            color: white; /* 白色字体 */
             padding: 4px 12px;
             border-radius: 12px;
             font-size: 12px;
             text-decoration: none;
         }
         
+        /* 卡片右下角人物图片样式 */
         .main-card .person-img {
             position: absolute;
             right: 10px;
@@ -173,8 +192,39 @@
         .deduction-card-header .title { font-size: clamp(16px, 4.2vw, 18px); font-weight: bold; }
         .deduction-card-header .policy-link { font-size: clamp(12px, 3vw, 14px); background-color: rgba(255,255,255,0.2); padding: 5px 10px; border-radius: 15px; }
         .deduction-card p { font-size: clamp(13px, 3.5vw, 15px); margin: 0 0 15px; }
-        .deduction-card .fill-btn { background-color: white; color: #5587e2; border: none; width: 100%; padding: 12px; border-radius: 25px; font-size: clamp(15px, 4vw, 17px); font-weight: bold; display: flex; justify-content: center; align-items: center; }
-        .fill-btn span:first-child { font-size: 12px; background-color: #ffe6e6; color: #e27d7d; padding: 2px 8px; border-radius: 10px; margin-right: 10px; white-space: nowrap; }
+        
+        /* “我要填报”按钮样式 */
+        .deduction-card .fill-btn {
+            background-color: white;
+            color: #5587e2;
+            border: 1px solid #cce0ff; /* 添加浅蓝色边框 */
+            width: 100%;
+            padding: 12px;
+            border-radius: 25px;
+            font-size: clamp(15px, 4vw, 17px);
+            font-weight: bold;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px; /* 项目间距 */
+        }
+        .fill-btn span:first-child {
+            font-size: 12px;
+            background-color: #ffe6e6;
+            color: #e27d7d;
+            padding: 2px 8px;
+            border-radius: 10px;
+            white-space: nowrap;
+        }
+        .fill-btn span:nth-child(2) { /* 分隔符 "|" */
+            color: #d0d0d0; /* 灰色 */
+            font-size: 18px; /* 稍微大一点 */
+            line-height: 1; /* 确保垂直居中 */
+        }
+        .fill-btn span:last-child {
+            white-space: nowrap;
+        }
+
         .services-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; padding: 15px 4vw; }
         .service-item { background-color: var(--card-bg); border-radius: 12px; padding: 15px; text-align: left; box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
         .service-item .icon-bg { width: 32px; height: 32px; border-radius: 8px; display: flex; justify-content: center; align-items: center; margin-bottom: 8px; color: white; font-size: 20px; }
@@ -210,18 +260,37 @@
         .profile-list-item .red-dot { width: 8px; height: 8px; background-color: #e74c3c; border-radius: 50%; margin-right: 10px; }
         .logout-btn { margin: 20px 0; width: 100%; padding: 12px; border: 1px solid #ddd; background-color: var(--card-bg); color: #e74c3c; font-size: 16px; border-radius: 8px; cursor: pointer; }
         
-        /* 底部导航栏样式 */
-        .bottom-nav { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); width: 95%; max-width: 480px; height: 65px; background-color: rgba(240, 245, 255, 0.75); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); border: 1px solid rgba(255, 255, 255, 0.5); border-radius: 32.5px; display: flex; justify-content: space-around; align-items: center; z-index: 10; box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08); }
+        /* 底部导航栏样式 (毛玻璃效果) */
+        .bottom-nav {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 95%;
+            max-width: 480px;
+            height: 65px;
+            background-color: rgba(240, 245, 255, 0.75); /* 半透明背景色 */
+            backdrop-filter: blur(15px); /* 毛玻璃效果 */
+            -webkit-backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.5); /* 半透明边框 */
+            border-radius: 32.5px;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            z-index: 10;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+        }
         .nav-item { display: flex; flex-direction: column; align-items: center; justify-content: center; flex-grow: 1; font-size: 11px; color: #555555; cursor: pointer; position: relative; height: 100%; }
         .nav-item .nav-icon { width: 26px; height: 26px; margin-bottom: 3px; }
         .nav-item.active .nav-text { color: var(--primary-blue); }
         .nav-item.active:not(:first-child) .nav-icon { filter: invert(38%) sepia(98%) saturate(1354%) hue-rotate(195deg) brightness(93%) contrast(87%); }
         .nav-item .badge { position: absolute; top: 5px; right: 12px; background-color: #e74c3c; color: white; font-size: 10px; padding: 1px 5px; border-radius: 10px; border: 1px solid white; }
 
+        /* 媒体查询：窄屏幕适配 */
         @media (max-width: 360px) {
-            .services-grid { grid-template-columns: repeat(2, 1fr); }
-            .deduction-card .fill-btn { flex-direction: column; gap: 5px; }
-            .deduction-card .fill-btn span:nth-child(2) { display: none; }
+            .services-grid { grid-template-columns: repeat(2, 1fr); } /* 变为2列 */
+            .deduction-card .fill-btn { flex-direction: column; gap: 5px; } /* 按钮内容垂直排列 */
+            .deduction-card .fill-btn span:nth-child(2) { display: none; } /* 隐藏分隔符 */
         }
     </style>
 </head>
@@ -231,10 +300,12 @@
         <div class="page" id="home-page">
             <header class="home-header">
                 <div class="search-bar">
+                    <!-- 搜索图标 SVG -->
                     <svg class="search-svg" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="9" cy="9" r="7.5" stroke-linecap="round"/><line x1="15" y1="15" x2="18" y2="18" stroke-linecap="round"/></svg>
                     <span>请输入想搜索的功能/服务</span>
                 </div>
                 <div class="scan-icon-wrapper">
+                    <!-- 扫一扫图标 SVG (含中间横线) -->
                     <svg class="scan-svg" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path d="M4 4L8 4" stroke-linecap="round"/><path d="M20 4L16 4" stroke-linecap="round"/><path d="M4 4L4 8" stroke-linecap="round"/><path d="M20 4L20 8" stroke-linecap="round"/><path d="M4 20L8 20" stroke-linecap="round"/><path d="M4 20L4 16" stroke-linecap="round"/><path d="M20 20L16 20" stroke-linecap="round"/><path d="M20 20L20 16" stroke-linecap="round"/>
                         <line x1="4" y1="12" x2="20" y2="12" stroke-linecap="round"/>
@@ -276,11 +347,23 @@
 
         <!-- 个人中心页 -->
         <div class="page" id="profile-page">
-            <header class="profile-header"><div class="avatar-container"><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIj48Y2lyY2xlIGN4PSI1MCIgY3k9IjUwIiByPSI1MCIgZmlsbD0iI2YwZjBmMCIvPjxwYXRoIGZpbGw9IiMzOTM5MzkiIGQ9Ik01MiwzMGMyLjIsMCA0LDEuOCA0LDRjMCwyLjItMS44LDQtNCw0cy00LTEuOC00LTQtMS44LTQtNC00UzQ0LDMyLjIsNDQsMzRjMCwyLjIsMS44LDQsNCw0aDRjMi4yLDAsNC0xLjgsNC00VjMwek01MiwxOGMtNi42LDAtMTIsNS40LTEyLDEyczEyLDUuNCwxMiwxMnMtNS40LDEyLTEyLDEycy0xMi01LjQtMTItMTJoMi40YzEuMywwLDIuNC0xLjEsMi40LTIuNHMtMS4xLTIuNC0yLjQtMi40SDQwYy04LjgsMC0xNi03LjItMTYtMTZTNDAsMiw1MiwyejE2LDBjOC44LDAsMTYsNy4yLDE2LDE2SDY1LjZjLTEuMywwLTIuNCwxLjEtMi40LDIuNHMxLjEsMi40LDIuNCwyLjRIMjhWMzBjMC0yLjItMS44LTQtNC00cy00LDEuOC00LTRjMC0xMSw5LTIwLDIwLTIwaDRjMi4yLDAsNCwxLjgsNCw0djQuOEg1MnoiLz48cGF0aCBmaWxsPSIjMzQ0OTVlIiBkPSJNNzgsNjVjMC0xMS41LTkuNS0yMS0yMS0yM2MtMS41LS4yLTMtLjMtNC41LS4zcy0zLC4xLTQuNSwuM0MzNyw0NCwyNy41LDUzLjUsMjcuNSw2NWMwLDAsMCw0LjUsMCw4aDUwLjVDNzgsNjkuNSw3OCw2NSw3OCw2NXoiLz48cGF0aCBmaWxsPSIjMzkzOTM5IiBkPSJNNTIsMzQuOWMtNC40LDAtOCwzLjYtOCw4czMuNiw4LDgsOHM4LTMuNiw4LThTNTYuNCwzNC45LDUyLDM0Ljl6Ii8+PC9zdmc+" alt="avatar"></div></header>
+            <header class="profile-header">
+                <div class="avatar-container">
+                    <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIj48Y2lyY2xlIGN4PSI1MCIgY3k9IjUwIiByPSI1MCIgZmlsbD0iI2YwZjBmMCIvPjxwYXRoIGZpbGw9IiMzOTM5MzkiIGQ9Ik01MiwzMGMyLjIsMCA0LDEuOCA0LDRjMCwyLjItMS44LDQtNCw0cy00LTEuOC00LTQtMS44LTQtNC00UzQ0LDMyLjIsNDQsMzRjMCwyLjIsMS44LDQsNCw0aDRjMi4yLDAsNC0xLjgsNC00VjMwek01MiwxOGMtNi42LDAtMTIsNS40LTEyLDEyczEyLDUuNCwxMiwxMnMtNS40LDEyLTEyLDEycy0xMi01LjQtMTItMTJoMi40YzEuMywwLDIuNC0xLjEsMi40LTIuNHMtMS4xLTIuNC0yLjQtMi40SD四十Yy04LjgsMC0xNi03LjItMTYtMTZTNDAsMiw1MiwyejE2LDBjOC44LDAsMTYsNy4yLDE2LDE2SDY1LjZjLTEuMywwLTIuNCwxLjEtMi40LDIuNHMxLjEsMi40LDIuNCwyLjRIMjhWMzBjMC0yLjItMS44LTQtNC00cy00LDEuOC00LTRjMC0xMSw5LTIwLDIwLTIwaDRjMi4yLDAsNCwxLjgsNCw0djQuOEg1MnoiLz48cGF0aCBmaWxsPSIjMzQ0OTVlIiBkPSJNNzgsNjVjMC0xMS41LTkuNS0yMS0yMS0yM2MtMS41LS4yLTMtLjMtNC41LS4zcy0zLC4xLTQuNSwuM0MzNyw0NCwyNy41LDUzLjUsMjcuNSw2NWMwLDAsMCw0LjUsMCw4aDUwLjVDNzgsNjkuNSw3OCw2NSw3OCw2NXoiLz48cGF0aCBmaWxsPSIjMzkzOTM5IiBkPSJNNTIsMzQuOWMtNC40LDAtOCwzLjYtOCw4czMuNiw4LDgsOHM4LTMuNiw4LThTNTYuNCwzNC45LDUyLDM0Ljl6Ii8+PC9zdmc+" alt="avatar">
+                </div>
+            </header>
             <div class="profile-main-content">
                 <div class="info-card">
-                    <div class="info-card-details"><h2 id="user-name">某某</h2><div id="tax-id">纳税人识别号 <span id="tax-id-number">4****************X</span><span class="eye-icon">👁️</span></div></div>
-                    <div class="personal-info-btn" id="edit-info-btn">个人信息 ></div>
+                    <div class="info-card-details">
+                        <h2 id="user-name">某某</h2>
+                        <div id="tax-id">
+                            纳税人识别号 <span id="tax-id-number">4****************X</span>
+                            <span class="eye-icon">👁️</span>
+                        </div>
+                    </div>
+                    <div class="personal-info-btn" id="edit-info-btn">
+                        个人信息 >
+                    </div>
                 </div>
                 <div class="profile-grid">
                     <div class="profile-grid-item"><div class="icon">🏠</div><p>家庭成员</p><span class="add-btn">添加</span></div>
@@ -318,69 +401,61 @@
             const userNameEl = document.getElementById('user-name');
             const taxIdEl = document.getElementById('tax-id-number');
             
+            // 加载用户信息的函数
             function loadUserInfo() {
                 const savedName = localStorage.getItem('taxAppName');
                 const savedId = localStorage.getItem('taxAppId');
                 userNameEl.textContent = savedName || '某某';
                 taxIdEl.textContent = savedId || '4****************X';
             }
-            loadUserInfo();
+            loadUserInfo(); // 页面加载时执行一次
 
+            // 底部导航栏点击事件处理
             navItems.forEach(item => {
                 item.addEventListener('click', () => {
                     const targetPageId = item.getAttribute('data-page');
+                    
+                    // 移除所有导航项的激活状态
                     navItems.forEach(nav => nav.classList.remove('active'));
+                    // 为当前点击的导航项添加激活状态
                     item.classList.add('active');
-                    if (targetPageId === 'home-page' || targetPageId === 'profile-page') {
-                        homePage.style.display = 'block'; // 总是显示home-page，因为profile-page是覆盖在上面的
-                        profilePage.style.display = (targetPageId === 'profile-page') ? 'block' : 'none';
-                        if (targetPageId === 'home-page') {
-                            homePage.style.display = 'block';
-                            profilePage.style.display = 'none';
-                        } else {
-                            // 为了让个人页在首页上展示，而不是替换它
-                            // 这里我们假设profile页是覆盖在首页上的
-                            // 实际开发中可能是路由切换
-                            profilePage.style.display = 'block';
-                        }
-                    } else {
-                        // 切换到其他页面时，暂时都回到首页
+
+                    // 根据点击的页面ID显示或隐藏内容
+                    if (targetPageId === 'home-page') {
                         homePage.style.display = 'block';
                         profilePage.style.display = 'none';
+                    } else if (targetPageId === 'profile-page') {
+                        homePage.style.display = 'none';
+                        profilePage.style.display = 'block';
+                    } else {
+                        // 对于未实现的页面，显示提示并保持当前页面可见 (这里是homePage)
+                        homePage.style.display = 'block'; // 默认回到首页
+                        profilePage.style.display = 'none';
+                        
                         const pageName = item.querySelector('.nav-text').textContent;
                         alert(`您点击了 "${pageName}"，该页面尚未实现。`);
-                        // 让首页保持激活状态
+                        
+                        // 由于未实现页面默认回到首页，所以将首页按钮设为激活状态
                         document.querySelector('.nav-item[data-page="home-page"]').classList.add('active');
-                        item.classList.remove('active');
+                        item.classList.remove('active'); // 移除当前点击（未实现页面）的激活状态
                     }
                 });
             });
 
-            // 点击“我的”跳转的逻辑需要细化
-            const myProfileButton = document.querySelector('.nav-item[data-page="profile-page"]');
-            const homeButton = document.querySelector('.nav-item[data-page="home-page"]');
-
-            myProfileButton.addEventListener('click', () => {
-                homePage.style.display = 'none';
-                profilePage.style.display = 'block';
-            });
-            homeButton.addEventListener('click', () => {
-                homePage.style.display = 'block';
-                profilePage.style.display = 'none';
-            });
-
-
+            // “个人信息”编辑功能
             editInfoBtn.addEventListener('click', () => {
                 const currentName = userNameEl.textContent;
                 const currentId = taxIdEl.textContent;
+                
                 const newName = prompt('请输入新的名字:', currentName);
+                
                 if (newName !== null && newName.trim() !== '') {
                     const newId = prompt('请输入新的纳税人识别号:', currentId);
                     if (newId !== null && newId.trim() !== '') {
                         userNameEl.textContent = newName;
                         taxIdEl.textContent = newId;
-                        localStorage.setItem('taxAppName', newName);
-                        localStorage.setItem('taxAppId', newId);
+                        localStorage.setItem('taxAppName', newName); // 保存到本地存储
+                        localStorage.setItem('taxAppId', newId);     // 保存到本地存储
                         alert('信息更新成功！');
                     } else {
                          alert('已取消修改纳税人识别号。');
