@@ -33,7 +33,7 @@
         #auth-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: var(--bg-gray); z-index: 2000; display: flex; justify-content: center; align-items: center; text-align: center; color: var(--text-light); font-size: 18px; }
         #auth-overlay .message { padding: 20px; }
 
-        /* --- SVG图标 --- */
+        /* --- SVG图标 (用于通用线稿图标，彩色图标使用<img>) --- */
         .icon { display: inline-block; width: 1em; height: 1em; background-color: currentColor; mask-repeat: no-repeat; mask-size: contain; mask-position: center; vertical-align: middle; }
         .icon-arrow-right { mask-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>'); }
         
@@ -45,7 +45,7 @@
         .search-bar .icon.icon-scan { color: var(--text-dark); font-size: 20px; mask-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7V5a2 2 0 0 1 2-2h2M17 3h2a2 2 0 0 1 2 2v2M21 17v2a2 2 0 0 1-2 2h-2M7 21H5a2 2 0 0 1-2-2v-2M7 12h10"></path></svg>'); }
         
         .notification-bar { background-color: #eaf3fe; color: var(--primary-blue); padding: 10px 15px; border-radius: 8px; margin-top: 15px; font-size: 14px; display: flex; align-items: center; }
-        .notification-bar .icon { margin-right: 10px; font-size: 16px; color: #f57c00; mask-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>'); }
+        .notification-bar .icon-bell { margin-right: 10px; font-size: 16px; color: #f57c00; mask-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>'); }
 
         .main-banner { background: linear-gradient(135deg, #64b5f6, var(--primary-blue)); color: white; padding: 20px 15px; border-radius: 12px; margin-top: 15px; box-shadow: 0 4px 12px rgba(58, 128, 232, 0.3); position: relative; overflow: hidden; }
         .banner-title { font-size: 20px; font-weight: bold; margin-bottom: 5px; }
@@ -57,23 +57,26 @@
         .service-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-top: 15px; }
         .service-item { display: flex; flex-direction: column; background-color: #fff; border-radius: 12px; padding: 15px; }
         .service-header { display: flex; align-items: start; flex-grow: 1; }
-        .service-icon { font-size: 32px; margin-right: 10px; }
+        .service-icon img { width: 32px; height: 32px; margin-right: 10px; } /* Use img for colored icons */
         .service-texts { flex-grow: 1; }
         .service-title { font-weight: bold; font-size: 16px; margin-bottom: 5px; }
         .service-description { font-size: 12px; color: var(--text-lighter); }
         .service-button { align-self: flex-end; background-color: var(--button-blue); color: var(--primary-blue); font-size: 12px; font-weight: 500; padding: 6px 12px; border-radius: 99px; margin-top: 15px; }
         
+        .image-banner { width: 100%; border-radius: 12px; margin-top: 20px; overflow: hidden; /* Ensures image respects border-radius */ }
+        .image-banner img { width: 100%; height: auto; display: block; }
+
         /* --- “我的”页面详细样式 --- */
         #page-profile .profile-bg { background: linear-gradient(to bottom, var(--primary-blue) 0%, var(--light-blue) 60%, var(--bg-gray) 100%); height: 180px; position: absolute; top: 0; left: 0; width: 100%; }
         #page-profile .profile-content { position: relative; z-index: 1; padding: 15px; }
         .profile-main-info { position: relative; margin-top: 30px; margin-bottom: 20px; }
         .profile-avatar { position: absolute; top: 0; left: 50%; transform: translate(-50%, -50%); width: 72px; height: 72px; border-radius: 50%; background-color: #fff; border: 3px solid white; box-shadow: 0 4px 10px rgba(0,0,0,0.1); z-index: 3; }
-        .profile-avatar img { width: 100%; height: 100%; border-radius: 50%; }
+        .profile-avatar img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; }
         .profile-card { cursor: pointer; position: relative; z-index: 2; margin-top: 36px; background: linear-gradient(100deg, #fce1c4, #f8c3a1); border-radius: 12px; padding: 20px 15px 15px; display: flex; align-items: center; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
         .profile-card .profile-details { flex-grow: 1; padding-left: 10px; }
         .profile-name { font-size: 20px; font-weight: bold; margin-bottom: 8px; color: #5d4037; }
         .profile-taxid { font-size: 13px; color: #8d6e63; display: flex; align-items: center; }
-        .profile-taxid .icon { font-size: 16px; margin-left: 10px; color: #bcaaa4; mask-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>');}
+        .profile-taxid .icon.icon-eye { font-size: 16px; margin-left: 10px; color: #bcaaa4; mask-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>');}
         .profile-link { background-color: rgba(255,255,255,0.3); color: #8d6e63; padding: 6px 12px; border-radius: 99px; font-size: 12px; font-weight: 500; }
 
         .quick-access-cards { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
@@ -87,24 +90,31 @@
         .settings-list { background-color: white; border-radius: 12px; margin: 20px 0; overflow: hidden;}
         .settings-item { display: flex; align-items: center; padding: 16px 15px; border-bottom: 1px solid #f0f0f0; }
         .settings-item:last-child { border-bottom: none; }
-        .settings-icon { font-size: 20px; margin-right: 15px; color: #555; }
-        .settings-label { flex-grow: 1; font-size: 16px; }
+        .settings-icon { font-size: 20px; margin-right: 15px; color: #555; /* Base color for line icons */ }
+        /* Specific settings icons (line-art style) */
+        .settings-icon.icon-heart { mask-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>'); }
+        .settings-icon.icon-user-check { mask-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><polyline points="17 11 19 13 23 9"/></svg>'); }
+        .settings-icon.icon-shield { mask-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>'); }
+        .settings-icon.icon-help-circle { mask-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>'); }
+        .settings-icon.icon-headphones { mask-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 18V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v13a2 2 0 0 1-2 2h-2zM12 5v3m0 0v3m0-3h4m-4 0H8"/></svg>'); }
+        .settings-icon.icon-info { mask-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>'); }
+        
         .settings-badge { width: 8px; height: 8px; background-color: red; border-radius: 50%; margin-right: 8px; }
         .logout-button { width: 100%; padding: 15px; background-color: white; color: var(--text-dark); border: none; border-radius: 12px; font-size: 16px; text-align: center; cursor: pointer; }
 
         /* --- 底部导航栏 --- */
-        #bottom-nav { position: fixed; bottom: 15px; left: 15px; right: 15px; background-color: rgba(255, 255, 255, 0.7); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); display: none; z-index: 100; border-radius: 99px; border: 1px solid rgba(255, 255, 255, 0.2); }
+        #bottom-nav { position: fixed; bottom: calc(15px + var(--safe-area-inset-bottom)); left: 15px; right: 15px; background-color: rgba(255, 255, 255, 0.7); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); display: none; z-index: 100; border-radius: 99px; border: 1px solid rgba(255, 255, 255, 0.2); }
         .nav-container { display: flex; justify-content: space-around; padding: 8px 0; }
         .nav-item { flex: 1; text-align: center; color: var(--text-dark); cursor: pointer; font-size: 11px; display: flex; flex-direction: column; align-items: center; gap: 3px; }
         .nav-item.active { color: var(--primary-blue); font-weight: 500; }
-        .nav-icon-bg { width: 32px; height: 32px; display: flex; justify-content: center; align-items: center; border-radius: 99px; transition: background-color 0.2s ease; }
-        .nav-item.active .nav-icon-bg { background-color: var(--primary-blue); }
-        .nav-item.active .icon { color: white; }
+        .nav-icon-bg { width: 44px; height: 32px; display: flex; justify-content: center; align-items: center; border-radius: 99px; transition: background-color 0.2s ease, width 0.3s ease; margin-bottom: -1px;}
+        .nav-item.active .nav-icon-bg { background-color: var(--primary-blue); width: 60px; } /* Active state pill */
+        .nav-item.active .nav-icon-bg .icon { color: white; }
         .nav-icon { font-size: 22px; position: relative; width: 22px; height: 22px; }
         .nav-icon .icon { font-size: inherit; }
         .nav-badge { position: absolute; top: -4px; right: -8px; background-color: red; color: white; border-radius: 99px; min-width: 16px; height: 16px; padding: 0 4px; line-height: 16px; font-size: 10px; text-align: center; border: 1px solid white; }
         
-        /* Nav Icons Dual State */
+        /* Nav Icons Dual State - Active/Inactive */
         .icon-nav-wrapper .inactive, .nav-item.active .icon-nav-wrapper .active { display: block; } .icon-nav-wrapper .active, .nav-item.active .icon-nav-wrapper .inactive { display: none; }
         .icon-nav-home .inactive { mask-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>'); }
         .icon-nav-home .active { mask-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>'); }
@@ -126,7 +136,6 @@
     
     <!-- 页面一：首页 -->
     <div id="page-home" class="page">
-        <!-- Content from previous version -->
         <div class="home-header-bg">
             <div class="search-bar">
                 <i class="icon"></i>
@@ -134,7 +143,7 @@
                 <i class="icon icon-scan"></i>
             </div>
             <div class="notification-bar">
-                <i class="icon"></i>
+                <i class="icon icon-bell"></i>
                 务总局令第57号：《个人所得税综合所得汇算》
             </div>
             <div class="main-banner">
@@ -149,7 +158,7 @@
             <div class="service-grid">
                 <a href="#" class="service-item">
                     <div class="service-header">
-                        <i class="icon service-icon icon-color-blue" style="mask-image: url('data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22 fill=%22currentColor%22><path d=%22M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zm-1 9H8v2h5v-2zm3-5H8v2h8V6z%22/></svg>')"></i>
+                        <div class="service-icon"><img src="imge/20c6fe0ae96a30406b0dfad33a92f0d.jpg" alt="综合所得年度汇算"></div>
                         <div class="service-texts">
                             <div class="service-title">综合所得年度汇算</div>
                             <div class="service-description">申报与查询综合所得</div>
@@ -159,7 +168,7 @@
                 </a>
                 <a id="nav-to-query" class="service-item">
                      <div class="service-header">
-                        <i class="icon service-icon icon-color-purple" style="mask-image: url('data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22 fill=%22currentColor%22><path d=%22M21 18v1c0 1.1-.9 2-2 2H5c-1.11 0-2-.9-2-2V5c0-1.1.89-2 2-2h14c1.1 0 2 .9 2 2v1h-9c-1.11 0-2 .9-2 2v8c0 1.1.89 2 2 2h9zm-9-2h10V8H12v8zm4-2.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5z%22/></svg>')"></i>
+                        <div class="service-icon"><img src="imge/586bf809e01ba420ffa95f1ff008fda.jpg" alt="收入纳税明细"></div>
                         <div class="service-texts">
                             <div class="service-title">收入纳税明细</div>
                             <div class="service-description">查看个人所得税纳税明细</div>
@@ -169,7 +178,7 @@
                 </a>
                 <a href="#" class="service-item">
                     <div class="service-header">
-                        <i class="icon service-icon icon-color-green" style="mask-image: url('data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22 fill=%22currentColor%22><path d=%22M20 2H4C2.9 2 2 2.9 2 4v16c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM8 20H4V4h4v16zm6 0h-4V4h4v16zm6 0h-4V4h4v16z%22/></svg>')"></i>
+                        <div class="service-icon"><img src="imge/a9dc987524e171512508f81557ef871.jpg" alt="纳税记录开具"></div>
                         <div class="service-texts">
                             <div class="service-title">纳税记录开具</div>
                             <div class="service-description">生成或查看纳税记录</div>
@@ -179,7 +188,7 @@
                 </a>
                 <a href="#" class="service-item">
                     <div class="service-header">
-                        <i class="icon service-icon icon-color-gray" style="mask-image: url('data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22 fill=%22currentColor%22><path d=%22M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z%22/></svg>')"></i>
+                        <div class="service-icon"><img src="imge/dd1f40470b3f6a459287618c7a4cdbd.jpg" alt="更多功能"></div>
                         <div class="service-texts">
                             <div class="service-title">更多功能</div>
                             <div class="service-description">设置更多常用功能</div>
@@ -187,6 +196,9 @@
                     </div>
                     <div class="service-button">去设置</div>
                 </a>
+            </div>
+            <div class="image-banner">
+                <img src="imge/08745dc646f6b702c72f60990e40025.jpg" alt="宣传横幅">
             </div>
         </div>
     </div>
@@ -197,14 +209,14 @@
         <div class="profile-content">
             <div class="profile-main-info">
                 <div class="profile-avatar">
-                    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAJAAAACQCAMAAADQmBKKAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAPUExURf////P2+fb4+vL2+fT3+jE7z9QAAAAFdFJOU////////////////k4q3UoAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAdNSURBVHja7V1JtxwhDLVRCCH//5c3gK2kgbHjMdtZtXOStj28Dg9cWXhgZVVV1T//6S/O5/PZfr/f3/F4vD1eLpfrdrt9xWq1/N1ul212WzxfLBaPJVyS53MpM1hMZrOFgB9zPZvP59tmsxmMxv9FfwQh4AeT2Wy2mAwwGmMxmSxfLpdzPZ/Ph0wGk3n/n/Z39EeAAH6YzWYzAQJ8oSzj8Xg8Ho/nevoHBCDAh7IcbDabyfL5fD6fD7fdddutAAGeTCYzQYBf+vV6/WnL5XI4nU6n0xkAAsn8U38ECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQIAAAQIECBAgQ/gE0uV1AVVVVX/yEAAAAAElFTkSuQmCC" alt="avatar">
+                    <img src="imge/0d89a73cd25b3e3b21829ca1912e53e.jpg" alt="avatar">
                 </div>
                 <div id="profile-info-trigger" class="profile-card">
                     <div class="profile-details">
                         <div id="display-name" class="profile-name">某某</div>
                         <div class="profile-taxid">
                             <span id="display-taxid">纳税人识别号 9****************Y</span>
-                            <i class="icon"></i>
+                            <i class="icon icon-eye"></i>
                         </div>
                     </div>
                     <a href="#" class="profile-link">个人信息 <i class="icon icon-arrow-right" style="font-size: 0.8em;"></i></a>
@@ -218,45 +230,109 @@
             </div>
 
             <div class="settings-list">
-                <a href="#" class="settings-item"><i class="icon settings-icon" style="mask-image: url('data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22currentColor%22 stroke-width=%222%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22><path d=%22M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z%22></path></svg>');"></i><span class="settings-label">切换关怀版</span><i class="icon icon-arrow-right" style="color: #ccc;"></i></a>
-                <a href="#" class="settings-item"><i class="icon settings-icon" style="mask-image: url('data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22currentColor%22 stroke-width=%222%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22><path d=%22M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2%22></path><circle cx=%228.5%22 cy=%227%22 r=%224%22></circle><polyline points=%2217 11 19 13 23 9%22></polyline></svg>');"></i><span class="settings-label">企业办税权限</span><i class="icon icon-arrow-right" style="color: #ccc;"></i></a>
-                <a href="#" class="settings-item"><i class="icon settings-icon" style="mask-image: url('data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22currentColor%22 stroke-width=%222%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22><path d=%22M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z%22></path></svg>');"></i><span class="settings-label">安全中心</span><i class="icon icon-arrow-right" style="color: #ccc;"></i></a>
-                <a href="#" class="settings-item"><i class="icon settings-icon" style="mask-image: url('data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22currentColor%22 stroke-width=%222%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22><path d=%22M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3%22></path><circle cx=%2212%22 cy=%2212%22 r=%2210%22></circle><line x1=%2212%22 y1=%2217%22 x2=%2212.01%22 y2=%2217%22></line></svg>');"></i><span class="settings-label">帮助中心</span><i class="icon icon-arrow-right" style="color: #ccc;"></i></a>
-                <a href="#" class="settings-item"><i class="icon settings-icon" style="mask-image: url('data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22currentColor%22 stroke-width=%222%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22><path d=%22M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z%22></path><line x1=%229%22 y1=%2210%22 x2=%2215%22 y2=%2210%22></line></svg>');"></i><span class="settings-label">我要咨询</span><i class="icon icon-arrow-right" style="color: #ccc;"></i></a>
-                <a href="#" class="settings-item"><i class="icon settings-icon" style="mask-image: url('data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22currentColor%22 stroke-width=%222%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22><circle cx=%2212%22 cy=%2212%22 r=%2210%22></circle><line x1=%2212%22 y1=%2216%22 x2=%2212%22 y2=%2212%22></line><line x1=%2212%22 y1=%228%22 x2=%2212.01%22 y2=%228%22></line></svg>');"></i><span class="settings-label">关于&更新</span><span class="settings-badge"></span><i class="icon icon-arrow-right" style="color: #ccc;"></i></a>
+                <a href="#" class="settings-item"><i class="icon settings-icon icon-heart"></i><span class="settings-label">切换关怀版</span><i class="icon icon-arrow-right" style="color: #ccc;"></i></a>
+                <a href="#" class="settings-item"><i class="icon settings-icon icon-user-check"></i><span class="settings-label">企业办税权限</span><i class="icon icon-arrow-right" style="color: #ccc;"></i></a>
+                <a href="#" class="settings-item"><i class="icon settings-icon icon-shield"></i><span class="settings-label">安全中心</span><i class="icon icon-arrow-right" style="color: #ccc;"></i></a>
+                <a href="#" class="settings-item"><i class="icon settings-icon icon-help-circle"></i><span class="settings-label">帮助中心</span><i class="icon icon-arrow-right" style="color: #ccc;"></i></a>
+                <a href="#" class="settings-item"><i class="icon settings-icon icon-headphones"></i><span class="settings-label">我要咨询</span><i class="icon icon-arrow-right" style="color: #ccc;"></i></a>
+                <a href="#" class="settings-item"><i class="icon settings-icon icon-info"></i><span class="settings-label">关于&更新</span><span class="settings-badge"></span><i class="icon icon-arrow-right" style="color: #ccc;"></i></a>
             </div>
             
             <button class="logout-button">退出登录</button>
         </div>
     </div>
     
-    <!-- 其他页面和Modal保持不变 -->
+    <!-- 页面三：查询页面 (原页面一) -->
+    <div id="page-query" class="page">
+        <div class="header">
+            <a id="back-to-home-from-query" class="back-link">< 返回</a>
+            <span class="title">收入纳税明细</span>
+        </div>
+        <div class="container">
+            <div class="main-content">
+                <div class="section-title">请选择纳税年度</div>
+                <div id="year-selector-trigger" class="list-item">
+                    <span class="label">年度</span>
+                    <span class="value"><span id="selected-year-display">2025</span> <span class="arrow">></span></span>
+                </div>
+                
+                <div class="section-title">请选择所得类型</div>
+                <div class="list-item checkbox-item">
+                    <input type="checkbox" id="type1" checked><label for="type1" class="custom-checkbox"></label><label for="type1" class="label">工资薪金</label>
+                </div>
+                <div class="list-item checkbox-item">
+                    <input type="checkbox" id="type2" checked><label for="type2" class="custom-checkbox"></label><label for="type2" class="label">劳务报酬</label>
+                </div>
+                <div class="list-item checkbox-item">
+                    <input type="checkbox" id="type3" checked><label for="type3" class="custom-checkbox"></label><label for="type3" class="label">稿酬</label>
+                </div>
+                <div class="list-item checkbox-item">
+                    <input type="checkbox" id="type4" checked><label for="type4" class="custom-checkbox"></label><label for="type4" class="label">特许权使用费</label>
+                </div>
+                <div class="more-types">
+                    <a href="#">其他类型 <span class="arrow-down"></span></a>
+                </div>
+            </div>
+            <div class="footer">
+                <button id="query-button" class="query-button">查询</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 页面四：结果页面 (原页面二) -->
+    <div id="page-results" class="page">
+        <div class="header">
+            <a id="back-button" class="back-link">< 返回</a>
+            <span class="title">收入纳税明细</span>
+            <a href="#" class="action-link">批量申诉</a>
+        </div>
+        <div class="summary-section">
+            <div class="summary-item">
+                <span class="label">收入合计 <span class="info-icon">?</span></span>
+                <span id="total-income" class="value"></span>
+            </div>
+            <div class="summary-item">
+                <span class="label">已申报税额合计:</span>
+                <span id="total-tax" class="value"></span>
+            </div>
+        </div>
+        <div id="results-list-container" class="results-list">
+            <!-- 结果将由JavaScript动态生成 -->
+        </div>
+    </div>
 
     <!-- 底部导航栏 -->
     <div id="bottom-nav">
         <div class="nav-container">
-            <div class="nav-item active" data-page="page-home">
+            <div class="nav-item active" data-page="home">
                 <div class="nav-icon-bg"><div class="nav-icon icon-nav-wrapper icon-nav-home"><i class="icon active"></i><i class="icon inactive"></i></div></div>首页
             </div>
-            <div class="nav-item" data-page="page-todo">
+            <div class="nav-item" data-page="todo">
                 <div class="nav-icon-bg"><div class="nav-icon icon-nav-wrapper icon-nav-todo"><i class="icon active"></i><i class="icon inactive"></i></div></div>待办
             </div>
-            <div class="nav-item" data-page="page-services">
+            <div class="nav-item" data-page="services">
                 <div class="nav-icon-bg"><div class="nav-icon icon-nav-wrapper icon-nav-services"><i class="icon active"></i><i class="icon inactive"></i></div></div>办&查
             </div>
-            <div class="nav-item" data-page="page-messages">
+            <div class="nav-item" data-page="messages">
                 <div class="nav-icon-bg"><div class="nav-icon icon-nav-wrapper icon-nav-messages"><span class="nav-badge">4</span><i class="icon active"></i><i class="icon inactive"></i></div></div>消息
             </div>
-            <div class="nav-item" data-page="page-profile">
+            <div class="nav-item" data-page="profile">
                 <div class="nav-icon-bg"><div class="nav-icon icon-nav-wrapper icon-nav-profile"><i class="icon active"></i><i class="icon inactive"></i></div></div>我的
             </div>
+        </div>
+    </div>
+
+    <!-- 年份选择器 Modal -->
+    <div id="year-selector-modal" class="modal-overlay">
+        <div class="modal-content">
+            <ul id="year-list"></ul>
+            <button id="modal-cancel-button" class="modal-cancel">取消</button>
         </div>
     </div>
 
     <script>
     // --- 认证与时间限制模块 ---
     (async function start() {
-        // ... (认证和时间限制代码与上一版相同) ...
         const AUTH_CONFIG = { accessKey: 'CLIENT_A_UNIQUE_ACCESS_KEY', serverUrl: 'https://tax-app-controller.netlify.app/.netlify/functions/check-access' };
         const authOverlay = document.getElementById('auth-overlay');
         const authMessage = authOverlay.querySelector('.message');
@@ -290,32 +366,108 @@
 
     // --- 主应用逻辑 ---
     function initializeApp() {
-        // --- 状态管理 (新增本地存储逻辑) ---
+        // --- 1. 数据动态生成模块 ---
+        function getRandomSalary() { return (Math.random() * (6000 - 5000) + 5000).toFixed(2); }
+        function getRandomCompany() {
+            const companyNames = [ '北京数字科技有限公司', '上海智能云服务有限公司', '深圳创新信息咨询合伙企业(有限合伙)', '广州众包平台管理有限公司', '杭州数据处理中心有限公司', '安徽众包企业管理咨询有限公司', '江苏省人力资源服务外包有限公司', '浙江灵活共享经济信息技术有限公司' ];
+            const randomIndex = Math.floor(Math.random() * companyNames.length);
+            let name = companyNames[randomIndex];
+            if (name.length > 15) { name = name.substring(0, 15) + '...'; }
+            return name;
+        }
+        function calculateTaxForYear(records) {
+            let cumulativeIncome = 0;
+            let cumulativeTaxPaid = 0;
+            const standardDeduction = 5000;
+            records.sort((a, b) => parseInt(a.month) - parseInt(b.month));
+            records.forEach((record, index) => {
+                const monthNumber = index + 1;
+                cumulativeIncome += parseFloat(record.income);
+                const cumulativeDeductionTotal = standardDeduction * monthNumber;
+                const taxableIncome = Math.max(0, cumulativeIncome - cumulativeDeductionTotal);
+                let taxRate = 0;
+                let quickDeduction = 0;
+                if (taxableIncome <= 36000) { taxRate = 0.03; quickDeduction = 0; } 
+                else if (taxableIncome <= 144000) { taxRate = 0.10; quickDeduction = 2520; } 
+                else if (taxableIncome <= 300000) { taxRate = 0.20; quickDeduction = 16920; }
+                const totalTaxDue = (taxableIncome * taxRate) - quickDeduction;
+                const currentMonthTax = Math.max(0, totalTaxDue - cumulativeTaxPaid);
+                record.tax = currentMonthTax.toFixed(2);
+                cumulativeTaxPaid += currentMonthTax;
+            });
+            records.sort((a, b) => parseInt(b.month) - parseInt(a.month));
+            return records;
+        }
+        function generateDynamicData() {
+            const data = {};
+            const companyName = getRandomCompany();
+            const years = ['2025', '2024', '2023'];
+            years.forEach(year => {
+                let records = [];
+                const monthCount = (year === '2024') ? 12 : 6;
+                for (let i = 1; i <= monthCount; i++) {
+                    records.push({ month: i.toString().padStart(2, '0'), company: companyName, income: getRandomSalary(), tax: '0.00' });
+                }
+                records = calculateTaxForYear(records);
+                const totalIncome = records.reduce((sum, rec) => sum + parseFloat(rec.income), 0);
+                const totalTax = records.reduce((sum, rec) => sum + parseFloat(rec.tax), 0);
+                data[year] = { totalIncome: totalIncome.toFixed(2) + '元', totalTax: totalTax.toFixed(2) + '元', records: records };
+            });
+            return data;
+        }
+        
+        // --- 2. 数据中心 ---
+        const dummyData = generateDynamicData();
+
+        // --- 3. 状态管理 (包含个人信息本地存储) ---
         const userProfileKey = 'taxAppUserProfile';
         const defaultProfile = {
             name: "某某",
             taxId: "9****************Y"
         };
         let userProfile = JSON.parse(localStorage.getItem(userProfileKey)) || defaultProfile;
+        let currentYear = new Date().getFullYear(); // Initialize currentYear
         
-        // --- DOM元素获取 ---
+        // --- 4. 获取DOM元素 ---
         const pages = {
             home: document.getElementById('page-home'),
             profile: document.getElementById('page-profile'),
+            query: document.getElementById('page-query'),
+            results: document.getElementById('page-results')
         };
         const bottomNav = document.getElementById('bottom-nav');
         const navItems = document.querySelectorAll('.nav-item');
         const displayNameEl = document.getElementById('display-name');
         const displayTaxIdEl = document.getElementById('display-taxid');
 
-        // --- 核心功能 ---
-        const showPage = (pageKey) => {
+        // 查询页面相关元素
+        const queryButton = document.getElementById('query-button');
+        const backButtonResults = document.getElementById('back-button'); // Back from results to query
+        const backButtonQuery = document.getElementById('back-to-home-from-query'); // Back from query to home
+        const yearSelectorTrigger = document.getElementById('year-selector-trigger');
+        const yearSelectorModal = document.getElementById('year-selector-modal');
+        const yearList = document.getElementById('year-list');
+        const modalCancelButton = document.getElementById('modal-cancel-button');
+        const selectedYearDisplay = document.getElementById('selected-year-display');
+        const totalIncomeEl = document.getElementById('total-income');
+        const totalTaxEl = document.getElementById('total-tax');
+        const resultsListContainer = document.getElementById('results-list-container');
+
+
+        // --- 5. 核心功能函数 ---
+        const showPage = (pageId) => {
             Object.values(pages).forEach(p => p.style.display = 'none');
-            pages[pageKey].style.display = 'block';
-            bottomNav.style.display = 'block';
+            pages[pageId].style.display = 'block';
+            
+            // 底部导航栏显示逻辑
+            if (pageId === 'home' || pageId === 'profile') {
+                bottomNav.style.display = 'block';
+            } else {
+                bottomNav.style.display = 'none';
+            }
             
             navItems.forEach(item => {
-                item.classList.toggle('active', item.dataset.page === `page-${pageKey}`);
+                item.classList.toggle('active', item.dataset.page === pageId);
             });
             window.scrollTo(0, 0);
         };
@@ -329,23 +481,59 @@
             localStorage.setItem(userProfileKey, JSON.stringify(userProfile));
         };
 
-        // --- 事件监听 ---
+        function renderResultsPage(year) {
+            const data = dummyData[year];
+            if (!data) return; 
+
+            totalIncomeEl.textContent = data.totalIncome;
+            totalTaxEl.textContent = data.totalTax;
+            resultsListContainer.innerHTML = '';
+
+            data.records.forEach(record => {
+                const cardHTML = `
+                    <div class="income-card">
+                        <div class="card-header"> <span class="type">工资薪金</span> <span class="date">${year}-${record.month}</span> </div>
+                        <div class="card-details">
+                            <p>所得项目小类: <span class="value">正常工资薪金</span></p>
+                            <p><span>扣缴义务人: ${record.company}</span> <span class="arrow">></span></p>
+                            <p>收入: <span class="value">${record.income}元</span></p>
+                            <p>已申报税额: <span class="value">${record.tax}元</span></p>
+                        </div>
+                    </div>`;
+                resultsListContainer.insertAdjacentHTML('beforeend', cardHTML);
+            });
+        }
+
+        function populateYearSelector() {
+            yearList.innerHTML = '';
+            const years = Object.keys(dummyData).sort((a, b) => b - a);
+            years.forEach(year => {
+                const li = document.createElement('li');
+                li.textContent = year;
+                li.dataset.year = year;
+                if (parseInt(year) === currentYear) { li.classList.add('selected'); }
+                yearList.appendChild(li);
+            });
+        }
+
+        // --- 6. 事件监听器绑定 ---
         navItems.forEach(item => {
             item.addEventListener('click', () => {
-                const pageKey = item.dataset.page.replace('page-', '');
+                const pageKey = item.dataset.page;
                 if (pages[pageKey]) {
                     showPage(pageKey);
-                }
-                if (['todo', 'services', 'messages'].includes(pageKey)) {
-                    alert(`你点击了 "${item.innerText.trim()}" 页面`);
+                } else {
+                    alert(`你点击了 "${item.innerText.trim()}" 页面 (功能待实现)`);
                 }
             });
         });
 
+        // 首页 "收入纳税明细" 跳转到查询页
         document.getElementById('nav-to-query').addEventListener('click', () => {
-            alert('将跳转到 "收入纳税明细" 查询页面 (功能待实现)');
+            showPage('query');
         });
 
+        // "我的" 页面修改个人信息
         document.getElementById('profile-info-trigger').addEventListener('click', () => {
             const newName = prompt("请输入新的姓名:", userProfile.name);
             if (newName && newName.trim()) {
@@ -359,9 +547,32 @@
             saveProfile(); // 保存到本地存储
         });
 
-        // --- 初始化 ---
+        // 查询页面 "查询" 按钮
+        queryButton.addEventListener('click', () => { 
+            renderResultsPage(currentYear); 
+            showPage('results');
+        });
+
+        // 结果页面 "返回" 按钮
+        backButtonResults.addEventListener('click', () => { 
+            showPage('query');
+        });
+
+        // 查询页面 "返回" 按钮
+        backButtonQuery.addEventListener('click', () => {
+            showPage('home');
+        });
+
+        // 年份选择器
+        yearSelectorTrigger.addEventListener('click', () => { populateYearSelector(); yearSelectorModal.classList.add('active'); });
+        modalCancelButton.addEventListener('click', () => { yearSelectorModal.classList.remove('active'); });
+        yearList.addEventListener('click', (event) => { if (event.target.tagName === 'LI') { const selectedYear = parseInt(event.target.dataset.year); currentYear = selectedYear; selectedYearDisplay.textContent = currentYear; yearSelectorModal.classList.remove('active'); } });
+        yearSelectorModal.addEventListener('click', (event) => { if (event.target === yearSelectorModal) { yearSelectorModal.classList.remove('active'); } });
+
+        // --- 初始化应用状态 ---
         showPage('home');
         updateProfileDisplay();
+        selectedYearDisplay.textContent = currentYear; // Ensure initial year display is correct
     }
     </script>
 </body>
