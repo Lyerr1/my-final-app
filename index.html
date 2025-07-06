@@ -175,6 +175,7 @@
             border-radius: 12px;
             font-size: 12px;
             text-decoration: none;
+            white-space: nowrap; /* 防止换行 */
         }
         
         /* 卡片右下角人物图片样式 */
@@ -182,8 +183,9 @@
             position: absolute;
             right: 10px;
             bottom: 0;
-            width: 110px;
+            width: 110px; /* 调整大小 */
             height: auto;
+            flex-shrink: 0; /* 防止图片被压缩 */
         }
 
         .section-title { margin: 25px 4vw 10px; font-size: clamp(17px, 4.5vw, 19px); font-weight: bold; color: var(--text-color); }
@@ -286,11 +288,21 @@
         .nav-item.active:not(:first-child) .nav-icon { filter: invert(38%) sepia(98%) saturate(1354%) hue-rotate(195deg) brightness(93%) contrast(87%); }
         .nav-item .badge { position: absolute; top: 5px; right: 12px; background-color: #e74c3c; color: white; font-size: 10px; padding: 1px 5px; border-radius: 10px; border: 1px solid white; }
 
-        /* 媒体查询：窄屏幕适配 */
+        /* 媒体查询：窄屏幕适配 (包括垂直空间压缩) */
         @media (max-width: 360px) {
             .services-grid { grid-template-columns: repeat(2, 1fr); } /* 变为2列 */
             .deduction-card .fill-btn { flex-direction: column; gap: 5px; } /* 按钮内容垂直排列 */
             .deduction-card .fill-btn span:nth-child(2) { display: none; } /* 隐藏分隔符 */
+            
+            /* 新增的垂直空间压缩 */
+            .section-title { margin-top: 15px; margin-bottom: 5px; } /* 减少标题上下外边距 */
+            .main-card { padding: 15px; } /* 稍微减少主卡片内边距 */
+            .main-card .person-img { width: 90px; } /* 缩小人物图片 */
+            .main-card h2 { margin-bottom: 5px; } /* 减少主卡片标题底部外边距 */
+            .main-card p { margin-bottom: 15px; } /* 减少主卡片描述底部外边距 */
+            .deduction-card { padding: 10px; } /* 稍微减少扣除卡片内边距 */
+            .deduction-card-header { margin-bottom: 10px; } /* 减少扣除卡片头部底部外边距 */
+            .deduction-card p { margin-bottom: 10px; } /* 减少扣除卡片描述底部外边距 */
         }
     </style>
 </head>
@@ -349,7 +361,7 @@
         <div class="page" id="profile-page">
             <header class="profile-header">
                 <div class="avatar-container">
-                    <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIj48Y2lyY2xlIGN4PSI1MCIgY3k9IjUwIiByPSI1MCIgZmlsbD0iI2YwZjBmMCIvPjxwYXRoIGZpbGw9IiMzOTM5MzkiIGQ9Ik01MiwzMGMyLjIsMCA0LDEuOCA0LDRjMCwyLjItMS44LDQtNCw0cy00LTEuOC00LTQtMS44LTQtNC00UzQ0LDMyLjIsNDQsMzRjMCwyLjIsMS44LDQsNCw0aDRjMi4yLDAsNC0xLjgsNC00VjMwek01MiwxOGMtNi42LDAtMTIsNS40LTEyLDEyczEyLDUuNCwxMiwxMnMtNS40LDEyLTEyLDEycy0xMi01LjQtMTItMTJoMi40YzEuMywwLDIuNC0xLjEsMi40LTIuNHMtMS4xLTIuNC0yLjQtMi40SD四十Yy04LjgsMC0xNi03LjItMTYtMTZTNDAsMiw1MiwyejE2LDBjOC44LDAsMTYsNy4yLDE2LDE2SDY1LjZjLTEuMywwLTIuNCwxLjEtMi40LDIuNHMxLjEsMi40LDIuNCwyLjRIMjhWMzBjMC0yLjItMS44LTQtNC00cy00LDEuOC00LTRjMC0xMSw5LTIwLDIwLTIwaDRjMi4yLDAsNCwxLjgsNCw0djQuOEg1MnoiLz48cGF0aCBmaWxsPSIjMzQ0OTVlIiBkPSJNNzgsNjVjMC0xMS41LTkuNS0yMS0yMS0yM2MtMS41LS4yLTMtLjMtNC41LS4zcy0zLC4xLTQuNSwuM0MzNyw0NCwyNy41LDUzLjUsMjcuNSw2NWMwLDAsMCw0LjUsMCw4aDUwLjVDNzgsNjkuNSw3OCw2NSw3OCw2NXoiLz48cGF0aCBmaWxsPSIjMzkzOTM5IiBkPSJNNTIsMzQuOWMtNC40LDAtOCwzLjYtOCw4czMuNiw4LDgsOHM4LTMuNiw4LThTNTYuNCwzNC45LDUyLDM0Ljl6Ii8+PC9zdmc+" alt="avatar">
+                    <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIj48Y2lyY2xlIGN4PSI1MCIgY3k9IjUwIiByPSI1MCIgZmlsbD0iI2YwZjBmMCIvPjxwYXRoIGZpbGw9IiMzOTM5MzkiIGQ9Ik01MiwzMGMyLjIsMCA0LDEuOCA0LDRjMCwyLjItMS44LDQtNCw0cy00LTEuOC00LTQtMS44LTQtNC00UzQ0LDMyLjIsNDQsMzRjMCwyLjIsMS44LDQsNCw0aDRjMi4yLDAsNC0xLjIsNC0xLjJWMzB6TDUyLDE4Yy02LjYsMC0xMiwwLTExLjUsMTEuNXMyMS42LDUuNCwyMS42LDEyUzU0LjQsNzgsNDcsNzguNFY1NC45YzAtMi40LTIuMS00LjMtNC41LTQuNVMzOC41LDUyLjUsMzguNSw1NC45djIuNmMwLDguNi02LjYsMTUuMi0xNS4yLDE1LjJTOC4xLDYwLjQsOC4xLDUxLjhWMzBjMC0yLjItMS44LTQtNC00UzIuMywyNi4yLDIsMThjMC04LjgsNi4xLTE1LDIxLjUtMTZoNC43YzIuMiwwLDQsMS44LDQsNFYzMnoiLz48cGF0aCBmaWxsPSIjMzQ0OTVlIiBkPSJNNzgsNjVjMC0xMS41LTkuNS0yMS0yMS0yM2MtMS41LS4yLTMtLjMtNC41LS4zcy0zLC4xLTQuNSwuM0MzNyw0NCwyNy41LDUzLjUsMjcuNSw2NWMwLDAsMCw0LjUsMCw4aDUwLjVDNzgsNjkuNSw3OCw2NSw3OCw2NXoiLz48cGF0aCBmaWxsPSIjMzkzOTM5IiBkPSJNNTIsMzQuOWMtNC40LDAtOCwzLjYtOCw4czMuNiw4LDgsOHM4LTMuNiw4LThTNTYuNCwzNC45LDUyLDM0Ljl6Ii8+PC9zdmc+" alt="avatar">
                 </div>
             </header>
             <div class="profile-main-content">
