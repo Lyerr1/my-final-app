@@ -120,6 +120,7 @@
         .marquee-text-item {
             white-space: nowrap; /* 确保文本不换行 */
             padding-right: 30px; /* 复制文本之间的间隔 */
+            display: inline-block; /* 确保transform能作用 */
         }
 
         /* 跑马灯动画定义 */
@@ -131,7 +132,7 @@
         /* 主卡片样式 */
         .main-card {
             margin: 15px 4vw;
-            padding: 20px;
+            padding: 20px; /* 默认内边距 */
             background: linear-gradient(135deg, #eaf2ff, #f8fcff); /* 调整渐变结束颜色，使其与人物图片背景更融合 */
             border-radius: 12px;
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
@@ -148,7 +149,7 @@
 
         .main-card h2 {
             font-size: clamp(18px, 5vw, 20px);
-            margin: 0 0 8px 0; /* 略微减少底部外边距 */
+            margin: 0 0 6px 0; /* 略微减少底部外边距 */
             color: #333; /* 黑色字体 */
             font-weight: 600; /* 加粗 */
         }
@@ -156,7 +157,7 @@
         .main-card p {
             font-size: clamp(13px, 3.5vw, 14px);
             color: var(--text-light);
-            margin: 0 0 15px 0; /* 略微减少底部外边距 */
+            margin: 0 0 12px 0; /* 略微减少底部外边距 */
         }
 
         .main-card .start-btn {
@@ -199,7 +200,7 @@
         .deduction-card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; } /* 减少底部外边距 */
         .deduction-card-header .title { font-size: clamp(16px, 4.2vw, 18px); font-weight: bold; }
         .deduction-card-header .policy-link { font-size: clamp(12px, 3vw, 14px); background-color: rgba(255,255,255,0.2); padding: 5px 10px; border-radius: 15px; }
-        .deduction-card p { font-size: clamp(13px, 3.5vw, 15px); margin: 0 0 12px; } /* 减少底部外边距 */
+        .deduction-card p { font-size: clamp(13px, 3.5vw, 15px); margin: 0 0 10px; } /* 减少底部外边距 */
         
         /* “我要填报”按钮样式 */
         .deduction-card .fill-btn {
@@ -301,67 +302,73 @@
             .deduction-card .fill-btn span:nth-child(2) { display: none; } /* 隐藏分隔符 */
         }
 
-        /* 新增：媒体查询：短屏幕适配 (max-height) */
-        @media (max-height: 680px) {
+        /* 媒体查询：短屏幕适配 (max-height) */
+        @media (max-height: 700px) { /* 调整断点 */
             .page {
-                padding-bottom: 85px; /* 减少底部留白，更紧凑 */
+                padding-bottom: 80px; /* 进一步减少底部留白，更紧凑 */
             }
             .home-header {
-                padding-top: 10px; /* 压缩顶部Header垂直内边距 */
-                padding-bottom: 10px;
+                padding-top: 8px; /* 压缩顶部Header垂直内边距 */
+                padding-bottom: 8px;
             }
             .notification-bar {
-                margin-top: 8px; /* 压缩通知栏顶部外边距 */
-                padding: 8px 15px; /* 压缩通知栏垂直内边距 */
+                margin-top: 6px; /* 压缩通知栏顶部外边距 */
+                padding: 6px 15px; /* 压缩通知栏垂直内边距 */
             }
             .main-card {
-                padding: 15px; /* 压缩主卡片内边距 */
+                padding: 12px; /* 压缩主卡片内边距 */
             }
             .main-card .person-img {
-                width: 90px; /* 缩小人物图片 */
+                width: 80px; /* 进一步缩小人物图片 */
             }
             .main-card h2 {
-                font-size: clamp(17px, 4.5vw, 19px); /* 进一步缩小字体 */
-                margin-bottom: 4px; /* 更小行距 */
+                font-size: clamp(16px, 4vw, 18px); /* 进一步缩小字体 */
+                margin-bottom: 2px; /* 更小行距 */
             }
             .main-card p {
-                font-size: clamp(12px, 3vw, 13px); /* 进一步缩小字体 */
-                margin-bottom: 10px; /* 更小行距 */
+                font-size: clamp(11px, 2.5vw, 12px); /* 进一步缩小字体 */
+                margin-bottom: 8px; /* 更小行距 */
             }
             .main-card .start-btn {
-                padding: 8px 20px; /* 压缩按钮内边距 */
-                font-size: clamp(14px, 3.5vw, 15px); /* 进一步缩小字体 */
+                padding: 6px 18px; /* 压缩按钮内边距 */
+                font-size: clamp(13px, 3.5vw, 14px); /* 进一步缩小字体 */
             }
             .special-topic-btn {
-                padding: 3px 10px; /* 压缩专题页按钮内边距 */
-                font-size: 11px; /* 进一步缩小字体 */
-                top: 10px; /* 调整位置 */
-                right: 10px;
+                padding: 2px 8px; /* 压缩专题页按钮内边距 */
+                font-size: 10px; /* 进一步缩小字体 */
+                top: 8px; /* 调整位置 */
+                right: 8px;
             }
             .section-title {
                 margin-top: 10px; /* 进一步压缩标题顶部外边距 */
-                margin-bottom: 5px;
+                margin-bottom: 4px;
             }
             .deduction-card {
-                padding: 10px; /* 压缩扣除卡片内边距 */
+                padding: 8px; /* 压缩扣除卡片内边距 */
             }
             .deduction-card-header {
-                margin-bottom: 8px; /* 压缩扣除卡片头部外边距 */
+                margin-bottom: 6px; /* 压缩扣除卡片头部外边距 */
             }
             .deduction-card p {
-                margin-bottom: 8px; /* 压缩扣除卡片段落外边距 */
+                margin-bottom: 6px; /* 压缩扣除卡片段落外边距 */
             }
             .deduction-card .fill-btn {
-                padding: 8px; /* 压缩填报按钮内边距 */
-                font-size: clamp(14px, 3.5vw, 16px);
+                padding: 6px; /* 压缩填报按钮内边距 */
+                font-size: clamp(13px, 3.5vw, 15px);
             }
             .services-grid {
-                padding-top: 10px; /* 压缩服务网格垂直内边距 */
-                padding-bottom: 10px;
-                gap: 8px; /* 缩小网格间距 */
+                padding-top: 8px; /* 压缩服务网格垂直内边距 */
+                padding-bottom: 8px;
+                gap: 6px; /* 缩小网格间距 */
             }
             .service-item {
-                padding: 10px; /* 压缩服务项内边距 */
+                padding: 8px; /* 压缩服务项内边距 */
+            }
+            .service-item h3 {
+                font-size: 13px; /* 进一步缩小服务项标题字体 */
+            }
+            .service-item p {
+                font-size: 11px; /* 进一步缩小服务项描述字体 */
             }
         }
     </style>
@@ -425,7 +432,7 @@
         <div class="page" id="profile-page">
             <header class="profile-header">
                 <div class="avatar-container">
-                    <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIj48Y2lyY2xlIGN4PSI1MCIgY3k9IjUwIiByPSI1MCIgZmlsbD0iI2YwZjBmMCIvPjxwYXRoIGZpbGw9IiMzOTM5MzkiIGQ9Ik01MiwzMGMyLjIsMCA0LDEuOCA0LDRjMCwyLjItMS44LDQtNCw0cy00LTEuOC00LTQtMS44LTQtNC00UzQ0LDMyLjIsNDQsMzRjMCwyLjIsMS44LDQsNCw0aDRjMi4yLDAsNC0xLjIsNC0xLjJWMzB6TDUyLDE4Yy02LjYsMC0xMiwwLTExLjUsMTEuNXMyMS42LDUuNCwyxLjYsMTJTMDU0LjQsNzgsNDcsNzguNFY1NC45YzAtMi40LTIuMS00LjMtNC41LTQuNVMzOC41LDUyLjUsMzguNSw1NC45djIuNmMwLDguNi02LjYsMTUuMi0xNS4yLDE1LjJTOC4xLDYwLjQsOC4xLDUxLjhWMzBjMC0yLjItMS44LTQtNC00UzIuMywyNi4yLDIsMThjMC04LjgsNi4xLTE1LDIxLjUtMTZoNC43YzIuMiwwLDQsMS44LDQsNFYzMnoiLz48cGF0aCBmaWxsPSIjMzQ0OTVlIiBkPSJNNzgsNjVjMC0xMS41LTkuNS0yMS0yMS0yM2MtMS41LS4yLTMtLjMtNC41LS4zcy0zLC4xLTQuNSwuM0MzNyw0NCwyNy41LDUzLjUsMjcuNSw2NWMwLDAsMCw0LjUsMCw4aDUwLjVDNzgsNjkuNSw3OCw2NSw3OCw2NXoiLz48cGF0aCBmaWxsPSIjMzkzOTM5IiBkPSJNNTIsMzQuOWMtNC40LDAtOCwzLjYtOCw4czMuNiw4LDgsOHM4LTMuNiw4LThTNTYuNCwzNC45LDUyLDM0Ljl6Ii8+PC9zdmc+" alt="avatar">
+                    <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIj48Y2lyY2xlIGN4PSI1MCIgY3k9IjUwIiByPSI1MCIgZmlsbD0iI2YwZjBmMCIvPjxwYXRoIGZpbGw9IiMzOTM5MzkiIGQ9Ik01MiwzMGMyLjIsMCA0LDEuOCA0LDRjMCwyLjItMS44LDQtNCw0cy00LTEuOC00LTQtMS44LTQtNC00UzQ0LDMyLjIsNDQsMzRjMCwyLjIsMS44LDQsNCw0aDRjMi4yLDAsNC0xLjIsNC0xLjJWMzB6TDUyLDE4Yy02LjYsMC0xMiwwLTExLjUsMTEuNXMyMS42LDUuNCwyMS42LDEyUzU0LjQsNzgsNDcsNzguNFY1NC45YzAtMi40LTIuMS00LjMtNC41LTQuNVMzOC41LDUyLjUsMzguNSw1NC45djIuNmMwLDguNi02LjYsMTUuMi0xNS4yLDE1LjJTOC4xLDYwLjQsOC4xLDUxLjhWMzBjMC0yLjItMS44LTQtNC00UzIuMywyNi4yLDIsMThjMC04LjgsNi4xLTE1LDIxLjUtMTZoNC43YzIuMiwwLDQsMS44LDQsNFYzMnoiLz48cGF0aCBmaWxsPSIjMzQ0OTVlIiBkPSJNNzgsNjVjMC0xMS41LTkuNS0yMS0yMS0yM2MtMS41LS4yLTMtLjMtNC41LS4zcy0zLC4xLTQuNSwuM0MzNyw0NCwyNy41LDUzLjUsMjcuNSw2NWMwLDAsMCw0LjUsMCw4aDUwLjVDNzgsNjkuNSw3OCw2NSw3OCw2NXoiLz48cGF0aCBmaWxsPSIjMzkzOTM5IiBkPSJNNTIsMzQuOWMtNC40LDAtOCwzLjYtOCw4czMuNiw4LDgsOHM4LTMuNiw4LThTNTYuNCwzNC45LDUyLDM0Ljl6Ii8+PC9zdmc+" alt="avatar">
                 </div>
             </header>
             <div class="profile-main-content">
