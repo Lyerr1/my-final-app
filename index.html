@@ -109,7 +109,6 @@
             white-space: nowrap; /* 文本不换行 */
             padding-right: 15px; /* 文本和箭头之间的间距 */
             box-sizing: border-box;
-            display: flex; /* 让marquee-content作为flex item */
         }
 
         .marquee-content {
@@ -119,7 +118,7 @@
 
         .marquee-text-item {
             white-space: nowrap; /* 确保文本不换行 */
-            padding-right: 30px; /* 复制文本之间的间隔 */
+            padding-right: 80px; /* 关键：确保文本之间有足够间隔，以实现无缝循环 */
             display: inline-block; /* 确保transform能作用 */
         }
 
@@ -234,14 +233,65 @@
             white-space: nowrap;
         }
 
-        .services-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; padding: 15px 4vw; }
-        .service-item { background-color: var(--card-bg); border-radius: 12px; padding: 15px; text-align: left; box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
-        .service-item .icon-bg { width: 32px; height: 32px; border-radius: 8px; display: flex; justify-content: center; align-items: center; margin-bottom: 8px; color: white; font-size: 20px; }
-        .icon-bg.blue { background-color: #5587e2; } .icon-bg.purple { background-color: #9b59b6; } .icon-bg.green { background-color: #2ecc71; } .icon-bg.gray { background-color: #bdc3c7; }
-        .service-item h3 { font-size: 14px; margin: 0 0 5px; color: var(--text-color); }
-        .service-item p { font-size: 12px; color: var(--text-light); margin: 0; }
-        .service-item .action { margin-top: 10px; font-size: 13px; color: #5587e2; }
+        /* --- 新增：服务卡片容器 (水平滚动) --- */
+        .services-container {
+            margin: 0 4vw; /* 外部左右间距 */
+            overflow-x: auto; /* 允许水平滚动 */
+            -webkit-overflow-scrolling: touch; /* iOS上的流畅滚动 */
+            scrollbar-width: none; /* 隐藏Firefox滚动条 */
+            padding-bottom: 15px; /* 滚动条可能占用的空间 */
+        }
+        .services-container::-webkit-scrollbar {
+            display: none; /* 隐藏Webkit浏览器滚动条 */
+        }
+
+        .services-grid {
+            display: flex; /* Flex布局 */
+            flex-wrap: nowrap; /* 不换行，保持一行 */
+            padding: 15px 0; /* 内部垂直间距 */
+        }
+        .service-item {
+            flex-shrink: 0; /* 防止项目收缩 */
+            width: 90px; /* 每项固定宽度 */
+            margin-right: 10px; /* 项目之间间距 */
+            background-color: var(--card-bg);
+            border-radius: 12px;
+            padding: 15px 10px; /* 内部内边距 */
+            text-align: center; /* 内容居中 */
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+            display: flex; /* 内部也用Flex垂直堆叠 */
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+        }
+        .service-item:last-child {
+            margin-right: 0; /* 最后一个项目不需要右边距 */
+        }
         
+        .service-item .service-icon-img {
+            width: 32px;
+            height: 32px;
+            object-fit: contain; /* 保持图片比例 */
+            margin-bottom: 5px; /* 图标下方间距 */
+        }
+        .service-item h3 {
+            font-size: clamp(13px, 3.5vw, 14px); /* 流式字体 */
+            margin: 0 0 3px 0; /* 标题下方间距 */
+            color: var(--text-color);
+        }
+        .service-item p {
+            font-size: clamp(11px, 2.8vw, 12px); /* 流式字体 */
+            color: var(--text-light);
+            margin: 0;
+            line-height: 1.2;
+        }
+        .service-item .action {
+            margin-top: 5px; /* 按钮上方间距 */
+            font-size: clamp(12px, 3vw, 13px);
+            color: #5587e2;
+        }
+
+
         /* --- 个人中心页样式 --- */
         #profile-page { display: none; background-color: #f4f6f9; }
         .profile-header { background: linear-gradient(to bottom, #5d9cec, #a0c7f8); padding: 40px 20px 80px; text-align: center; position: relative; }
@@ -302,7 +352,7 @@
             .deduction-card .fill-btn span:nth-child(2) { display: none; } /* 隐藏分隔符 */
         }
 
-        /* 媒体查询：短屏幕适配 (max-height) */
+        /* 媒体查询：短屏幕适配 (max-height) - 最激进的压缩 */
         @media (max-height: 700px) { /* 调整断点 */
             .page {
                 padding-bottom: 80px; /* 进一步减少底部留白，更紧凑 */
@@ -342,6 +392,7 @@
             .section-title {
                 margin-top: 10px; /* 进一步压缩标题顶部外边距 */
                 margin-bottom: 4px;
+                font-size: clamp(15px, 4vw, 17px); /* 进一步缩小字体 */
             }
             .deduction-card {
                 padding: 8px; /* 压缩扣除卡片内边距 */
@@ -356,7 +407,7 @@
                 padding: 6px; /* 压缩填报按钮内边距 */
                 font-size: clamp(13px, 3.5vw, 15px);
             }
-            .services-grid {
+            .services-grid { /* Applies to services-grid within services-container */
                 padding-top: 8px; /* 压缩服务网格垂直内边距 */
                 padding-bottom: 8px;
                 gap: 6px; /* 缩小网格间距 */
@@ -369,6 +420,87 @@
             }
             .service-item p {
                 font-size: 11px; /* 进一步缩小服务项描述字体 */
+            }
+        }
+
+        /* 针对 iPhone SE (第一代) 等极短屏幕的额外优化 */
+        @media (max-height: 600px) { /* 更低的断点 */
+            .page {
+                padding-bottom: 70px; /* 底部导航栏更贴近底部 */
+            }
+            .home-header {
+                padding-top: 5px;
+                padding-bottom: 5px;
+            }
+            .notification-bar {
+                margin-top: 4px;
+                padding: 4px 10px;
+            }
+            .main-card {
+                padding: 8px;
+            }
+            .main-card .person-img {
+                width: 70px; /* 再次缩小人物图片 */
+            }
+            .main-card h2 {
+                font-size: clamp(14px, 3.5vw, 16px);
+                margin-bottom: 1px;
+            }
+            .main-card p {
+                font-size: clamp(9px, 2vw, 10px);
+                margin-bottom: 5px;
+            }
+            .main-card .start-btn {
+                padding: 4px 15px;
+                font-size: clamp(12px, 3vw, 12px);
+            }
+            .special-topic-btn {
+                padding: 1px 5px;
+                font-size: 8px;
+                top: 6px;
+                right: 6px;
+            }
+            .section-title {
+                margin-top: 6px;
+                margin-bottom: 3px;
+                font-size: clamp(14px, 3.8vw, 16px);
+            }
+            .deduction-card {
+                padding: 6px;
+            }
+            .deduction-card-header {
+                margin-bottom: 4px;
+            }
+            .deduction-card p {
+                margin-bottom: 4px;
+            }
+            .deduction-card .fill-btn {
+                padding: 5px;
+                font-size: clamp(12px, 3vw, 14px);
+            }
+            .services-grid {
+                padding-top: 6px;
+                padding-bottom: 6px;
+                gap: 4px;
+            }
+            .service-item {
+                padding: 6px;
+                width: 80px; /* 进一步缩小卡片宽度 */
+            }
+            .service-item .service-icon-img {
+                width: 26px;
+                height: 26px;
+                margin-bottom: 2px;
+            }
+            .service-item h3 {
+                font-size: 11px;
+            }
+            .service-item p {
+                font-size: 9px;
+            }
+            .service-item .action {
+                font-size: 10px;
+                margin-top: 3px;
             }
         }
     </style>
@@ -415,16 +547,34 @@
             </div>
             
             <h3 class="section-title">重点服务推荐</h3>
-            <div class="deduction-card">
-                <div class="deduction-card-header"><div class="title">专项附加扣除</div><div class="policy-link">相关政策 ></div></div>
-                <p>若符合条件，您可点击下方填报</p>
-                <button class="fill-btn"><span>👫 超1亿人参与</span><span>|</span><span>我要填报</span></button>
-            </div>
-            <div class="services-grid">
-                <div class="service-item"><div class="icon-bg blue">🧾</div><h3>综合所得年度汇算</h3><p>申报与查询综合所...</p><div class="action">去申报</div></div>
-                <div class="service-item"><div class="icon-bg purple">🆔</div><h3>收入纳税明细</h3><p>查看个人所得税纳...</p><div class="action">去查询</div></div>
-                <div class="service-item"><div class="icon-bg green">📄</div><h3>纳税记录开具</h3><p>生成或查看纳税记...</p><div class="action">去开具</div></div>
-                <div class="service-item"><div class="icon-bg gray">⚙️</div><h3>更多</h3><p>设置查询常用功...</p></div>
+            <!-- 新增容器，用于实现水平滚动 -->
+            <div class="services-container">
+                <div class="services-grid">
+                    <div class="service-item">
+                        <img src="imge/20c6fe0ae96a30406b0dfad33a92f0d.jpg" alt="综合所得年度汇算" class="service-icon-img">
+                        <h3>综合所得年度汇算</h3>
+                        <p>申报与查询综合所...</p>
+                        <div class="action">去申报</div>
+                    </div>
+                    <div class="service-item">
+                        <img src="imge/dd1f40470b3f6a459287618c7a4cdbd.jpg" alt="收入纳税明细" class="service-icon-img">
+                        <h3>收入纳税明细</h3>
+                        <p>查看个人所得税纳...</p>
+                        <div class="action">去查询</div>
+                    </div>
+                    <div class="service-item">
+                        <img src="imge/586bf809e01ba420ffa95f1ff008fda.jpg" alt="纳税记录开具" class="service-icon-img">
+                        <h3>纳税记录开具</h3>
+                        <p>生成或查看纳税记...</p>
+                        <div class="action">去开具</div>
+                    </div>
+                    <div class="service-item">
+                        <img src="imge/a9dc987524e171512508f81557ef871.jpg" alt="更多" class="service-icon-img">
+                        <h3>更多</h3>
+                        <p>设置查询常用功...</p>
+                        <!-- 原图这里没有“去...”的action文字，保持一致 -->
+                    </div>
+                </div>
             </div>
         </div>
 
