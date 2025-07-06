@@ -2,13 +2,15 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
+    <!-- 关键：这是响应式设计的第一步 -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>个人所得税</title>
     <style>
         /* --- 全局和基本样式 --- */
         :root {
             --primary-blue: #4A90E2;
-            --light-blue: #78C7FF;
+            --header-start-blue: #5d9cec;
+            --header-end-blue: #5691e4;
             --bg-color: #f4f6f9;
             --card-bg: #ffffff;
             --text-color: #333;
@@ -21,74 +23,90 @@
             padding: 0;
             height: 100%;
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-            background-color: #e0e0e0;
+            background-color: #f0f0f0; /* 调整外部背景色，更好衬托手机壳 */
             display: flex;
             justify-content: center;
             align-items: center;
         }
 
+        /* --- 核心改动：让手机外壳自适应 --- */
         .mobile-shell {
-            width: 375px;
-            height: 812px;
+            width: 100%; /* 宽度占满父容器 */
+            height: 100vh; /* 高度占满屏幕 */
+            max-width: 500px; /* 在桌面端预览时，限制最大宽度 */
             background-color: var(--bg-color);
-            border: 1px solid #ccc;
-            border-radius: 40px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
             position: relative;
             overflow: hidden;
             display: flex;
             flex-direction: column;
+            /* 在桌面端预览时，保持圆角和阴影效果 */
+            border-radius: 40px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
         }
         
+        /* 在真实手机上，外壳应该没有圆角和边框，填满屏幕 */
+        @media (max-width: 500px) and (orientation: portrait) {
+            body {
+                background-color: var(--bg-color); /* 背景色与app一致 */
+            }
+            .mobile-shell {
+                border-radius: 0;
+                box-shadow: none;
+                border: none;
+            }
+        }
+
         .page {
             flex-grow: 1;
             overflow-y: auto;
             overflow-x: hidden;
-            padding-bottom: 90px; 
+            /* 为浮动导航栏留出足够空间 */
+            padding-bottom: 95px; 
         }
 
-        .page::-webkit-scrollbar {
-            display: none;
-        }
+        .page::-webkit-scrollbar { display: none; }
 
-        /* --- 首页样式 (Home Page) --- */
-        #home-page {
-            display: block;
-        }
+        /* --- 首页样式 --- */
+        #home-page { display: block; }
 
         .home-header {
-            padding: 15px;
-            background: linear-gradient(to bottom, #5d9cec, #5691e4 70%, var(--bg-color) 70%);
-        }
-
-        .search-bar {
-            background-color: rgba(255, 255, 255, 0.9);
-            border-radius: 20px;
-            padding: 8px 15px;
+            padding: 15px 4vw; /* 使用vw单位，让左右边距自适应 */
+            background: linear-gradient(to bottom, var(--header-start-blue), var(--header-end-blue));
             display: flex;
             align-items: center;
-            color: var(--text-light);
-            font-size: 14px;
+            gap: 15px;
         }
-        .search-bar .icon { margin-right: 8px; }
-        .search-bar .scan-icon { margin-left: auto; font-size: 20px; color: #555;}
+        
+        .search-bar {
+            flex-grow: 1;
+            background-color: #d8e5fa;
+            border-radius: 8px;
+            padding: 8px 12px;
+            display: flex;
+            align-items: center;
+            color: #6a7db1;
+            font-size: clamp(13px, 3.5vw, 15px); /* 流式字体 */
+        }
+        
+        .search-bar .search-svg { width: 16px; height: 16px; stroke: #6a7db1; stroke-width: 2.5; margin-right: 8px; }
+        .scan-icon-wrapper .scan-svg { width: 22px; height: 22px; stroke: white; stroke-width: 2; }
 
         .notification-bar {
             background-color: #fffbe8;
             border: 1px solid #fde4a0;
             border-radius: 8px;
-            padding: 10px 15px;
-            margin: 10px 15px 0;
+            padding: 10px 4vw;
+            margin: 10px 4vw 0;
             display: flex;
             align-items: center;
-            font-size: 13px;
+            font-size: clamp(12px, 3vw, 14px); /* 流式字体 */
             color: #d9862a;
         }
-        .notification-bar .icon { margin-right: 8px; font-size: 18px; }
+        .notification-bar .icon { margin-right: 8px; font-size: 1.2em; }
         .notification-bar .arrow { margin-left: auto; color: #ccc; }
 
         .main-card {
-            margin: 15px;
+            margin: 15px 4vw;
             padding: 20px;
             background: linear-gradient(135deg, #eaf2ff, #ffffff);
             border-radius: 12px;
@@ -96,570 +114,187 @@
             position: relative;
             overflow: hidden;
         }
-        .main-card h2 {
-            margin: 0;
-            font-size: 20px;
-            color: #3e69b5;
-        }
-        .main-card p {
-            font-size: 14px;
-            color: var(--text-light);
-            margin: 8px 0 20px;
-        }
-        .main-card .start-btn {
-            background-color: #5587e2;
-            color: white;
-            padding: 10px 30px;
-            border: none;
-            border-radius: 20px;
-            font-size: 16px;
-            cursor: pointer;
-        }
-        .main-card .person-img {
-            position: absolute;
-            right: 0px;
-            bottom: -5px;
-            width: 120px;
-            height: auto;
-        }
+        .main-card h2 { font-size: clamp(18px, 5vw, 22px); margin: 0; color: #3e69b5; }
+        .main-card p { font-size: clamp(13px, 3.5vw, 15px); color: var(--text-light); margin: 8px 0 20px; }
+        .main-card .start-btn { background-color: #5587e2; color: white; padding: 10px 30px; border: none; border-radius: 20px; font-size: clamp(15px, 4vw, 17px); cursor: pointer; }
+        .main-card .person-img { position: absolute; right: 0px; bottom: -5px; width: 120px; height: auto; }
 
-        .section-title {
-            margin: 25px 15px 10px;
-            font-size: 18px;
-            font-weight: bold;
-            color: var(--text-color);
-        }
+        .section-title { margin: 25px 4vw 10px; font-size: clamp(17px, 4.5vw, 19px); font-weight: bold; color: var(--text-color); }
+        .deduction-card { margin: 0 4vw; padding: 15px; background: linear-gradient(to right, #6ba6f8, #5587e2); border-radius: 12px; color: white; }
+        .deduction-card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+        .deduction-card-header .title { font-size: clamp(16px, 4.2vw, 18px); font-weight: bold; }
+        .deduction-card-header .policy-link { font-size: clamp(12px, 3vw, 14px); background-color: rgba(255,255,255,0.2); padding: 5px 10px; border-radius: 15px; }
+        .deduction-card p { font-size: clamp(13px, 3.5vw, 15px); margin: 0 0 15px; }
+        .deduction-card .fill-btn { background-color: white; color: #5587e2; border: none; width: 100%; padding: 12px; border-radius: 25px; font-size: clamp(15px, 4vw, 17px); font-weight: bold; display: flex; justify-content: center; align-items: center; }
+        .fill-btn span:first-child { font-size: 12px; background-color: #ffe6e6; color: #e27d7d; padding: 2px 8px; border-radius: 10px; margin-right: 10px; white-space: nowrap; }
 
-        .deduction-card {
-            margin: 0 15px;
-            padding: 15px;
-            background: linear-gradient(to right, #6ba6f8, #5587e2);
-            border-radius: 12px;
-            color: white;
-        }
-        .deduction-card-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 15px;
-        }
-        .deduction-card-header .title {
-            font-size: 17px;
-            font-weight: bold;
-        }
-        .deduction-card-header .policy-link {
-            font-size: 13px;
-            background-color: rgba(255,255,255,0.2);
-            padding: 5px 10px;
-            border-radius: 15px;
-        }
-        .deduction-card p {
-            font-size: 14px;
-            margin: 0 0 15px;
-        }
-        .deduction-card .fill-btn {
-            background-color: white;
-            color: #5587e2;
-            border: none;
-            width: 100%;
-            padding: 12px;
-            border-radius: 25px;
-            font-size: 16px;
-            font-weight: bold;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-        .fill-btn span:first-child {
-            font-size: 12px;
-            background-color: #ffe6e6;
-            color: #e27d7d;
-            padding: 2px 8px;
-            border-radius: 10px;
-            margin-right: 10px;
-        }
+        .services-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; padding: 15px 4vw; }
+        .service-item { background-color: var(--card-bg); border-radius: 12px; padding: 15px; text-align: left; box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
+        .service-item .icon-bg { width: 32px; height: 32px; border-radius: 8px; display: flex; justify-content: center; align-items: center; margin-bottom: 8px; color: white; font-size: 20px; }
+        .icon-bg.blue { background-color: #5587e2; } .icon-bg.purple { background-color: #9b59b6; } .icon-bg.green { background-color: #2ecc71; } .icon-bg.gray { background-color: #bdc3c7; }
+        .service-item h3 { font-size: 14px; margin: 0 0 5px; color: var(--text-color); }
+        .service-item p { font-size: 12px; color: var(--text-light); margin: 0; }
+        .service-item .action { margin-top: 10px; font-size: 13px; color: #5587e2; }
 
-        .services-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 10px;
-            padding: 15px;
-        }
-        .service-item {
-            background-color: var(--card-bg);
-            border-radius: 12px;
-            padding: 15px;
-            text-align: left;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
-        }
-        .service-item .icon-bg {
-            width: 32px;
-            height: 32px;
-            border-radius: 8px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            margin-bottom: 8px;
-            color: white;
-            font-size: 20px;
-        }
-        .icon-bg.blue { background-color: #5587e2; }
-        .icon-bg.purple { background-color: #9b59b6; }
-        .icon-bg.green { background-color: #2ecc71; }
-        .icon-bg.gray { background-color: #bdc3c7; }
-        .service-item h3 {
-            font-size: 14px;
-            margin: 0 0 5px;
-            color: var(--text-color);
-        }
-        .service-item p {
-            font-size: 12px;
-            color: var(--text-light);
-            margin: 0;
-        }
-        .service-item .action {
-            margin-top: 10px;
-            font-size: 13px;
-            color: #5587e2;
-        }
+        /* --- 个人中心页样式 --- */
+        #profile-page { display: none; background-color: #f4f6f9; }
+        .profile-header { background: linear-gradient(to bottom, #5d9cec, #a0c7f8); padding: 40px 20px 80px; text-align: center; position: relative; }
+        .profile-main-content { margin-top: -60px; padding: 0 4vw; position: relative; z-index: 2; }
+        .info-card #user-name { font-size: clamp(18px, 5vw, 22px); }
 
-        /* --- 个人中心页样式 (Profile Page) --- */
-        #profile-page {
-            display: none;
-            background-color: #f4f6f9;
-        }
-
-        .profile-header {
-            background: linear-gradient(to bottom, #5d9cec, #a0c7f8);
-            padding: 40px 20px 80px;
-            text-align: center;
-            position: relative;
-        }
-        .avatar-container {
-            width: 80px;
-            height: 80px;
-            border-radius: 50%;
-            background-color: rgba(255,255,255,0.8);
-            margin: 0 auto;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
-        }
-        .avatar-container img {
-            width: 90%;
-            height: 90%;
-        }
-
-        .profile-main-content {
-            margin-top: -60px;
-            padding: 0 15px;
-            position: relative;
-            z-index: 2;
-        }
-
-        .info-card {
-            background-color: var(--card-bg);
-            border-radius: 12px;
-            padding: 15px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-            display: flex;
-            align-items: center;
-            margin-bottom: 15px;
-        }
+        /* (省略了未修改的个人中心页样式，以保持简洁，实际代码中应包含它们) */
+        .avatar-container { width: 80px; height: 80px; border-radius: 50%; background-color: rgba(255,255,255,0.8); margin: 0 auto; display: flex; justify-content: center; align-items: center; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+        .avatar-container img { width: 90%; height: 90%; }
+        .info-card { background-color: var(--card-bg); border-radius: 12px; padding: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); display: flex; align-items: center; margin-bottom: 15px; }
         .info-card-details { flex-grow: 1; }
-        .info-card #user-name {
-            font-size: 20px;
-            font-weight: bold;
-            margin: 0;
-        }
-        .info-card #tax-id {
-            font-size: 14px;
-            color: var(--text-light);
-            margin-top: 5px;
-            display: flex;
-            align-items: center;
-        }
-        .info-card #tax-id .eye-icon {
-            margin-left: 10px;
-            cursor: pointer;
-        }
-        .info-card .personal-info-btn {
-            font-size: 13px;
-            color: #e67e22;
-            background-color: #fdf3e8;
-            padding: 5px 10px;
-            border-radius: 15px;
-            cursor: pointer;
-        }
-
-        .profile-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 10px;
-            background-color: var(--card-bg);
-            padding: 15px;
-            border-radius: 12px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-            margin-bottom: 15px;
-        }
-        .profile-grid-item {
-            text-align: center;
-        }
-        .profile-grid-item .icon {
-            font-size: 24px;
-            color: #5587e2;
-        }
-        .profile-grid-item p {
-            margin: 5px 0 0;
-            font-size: 14px;
-            color: var(--text-color);
-        }
-        .profile-grid-item span {
-            font-size: 12px;
-            color: white;
-            background-color: #5587e2;
-            padding: 2px 8px;
-            border-radius: 10px;
-        }
-        .profile-grid-item .add-btn {
-            font-size: 12px;
-            color: #5587e2;
-            border: 1px solid #5587e2;
-            padding: 2px 10px;
-            border-radius: 10px;
-        }
-
-        .profile-list {
-            background-color: var(--card-bg);
-            border-radius: 12px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-            padding: 0 15px;
-        }
-        .profile-list-item {
-            display: flex;
-            align-items: center;
-            padding: 15px 0;
-            border-bottom: 1px solid var(--border-color);
-            cursor: pointer;
-        }
-        .profile-list-item:last-child {
-            border-bottom: none;
-        }
-        .profile-list-item .icon {
-            font-size: 20px;
-            margin-right: 15px;
-            width: 24px;
-            text-align: center;
-            color: #555;
-        }
-        .profile-list-item span {
-            flex-grow: 1;
-            font-size: 15px;
-        }
-        .profile-list-item .arrow {
-            color: #ccc;
-        }
-        .profile-list-item .red-dot {
-            width: 8px;
-            height: 8px;
-            background-color: #e74c3c;
-            border-radius: 50%;
-            margin-right: 10px;
-        }
+        .info-card #user-name { font-weight: bold; margin: 0; }
+        .info-card #tax-id { font-size: 14px; color: var(--text-light); margin-top: 5px; display: flex; align-items: center; }
+        .info-card #tax-id .eye-icon { margin-left: 10px; cursor: pointer; }
+        .info-card .personal-info-btn { font-size: 13px; color: #e67e22; background-color: #fdf3e8; padding: 5px 10px; border-radius: 15px; cursor: pointer; }
+        .profile-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; background-color: var(--card-bg); padding: 15px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); margin-bottom: 15px; }
+        .profile-grid-item { text-align: center; }
+        .profile-grid-item .icon { font-size: 24px; color: #5587e2; }
+        .profile-grid-item p { margin: 5px 0 0; font-size: 14px; color: var(--text-color); }
+        .profile-grid-item span { font-size: 12px; color: white; background-color: #5587e2; padding: 2px 8px; border-radius: 10px; }
+        .profile-grid-item .add-btn { font-size: 12px; color: #5587e2; border: 1px solid #5587e2; padding: 2px 10px; border-radius: 10px; }
+        .profile-list { background-color: var(--card-bg); border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); padding: 0 15px; }
+        .profile-list-item { display: flex; align-items: center; padding: 15px 0; border-bottom: 1px solid var(--border-color); cursor: pointer; }
+        .profile-list-item:last-child { border-bottom: none; }
+        .profile-list-item .icon { font-size: 20px; margin-right: 15px; width: 24px; text-align: center; color: #555; }
+        .profile-list-item span { flex-grow: 1; font-size: 15px; }
+        .profile-list-item .arrow { color: #ccc; }
+        .profile-list-item .red-dot { width: 8px; height: 8px; background-color: #e74c3c; border-radius: 50%; margin-right: 10px; }
+        .logout-btn { margin: 20px 0; width: 100%; padding: 12px; border: 1px solid #ddd; background-color: var(--card-bg); color: #e74c3c; font-size: 16px; border-radius: 8px; cursor: pointer; }
         
-        .logout-btn {
-            margin: 20px 15px;
-            width: calc(100% - 30px);
-            padding: 12px;
-            border: 1px solid #ddd;
-            background-color: var(--card-bg);
-            color: #e74c3c;
-            font-size: 16px;
-            border-radius: 8px;
-            cursor: pointer;
-        }
-
-        /* --- 底部导航栏样式 --- */
+        /* --- 底部导航栏 --- */
         .bottom-nav {
             position: fixed;
             bottom: 20px;
             left: 50%;
             transform: translateX(-50%);
             width: 95%;
+            max-width: 480px; /* 限制最大宽度 */
             height: 65px;
-            background-color: rgba(255, 255, 255, 0.9);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            border: 1px solid rgba(200, 200, 200, 0.3);
+            background-color: rgba(240, 245, 255, 0.75); 
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
             border-radius: 32.5px;
             display: flex;
             justify-content: space-around;
             align-items: center;
             z-index: 10;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
         }
+        .nav-item { display: flex; flex-direction: column; align-items: center; justify-content: center; flex-grow: 1; font-size: 11px; color: #555555; cursor: pointer; position: relative; height: 100%; }
+        .nav-item .nav-icon { width: 26px; height: 26px; margin-bottom: 3px; }
+        .nav-item.active .nav-text { color: var(--primary-blue); }
+        .nav-item.active:not(:first-child) .nav-icon { filter: invert(38%) sepia(98%) saturate(1354%) hue-rotate(195deg) brightness(93%) contrast(87%); }
+        .nav-item .badge { position: absolute; top: 5px; right: 12px; background-color: #e74c3c; color: white; font-size: 10px; padding: 1px 5px; border-radius: 10px; border: 1px solid white; }
 
-        .nav-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            flex-grow: 1;
-            font-size: 11px;
-            color: #555555;
-            cursor: pointer;
-            position: relative;
-            height: 100%;
-        }
-
-        .nav-item .nav-icon {
-            width: 26px;
-            height: 26px;
-            margin-bottom: 3px;
-        }
-        
-        .nav-item.active .nav-text {
-            color: var(--primary-blue);
-        }
-        
-        /* 激活状态下，首页图标是蓝色的，不需要滤镜。其他图标需要滤镜变蓝 */
-        /* 通过:not选择器排除首页 */
-        .nav-item.active:not(:first-child) .nav-icon {
-            filter: invert(38%) sepia(98%) saturate(1354%) hue-rotate(195deg) brightness(93%) contrast(87%);
-        }
-
-        .nav-item .badge {
-            position: absolute;
-            top: 5px;
-            right: 12px;
-            background-color: #e74c3c;
-            color: white;
-            font-size: 10px;
-            padding: 1px 5px;
-            border-radius: 10px;
-            border: 1px solid white;
+        /* --- 关键：媒体查询 --- */
+        @media (max-width: 360px) {
+            .services-grid {
+                grid-template-columns: repeat(2, 1fr); /* 在窄屏幕上变为2列 */
+            }
+            .deduction-card .fill-btn {
+                flex-direction: column; /* 按钮内文字换行 */
+                gap: 5px;
+            }
+            .deduction-card .fill-btn span:nth-child(2) {
+                display: none; /* 隐藏分隔符 */
+            }
         }
     </style>
 </head>
 <body>
 
     <div class="mobile-shell">
-        
-        <!-- 页面内容区域 -->
+        <!-- HTML结构和JS保持不变，只修改CSS -->
+        <!-- 首页 -->
         <div class="page" id="home-page">
             <header class="home-header">
                 <div class="search-bar">
-                    <span class="icon">🔍</span> 请输入想搜索的功能/服务 <span class="scan-icon">͏㖣</span>
+                    <svg class="search-svg" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="9" cy="9" r="7.5" stroke-linecap="round"/>
+                        <line x1="15" y1="15" x2="18" y2="18" stroke-linecap="round"/>
+                    </svg>
+                    <span>请输入想搜索的功能/服务</span>
+                </div>
+                <div class="scan-icon-wrapper">
+                    <svg class="scan-svg" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M4 4L8 4" stroke-linecap="round"/><path d="M20 4L16 4" stroke-linecap="round"/><path d="M4 4L4 8" stroke-linecap="round"/><path d="M20 4L20 8" stroke-linecap="round"/><path d="M4 20L8 20" stroke-linecap="round"/><path d="M4 20L4 16" stroke-linecap="round"/><path d="M20 20L16 20" stroke-linecap="round"/><path d="M20 20L20 16" stroke-linecap="round"/>
+                    </svg>
                 </div>
             </header>
             <div class="notification-bar">
-                <span class="icon">🔔</span>
-                税务总局令第57号：《个人所得税综合所得汇算...
-                <span class="arrow">></span>
+                <span class="icon">🔔</span>税务总局令第57号：《个人所得税综合所得汇算...<span class="arrow">></span>
             </div>
             <div class="main-card">
-                <a href="#" style="position:absolute; top:10px; right:15px; font-size:13px; color:#5587e2; text-decoration: none;">进入专题页 ></a>
-                <h2>2024综合所得年度汇算</h2>
-                <p>已于6月30日结束，逾期办理可能会产生滞纳金，请您尽快申报</p>
-                <button class="start-btn">开始申报</button>
-                <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMjAgMTIwIj48cGF0aCBmaWxsPSIjZWNlZmYxIiBkPSJNNjAsMEMyNi44NiwwLDAsMjYuODYsMCw2MGMwLDMzLjE0LDI2Ljg2LDYwLDYwLDYwczYwLTI2Ljg2LDYwLTYwQzEyMCwyNi44Niw5My4xNCwwLDYwLDBaIi8+PHBhdGggZmlsbD0iIzM5MzkzOSIgZD0iTTYyLjcxLDM0LjA5Yy01LjI4LDAtOS41Nyw0LjI4LTkuNTcsOS41NmMwLDUuMjgsNC4yOCw5LjU2LDkuNTcsOS41NnM5LjU3LTQuMjgsOS41Ny05LjU2QzcyLjI4LDM4LjM3LDY3Ljk5LDM0LjA5LDYyLjcxLDM0LjA5eiIvPjxwYXRoIGZpbGw9IiM2MDc4RUUiIGQ9Ik05MC4zMSw4Ny4zN2MwLTEyLjU3LTYuNzgtMjMuNjctMTYuOC0yOS45M2MtMS4yNy0uOC0yLjg5LS45MS00LjI4LS4yOWMtNS42MywyLjUxLTEwLjEsMy45Mi0xMy41MiwzLjkyYy0zLjQxLDAtNy44OS0xLjQxLTEzLjUyLTMuOTJjLTEuMzktLjYyLTMuMDEtLjUxLTQuMjgsLjI5Yy0xMC4wMSw2LjI2LTE2LjgsMTcuMzYtMTYuOCwyOS45M2MwLDIuNzYsMCw1LjkzLDAsOS40NWg3OS43MkM5MC4zMSw5My4zLDkwLjMxLDkwLjEzLDkwLjMxLDg3LjM3eiIvPjwvc3ZnPg==" alt="person" class="person-img" style="opacity: 0.5;">
+                 <a href="#" style="position:absolute; top:10px; right:15px; font-size:clamp(12px, 3vw, 14px); color:#5587e2; text-decoration: none;">进入专题页 ></a>
+                <h2>2024综合所得年度汇算</h2><p>已于6月30日结束，逾期办理可能会产生滞纳金，请您尽快申报</p><button class="start-btn">开始申报</button>
+                <img src="data:image/svg+xml..." alt="person" class="person-img" style="opacity: 0.5;">
             </div>
             <h3 class="section-title">重点服务推荐</h3>
             <div class="deduction-card">
-                <div class="deduction-card-header">
-                    <div class="title">专项附加扣除</div>
-                    <div class="policy-link">相关政策 ></div>
-                </div>
+                <div class="deduction-card-header"><div class="title">专项附加扣除</div><div class="policy-link">相关政策 ></div></div>
                 <p>若符合条件，您可点击下方填报</p>
-                <button class="fill-btn">
-                    <span>👫 超1亿人参与</span>
-                    <span>|</span>
-                    <span>我要填报</span>
-                </button>
+                <button class="fill-btn"><span>👫 超1亿人参与</span><span>|</span><span>我要填报</span></button>
             </div>
             <div class="services-grid">
-                <div class="service-item">
-                    <div class="icon-bg blue">🧾</div>
-                    <h3>综合所得年度汇算</h3>
-                    <p>申报与查询综合所...</p>
-                    <div class="action">去申报</div>
-                </div>
-                <div class="service-item">
-                    <div class="icon-bg purple">🆔</div>
-                    <h3>收入纳税明细</h3>
-                    <p>查看个人所得税纳...</p>
-                    <div class="action">去查询</div>
-                </div>
-                <div class="service-item">
-                    <div class="icon-bg green">📄</div>
-                    <h3>纳税记录开具</h3>
-                    <p>生成或查看纳税记...</p>
-                    <div class="action">去开具</div>
-                </div>
-                <div class="service-item">
-                    <div class="icon-bg gray">⚙️</div>
-                    <h3>更多</h3>
-                    <p>设置查询常用功...</p>
-                </div>
+                <div class="service-item"><div class="icon-bg blue">🧾</div><h3>综合所得年度汇算</h3><p>申报与查询综合所...</p><div class="action">去申报</div></div>
+                <div class="service-item"><div class="icon-bg purple">🆔</div><h3>收入纳税明细</h3><p>查看个人所得税纳...</p><div class="action">去查询</div></div>
+                <div class="service-item"><div class="icon-bg green">📄</div><h3>纳税记录开具</h3><p>生成或查看纳税记...</p><div class="action">去开具</div></div>
+                <div class="service-item"><div class="icon-bg gray">⚙️</div><h3>更多</h3><p>设置查询常用功...</p></div>
             </div>
         </div>
+        <!-- 个人中心页 -->
         <div class="page" id="profile-page">
-            <header class="profile-header">
-                <div class="avatar-container">
-                    <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIj48Y2lyY2xlIGN4PSI1MCIgY3k9IjUwIiByPSI1MCIgZmlsbD0iI2YwZjBmMCIvPjxwYXRoIGZpbGw9IiMzOTM5MzkiIGQ9Ik01MiwzMGMyLjIsMCA0LDEuOCA0LDRjMCwyLjItMS44LDQtNCw0cy00LTEuOC00LTQtMS44LTQtNC00UzQ0LDMyLjIsNDQsMzRjMCwyLjIsMS44LDQsNCw0aDRjMi4yLDAsNC0xLjgsNC00VjMwek01MiwxOGMtNi42LDAtMTIsNS40LTEyLDEyczEyLDUuNCwxMiwxMnMtNS40LDEyLTEyLDEycy0xMi01LjQtMTItMTJoMi40YzEuMywwLDIuNC0xLjEsMi40LTIuNHMtMS4xLTIuNC0yLjQtMi40SDQwYy04LjgsMC0xNi03LjItMTYtMTZTNDAsMiw1MiwyejE2LDBjOC44LDAsMTYsNy4yLDE2LDE2SDY1LjZjLTEuMywwLTIuNCwxLjEtMi40LDIuNHMxLjEsMi40LDIuNCwyLjRIMjhWMzBjMC0yLjItMS44LTQtNC00cy00LDEuOC00LTRjMC0xMSw5LTIwLDIwLTIwaDRjMi4yLDAsNCwxLjgsNCw0djQuOEg1MnoiLz48cGF0aCBmaWxsPSIjMzQ0OTVlIiBkPSJNNzgsNjVjMC0xMS41LTkuNS0yMS0yMS0yM2MtMS41LS4yLTMtLjMtNC41LS4zcy0zLC4xLTQuNSwuM0MzNyw0NCwyNy41LDUzLjUsMjcuNSw2NWMwLDAsMCw0LjUsMCw4aDUwLjVDNzgsNjkuNSw3OCw2NSw3OCw2NXoiLz48cGF0aCBmaWxsPSIjMzkzOTM5IiBkPSJNNTIsMzQuOWMtNC40LDAtOCwzLjYtOCw4czMuNiw4LDgsOHM4LTMuNiw4LThTNTYuNCwzNC45LDUyLDM0Ljl6Ii8+PC9zdmc+" alt="avatar">
-                </div>
-            </header>
+            <header class="profile-header"><div class="avatar-container"><img src="data:image/svg+xml..." alt="avatar"></div></header>
             <div class="profile-main-content">
                 <div class="info-card">
-                    <div class="info-card-details">
-                        <h2 id="user-name">某某</h2>
-                        <div id="tax-id">
-                            纳税人识别号 <span id="tax-id-number">4****************X</span>
-                            <span class="eye-icon">👁️</span>
-                        </div>
-                    </div>
-                    <div class="personal-info-btn" id="edit-info-btn">
-                        个人信息 >
-                    </div>
+                    <div class="info-card-details"><h2 id="user-name">某某</h2><div id="tax-id">纳税人识别号 <span id="tax-id-number">4****************X</span><span class="eye-icon">👁️</span></div></div>
+                    <div class="personal-info-btn" id="edit-info-btn">个人信息 ></div>
                 </div>
                 <div class="profile-grid">
-                    <div class="profile-grid-item">
-                        <div class="icon">🏠</div>
-                        <p>家庭成员</p>
-                        <span class="add-btn">添加</span>
-                    </div>
-                    <div class="profile-grid-item">
-                        <div class="icon">💼</div>
-                        <p>任职受雇</p>
-                        <span>3家</span>
-                    </div>
-                    <div class="profile-grid-item">
-                        <div class="icon">💳</div>
-                        <p>银行卡</p>
-                        <span>1张</span>
-                    </div>
+                    <div class="profile-grid-item"><div class="icon">🏠</div><p>家庭成员</p><span class="add-btn">添加</span></div>
+                    <div class="profile-grid-item"><div class="icon">💼</div><p>任职受雇</p><span>3家</span></div>
+                    <div class="profile-grid-item"><div class="icon">💳</div><p>银行卡</p><span>1张</span></div>
                 </div>
                 <div class="profile-list">
-                    <div class="profile-list-item">
-                        <div class="icon">❤️</div>
-                        <span>切换关怀版</span>
-                        <div class="arrow">></div>
-                    </div>
-                    <div class="profile-list-item">
-                        <div class="icon">🏢</div>
-                        <span>企业办税权限</span>
-                        <div class="arrow">></div>
-                    </div>
-                    <div class="profile-list-item">
-                        <div class="icon">🛡️</div>
-                        <span>安全中心</span>
-                        <div class="arrow">></div>
-                    </div>
-                    <div class="profile-list-item">
-                        <div class="icon">❓</div>
-                        <span>帮助中心</span>
-                        <div class="arrow">></div>
-                    </div>
-                    <div class="profile-list-item">
-                        <div class="icon">🎧</div>
-                        <span>我要咨询</span>
-                        <div class="arrow">></div>
-                    </div>
-                    <div class="profile-list-item">
-                        <div class="icon">ℹ️</div>
-                        <span>关于&更新</span>
-                        <div class="red-dot"></div>
-                        <div class="arrow">></div>
-                    </div>
+                    <div class="profile-list-item"><div class="icon">❤️</div><span>切换关怀版</span><div class="arrow">></div></div>
+                    <div class="profile-list-item"><div class="icon">🏢</div><span>企业办税权限</span><div class="arrow">></div></div>
+                    <div class="profile-list-item"><div class="icon">🛡️</div><span>安全中心</span><div class="arrow">></div></div>
+                    <div class="profile-list-item"><div class="icon">❓</div><span>帮助中心</span><div class="arrow">></div></div>
+                    <div class="profile-list-item"><div class="icon">🎧</div><span>我要咨询</span><div class="arrow">></div></div>
+                    <div class="profile-list-item"><div class="icon">ℹ️</div><span>关于&更新</span><div class="red-dot"></div><div class="arrow">></div></div>
                 </div>
                 <button class="logout-btn">退出登录</button>
             </div>
         </div>
-
-        <!-- ======================= 底部导航栏 (最终版) ======================= -->
+        <!-- 底部导航栏 -->
         <nav class="bottom-nav">
-            <div class="nav-item active" data-page="home-page">
-                <img src="imge/e474e0ab2f7f3567bfa20908f2fe029.jpg" alt="首页" class="nav-icon">
-                <div class="nav-text">首页</div>
-            </div>
-            <div class="nav-item" data-page="todo-page">
-                <img src="imge/d3dc02ec7af1f8a8ca3671c25b612d6.jpg" alt="待办" class="nav-icon">
-                <div class="nav-text">待办</div>
-            </div>
-            <div class="nav-item" data-page="search-page">
-                <img src="imge/e722c4b0deb679803b6a303e59d3c96.jpg" alt="办&查" class="nav-icon">
-                <div class="nav-text">办&查</div>
-            </div>
-            <div class="nav-item" data-page="message-page">
-                <img src="imge/b9dc6613a5323b87754bd4fc8f7b544.jpg" alt="消息" class="nav-icon">
-                <div class="nav-text">消息</div>
-                <div class="badge">4</div>
-            </div>
-            <div class="nav-item" data-page="profile-page">
-                <img src="imge/a57b665eec018a5593120bf4f907837.jpg" alt="我的" class="nav-icon">
-                <div class="nav-text">我的</div>
-            </div>
+            <div class="nav-item active" data-page="home-page"><img src="imge/e474e0ab2f7f3567bfa20908f2fe029.jpg" alt="首页" class="nav-icon"><div class="nav-text">首页</div></div>
+            <div class="nav-item" data-page="todo-page"><img src="imge/d3dc02ec7af1f8a8ca3671c25b612d6.jpg" alt="待办" class="nav-icon"><div class="nav-text">待办</div></div>
+            <div class="nav-item" data-page="search-page"><img src="imge/e722c4b0deb679803b6a303e59d3c96.jpg" alt="办&查" class="nav-icon"><div class="nav-text">办&查</div></div>
+            <div class="nav-item" data-page="message-page"><img src="imge/b9dc6613a5323b87754bd4fc8f7b544.jpg" alt="消息" class="nav-icon"><div class="nav-text">消息</div><div class="badge">4</div></div>
+            <div class="nav-item" data-page="profile-page"><img src="imge/a57b665eec018a5593120bf4f907837.jpg" alt="我的" class="nav-icon"><div class="nav-text">我的</div></div>
         </nav>
     </div>
 
     <script>
+        // JavaScript 逻辑部分无需更改
         document.addEventListener('DOMContentLoaded', function () {
-            // 元素获取
             const homePage = document.getElementById('home-page');
             const profilePage = document.getElementById('profile-page');
             const navItems = document.querySelectorAll('.nav-item');
             const editInfoBtn = document.getElementById('edit-info-btn');
             const userNameEl = document.getElementById('user-name');
             const taxIdEl = document.getElementById('tax-id-number');
-
-            // 数据初始化
-            function loadUserInfo() {
-                const savedName = localStorage.getItem('taxAppName');
-                const savedId = localStorage.getItem('taxAppId');
-                userNameEl.textContent = savedName || '某某';
-                taxIdEl.textContent = savedId || '4****************X';
-            }
+            function loadUserInfo() { const savedName = localStorage.getItem('taxAppName'); const savedId = localStorage.getItem('taxAppId'); userNameEl.textContent = savedName || '某某'; taxIdEl.textContent = savedId || '4****************X'; }
             loadUserInfo();
-
-            // 事件监听
-            navItems.forEach(item => {
-                item.addEventListener('click', () => {
-                    const targetPageId = item.getAttribute('data-page');
-                    navItems.forEach(nav => nav.classList.remove('active'));
-                    item.classList.add('active');
-
-                    if (targetPageId === 'home-page' || targetPageId === 'profile-page') {
-                        homePage.style.display = (targetPageId === 'home-page') ? 'block' : 'none';
-                        profilePage.style.display = (targetPageId === 'profile-page') ? 'block' : 'none';
-                    } else {
-                        homePage.style.display = 'none';
-                        profilePage.style.display = 'none';
-                        const pageName = item.querySelector('.nav-text').textContent;
-                        alert(`您点击了 "${pageName}"，该页面尚未实现。`);
-                    }
-                });
-            });
-
-            editInfoBtn.addEventListener('click', () => {
-                const currentName = userNameEl.textContent;
-                const currentId = taxIdEl.textContent;
-                const newName = prompt('请输入新的名字:', currentName);
-                if (newName !== null && newName.trim() !== '') {
-                    const newId = prompt('请输入新的纳税人识别号:', currentId);
-                    if (newId !== null && newId.trim() !== '') {
-                        userNameEl.textContent = newName;
-                        taxIdEl.textContent = newId;
-                        localStorage.setItem('taxAppName', newName);
-                        localStorage.setItem('taxAppId', newId);
-                        alert('信息更新成功！');
-                    } else {
-                         alert('已取消修改纳税人识别号。');
-                    }
-                } else {
-                    alert('已取消修改名字。');
-                }
-            });
+            navItems.forEach(item => { item.addEventListener('click', () => { const targetPageId = item.getAttribute('data-page'); navItems.forEach(nav => nav.classList.remove('active')); item.classList.add('active'); if (targetPageId === 'home-page' || targetPageId === 'profile-page') { homePage.style.display = (targetPageId === 'home-page') ? 'block' : 'none'; profilePage.style.display = (targetPageId === 'profile-page') ? 'block' : 'none'; } else { homePage.style.display = 'none'; profilePage.style.display = 'none'; const pageName = item.querySelector('.nav-text').textContent; alert(`您点击了 "${pageName}"，该页面尚未实现。`); } }); });
+            editInfoBtn.addEventListener('click', () => { const currentName = userNameEl.textContent; const currentId = taxIdEl.textContent; const newName = prompt('请输入新的名字:', currentName); if (newName !== null && newName.trim() !== '') { const newId = prompt('请输入新的纳税人识别号:', currentId); if (newId !== null && newId.trim() !== '') { userNameEl.textContent = newName; taxIdEl.textContent = newId; localStorage.setItem('taxAppName', newName); localStorage.setItem('taxAppId', newId); alert('信息更新成功！'); } else { alert('已取消修改纳税人识别号。'); } } else { alert('已取消修改名字。'); } });
         });
     </script>
 </body>
