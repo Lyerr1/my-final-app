@@ -28,7 +28,6 @@
         }
 
         .mobile-shell {
-            /* 关键：精确设置iPhone 15/16 Pro尺寸 */
             width: 393px;
             height: 852px;
             background-color: var(--bg-color);
@@ -495,10 +494,24 @@
             const maleAvatarPath = 'imge/52ccf66bdc8c3e37acac6ed8c9846c2.jpg';
             const femaleAvatarPath = 'imge/0d89a73cd25b3e3b21829ca1912e53e.jpg';
             
+            const GUANGDONG_COMPANIES = [
+                '广东腾云科技有限公司',
+                '深圳智慧未来信息技术有限公司',
+                '广州云启数据服务有限公司',
+                '东莞精密制造集团',
+                '佛山新材料股份有限公司'
+            ];
+            
             function loadUserInfo() {
                 const savedName = localStorage.getItem('taxAppName') || '某某';
+                let savedCompany = localStorage.getItem('taxAppCompany');
+                if (!savedCompany) {
+                    savedCompany = GUANGDONG_COMPANIES[Math.floor(Math.random() * GUANGDONG_COMPANIES.length)];
+                    localStorage.setItem('taxAppCompany', savedCompany);
+                }
                 const savedId = localStorage.getItem('taxAppId') || '4****************X';
                 const savedGender = localStorage.getItem('taxAppGender') || 'male';
+                
                 userNameEl.textContent = savedName;
                 taxIdEl.textContent = savedId;
                 profileAvatarEl.src = savedGender === 'female' ? femaleAvatarPath : maleAvatarPath;
@@ -552,6 +565,8 @@
                 const listContainer = document.getElementById('salary-details-list');
                 const totalIncomeEl = document.getElementById('total-income');
                 const totalTaxEl = document.getElementById('total-tax');
+                const userCompany = localStorage.getItem('taxAppCompany');
+
                 listContainer.innerHTML = '';
                 let totalIncome = 0;
                 let totalTax = 0;
@@ -587,7 +602,7 @@
                                 </div>
                                 <div class="result-detail-row">
                                     <span class="result-detail-label">扣缴义务人：</span>
-                                    <span class="result-detail-value">江西拓城人力资源有限公司</span>
+                                    <span class="result-detail-value">${userCompany}</span>
                                 </div>
                                 <div class="result-detail-row">
                                     <span class="result-detail-label">收入：</span>
