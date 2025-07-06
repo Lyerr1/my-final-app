@@ -50,6 +50,14 @@
             display: block; /* 默认只显示首页 */
         }
 
+        .page.has-nav {
+            padding-bottom: 85px; /* 有导航栏时，为导航栏留出空间 */
+        }
+
+        .page:not(.has-nav) {
+            padding-bottom: 0; /* 没有导航栏时，内容可以占满底部 */
+        }
+
         .page::-webkit-scrollbar { display: none; } /* 隐藏滚动条 */
 
         /* --- 首页样式 --- */
@@ -89,11 +97,13 @@
         .special-topic-btn { position: absolute; top: 15px; right: 15px; background-color: #4a77d4; color: white; padding: 4px 12px; border-radius: 12px; font-size: 12px; text-decoration: none; white-space: nowrap; }
         .main-card .person-img { position: absolute; right: 10px; bottom: 0; width: 110px; height: auto; flex-shrink: 0; }
         .section-title { margin: 20px 15px 8px; font-size: 18px; font-weight: bold; color: var(--text-color); }
+        
         .deduction-card { margin: 0 15px; padding: 15px; background: linear-gradient(to right, #6ba6f8, #5587e2); border-radius: 12px; color: white; margin-bottom: 15px; }
         .deduction-card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
         .deduction-card-header .title { font-size: 17px; font-weight: bold; }
         .deduction-card-header .policy-link { font-size: 13px; background-color: rgba(255,255,255,0.2); padding: 5px 10px; border-radius: 15px; }
         .deduction-card p { font-size: 14px; margin: 0 0 10px; }
+        
         .deduction-card .fill-btn { background-color: white; color: #5587e2; border: 1px solid #cce0ff; width: 100%; padding: 12px; border-radius: 25px; font-size: 16px; font-weight: bold; display: flex; justify-content: center; align-items: center; gap: 10px; }
         .fill-btn-content { background-color: #ffe6e6; color: #e27d7d; padding: 2px 8px; border-radius: 10px; margin-right: 10px; white-space: nowrap; display: flex; align-items: center; }
         .fill-btn-icons { display: flex; align-items: center; }
@@ -101,6 +111,7 @@
         .fill-btn-icon.second-icon { margin-left: -5px; }
         .fill-btn span:nth-child(2) { color: #d0d0d0; font-size: 18px; line-height: 1; }
         .fill-btn span:last-child { white-space: nowrap; color: #333; font-weight: 600; }
+
         .services-container { margin: 0 15px; overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: none; padding-bottom: 15px; }
         .services-container::-webkit-scrollbar { display: none; }
         .services-grid { display: flex; flex-wrap: nowrap; padding: 15px 0; }
@@ -110,6 +121,7 @@
         .service-item h3 { font-size: 14px; margin: 0 0 3px 0; color: var(--text-color); }
         .service-item p { font-size: 12px; color: var(--text-light); margin: 0; line-height: 1.2; }
         .service-item .action { margin-top: 5px; font-size: 13px; color: #5587e2; }
+
         .bottom-banner-card { margin: 15px; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05); margin-bottom: 20px; background-color: var(--card-bg); }
         .bottom-banner-card .banner-img { display: block; width: 100%; height: auto; }
 
@@ -139,10 +151,10 @@
         .logout-btn { margin: 20px 0; width: 100%; padding: 12px; border: 1px solid #ddd; background-color: var(--card-bg); color: var(--primary-blue); font-size: 16px; border-radius: 8px; cursor: pointer; font-weight: 500; }
         
         /* --- 底部导航栏 --- */
-        .bottom-nav { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); width: 95%; max-width: 480px; height: 65px; background-color: rgba(240, 245, 255, 0.75); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); border: 1px solid rgba(255, 255, 255, 0.5); border-radius: 32.5px; display: flex; justify-content: space-around; align-items: center; z-index: 10; box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08); }
+        .bottom-nav { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); width: 95%; max-width: 480px; height: 65px; background-color: rgba(247, 248, 250, 0.95); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border-radius: 32.5px; display: flex; justify-content: space-around; align-items: center; z-index: 10; box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08); }
         .nav-item { display: flex; flex-direction: column; align-items: center; justify-content: center; flex-grow: 1; font-size: 11px; color: #555555; cursor: pointer; position: relative; height: 100%; }
         .nav-item .nav-icon { width: 26px; height: 26px; margin-bottom: 3px; }
-        .nav-item.active:not([data-page="home-page"]):not([data-page="profile-page"]) .nav-icon { filter: invert(38%) sepia(98%) saturate(1354%) hue-rotate(195deg) brightness(93%) contrast(87%); }
+        .nav-item.active:not([data-page="home-page"]) .nav-icon { filter: invert(38%) sepia(98%) saturate(1354%) hue-rotate(195deg) brightness(93%) contrast(87%); }
         .nav-item[data-page="profile-page"].active .nav-icon { filter: none; }
         .nav-item.active .nav-text { color: var(--primary-blue); }
         .nav-item .badge { position: absolute; top: 5px; right: 12px; background-color: #e74c3c; color: white; font-size: 10px; padding: 1px 5px; border-radius: 10px; border: 1px solid white; }
@@ -311,7 +323,7 @@
                 <button class="logout-btn">退出登录</button>
             </div>
         </div>
-
+        
         <!-- 新增：收入纳税明细查询页 -->
         <div class="page" id="query-page">
             <header class="page-header">
@@ -430,6 +442,7 @@
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             const allPages = document.querySelectorAll('.page');
+            const bottomNav = document.querySelector('.bottom-nav');
             const navItems = document.querySelectorAll('.nav-item');
             
             // --- 页面切换逻辑 ---
@@ -440,6 +453,13 @@
                 if (pageToShow) {
                     pageToShow.style.display = 'block';
                     currentPageId = pageId;
+
+                    // 根据页面ID决定是否显示底部导航栏
+                    if (pageId === 'home-page' || pageId === 'profile-page') {
+                        bottomNav.style.display = 'flex';
+                    } else {
+                        bottomNav.style.display = 'none';
+                    }
                 }
             }
 
@@ -505,7 +525,7 @@
                 });
             });
             
-            // --- 个人中心页的逻辑 (从之前的代码中保留) ---
+            // --- 个人中心页的逻辑 ---
             const editInfoBtn = document.getElementById('edit-info-btn');
             const userNameEl = document.getElementById('user-name');
             const taxIdEl = document.getElementById('tax-id-number');
@@ -518,14 +538,14 @@
                 const savedId = localStorage.getItem('taxAppId') || '4****************X';
                 const savedGender = localStorage.getItem('taxAppGender') || 'male';
                 userNameEl.textContent = savedName;
-                taxIdEl.textContent = savedId;
+                document.getElementById('tax-id-number').textContent = savedId; // Correctly set the span's content
                 profileAvatarEl.src = savedGender === 'female' ? femaleAvatarPath : maleAvatarPath;
             }
             loadUserInfo();
 
             editInfoBtn.addEventListener('click', () => {
                 const currentName = userNameEl.textContent;
-                const currentId = taxIdEl.textContent;
+                const currentId = document.getElementById('tax-id-number').textContent;
                 const currentGender = localStorage.getItem('taxAppGender') || 'male';
 
                 const newName = prompt('请输入新的名字:', currentName);
@@ -556,7 +576,7 @@
                 const finalId = newId.trim() || currentId;
 
                 userNameEl.textContent = finalName;
-                taxIdEl.textContent = finalId;
+                document.getElementById('tax-id-number').textContent = finalId;
                 profileAvatarEl.src = newGender === 'female' ? femaleAvatarPath : maleAvatarPath;
 
                 localStorage.setItem('taxAppName', finalName);
