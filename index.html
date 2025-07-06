@@ -257,7 +257,7 @@
             font-size: 18px; /* 稍微大一点 */
             line-height: 1; /* 确保垂直居中 */
         }
-        /* 关键改动：“我要填报”的字体样式 */
+        /* “我要填报”的字体样式 */
         .fill-btn span:last-child {
             white-space: nowrap;
             color: #333; /* 黑色 */
@@ -344,42 +344,90 @@
             width: 80px; 
             height: 80px; 
             border-radius: 50%; 
-            background-color: rgba(255,255,255,0.8); /* 容器背景色，如果图片不完全覆盖则可见 */
+            background-image: url('imge/b656b10c310aeee06af146a390ac443.jpg'); 
+            background-size: cover; 
+            background-position: center; 
+            background-repeat: no-repeat; 
             margin: 0 auto; 
             display: flex; 
             justify-content: center; 
             align-items: center; 
             box-shadow: 0 0 10px rgba(0,0,0,0.1);
-            overflow: hidden; /* 确保图片超出部分被裁剪 */
+            overflow: hidden; 
         }
-        /* 个人中心头像图片样式 */
-        .avatar-container img#profile-avatar { /* 使用ID确保精确性 */
-            width: 100%; /* 图片充满容器 */
-            height: 100%; /* 图片充满容器 */
-            object-fit: cover; /* 确保图片覆盖整个区域，可能裁剪 */
-            border-radius: 50%; /* 确保图片本身也呈圆形 */
+        .avatar-container img#profile-avatar { 
+            width: 100%; 
+            height: 100%; 
+            object-fit: cover; 
+            border-radius: 50%; 
         }
         .profile-main-content { margin-top: -60px; padding: 0 4vw; position: relative; z-index: 2; }
-        .info-card { background-color: var(--card-bg); border-radius: 12px; padding: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); display: flex; align-items: center; margin-bottom: 15px; }
+        .info-card { 
+            background: linear-gradient(to right, #fdf3e8, #fdf8f0); /* 金色渐变 */
+            border-radius: 12px; 
+            padding: 15px; 
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05); 
+            display: flex; 
+            align-items: center; 
+            margin-bottom: 15px;
+            position: relative; /* 为绝对定位的按钮提供参照 */
+            overflow: hidden; /* 确保按钮不会超出卡片 */
+        }
         .info-card-details { flex-grow: 1; }
         .info-card #user-name { font-size: clamp(18px, 5vw, 22px); font-weight: bold; margin: 0; }
         .info-card #tax-id { font-size: 14px; color: var(--text-light); margin-top: 5px; display: flex; align-items: center; }
         .info-card #tax-id .eye-icon { margin-left: 10px; cursor: pointer; }
-        .info-card .personal-info-btn { font-size: 13px; color: #e67e22; background-color: #fdf3e8; padding: 5px 10px; border-radius: 15px; cursor: pointer; }
+        .info-card .personal-info-btn { 
+            position: absolute;
+            right: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 13px; 
+            color: #e67e22; 
+            background-color: #fdf3e8; 
+            padding: 5px 10px 5px 15px; /* 调整内边距，使文字更居中 */
+            border-radius: 15px 0 0 15px; /* 左侧圆角，右侧直角 */
+            cursor: pointer; 
+        }
         .profile-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; background-color: var(--card-bg); padding: 15px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); margin-bottom: 15px; }
         .profile-grid-item { text-align: center; }
-        .profile-grid-item .icon { font-size: 24px; color: #5587e2; }
+        .profile-grid-item .icon { 
+            width: 24px;
+            height: 24px;
+            object-fit: contain;
+        }
         .profile-grid-item p { margin: 5px 0 0; font-size: 14px; color: var(--text-color); }
-        .profile-grid-item span { font-size: 12px; color: white; background-color: #5587e2; padding: 2px 8px; border-radius: 10px; }
-        .profile-grid-item .add-btn { font-size: 12px; color: #5587e2; border: 1px solid #5587e2; padding: 2px 10px; border-radius: 10px; }
+        /* 关键改动：三格卡片下方标签的样式 */
+        .grid-label-img {
+            height: 18px; /* 调整图片高度 */
+            width: auto;
+            margin-top: 5px; /* 与上方文字间距 */
+        }
+        
         .profile-list { background-color: var(--card-bg); border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); padding: 0 15px; }
         .profile-list-item { display: flex; align-items: center; padding: 15px 0; border-bottom: 1px solid var(--border-color); cursor: pointer; }
         .profile-list-item:last-child { border-bottom: none; }
-        .profile-list-item .icon { font-size: 20px; margin-right: 15px; width: 24px; text-align: center; color: #555; }
+        .profile-list-item .icon { 
+            width: 20px;
+            height: 20px;
+            object-fit: contain;
+            margin-right: 15px; 
+        }
         .profile-list-item span { flex-grow: 1; font-size: 15px; }
         .profile-list-item .arrow { color: #ccc; }
         .profile-list-item .red-dot { width: 8px; height: 8px; background-color: #e74c3c; border-radius: 50%; margin-right: 10px; }
-        .logout-btn { margin: 20px 0; width: 100%; padding: 12px; border: 1px solid #ddd; background-color: var(--card-bg); color: #e74c3c; font-size: 16px; border-radius: 8px; cursor: pointer; }
+        .logout-btn { 
+            margin: 20px 0; 
+            width: 100%; 
+            padding: 12px; 
+            border: 1px solid #ddd; 
+            background-color: var(--card-bg); 
+            color: #e74c3c; 
+            font-size: 16px; 
+            border-radius: 8px; 
+            cursor: pointer; 
+            font-weight: 500;
+        }
         
         /* 底部导航栏样式 (毛玻璃效果) */
         .bottom-nav {
@@ -710,17 +758,54 @@
                     </div>
                 </div>
                 <div class="profile-grid">
-                    <div class="profile-grid-item"><div class="icon">🏠</div><p>家庭成员</p><span class="add-btn">添加</span></div>
-                    <div class="profile-grid-item"><div class="icon">💼</div><p>任职受雇</p><span>3家</span></div>
-                    <div class="profile-grid-item"><div class="icon">💳</div><p>银行卡</p><span>1张</span></div>
+                    <div class="profile-grid-item">
+                        <img src="imge/fe7cfc0bf092208379cbd0a41f42d43.jpg" alt="家庭成员" class="icon">
+                        <p>家庭成员</p>
+                        <img src="imge/efa43a43718c1a4d09c91e43d23d2aa.jpg" alt="添加" class="grid-label-img">
+                    </div>
+                    <div class="profile-grid-item">
+                        <img src="imge/115599764b42670f9cc81d37ecd5f40.jpg" alt="任职受雇" class="icon">
+                        <p>任职受雇</p>
+                        <img src="imge/9d13f03658c6fb7d9b78b21e7881848.jpg" alt="3家" class="grid-label-img">
+                    </div>
+                    <div class="profile-grid-item">
+                        <img src="imge/c107a0d100ed2d4589ee5d2d993c59b.jpg" alt="银行卡" class="icon">
+                        <p>银行卡</p>
+                        <img src="imge/165d64479986abb6f513ff89d307dd4.jpg" alt="1张" class="grid-label-img">
+                    </div>
                 </div>
                 <div class="profile-list">
-                    <div class="profile-list-item"><div class="icon">❤️</div><span>切换关怀版</span><div class="arrow">></div></div>
-                    <div class="profile-list-item"><div class="icon">🏢</div><span>企业办税权限</span><div class="arrow">></div></div>
-                    <div class="profile-list-item"><div class="icon">🛡️</div><span>安全中心</span><div class="arrow">></div></div>
-                    <div class="profile-list-item"><div class="icon">❓</div><span>帮助中心</span><div class="arrow">></div></div>
-                    <div class="profile-list-item"><div class="icon">🎧</div><span>我要咨询</span><div class="arrow">></div></div>
-                    <div class="profile-list-item"><div class="icon">ℹ️</div><span>关于&更新</span><div class="red-dot"></div><div class="arrow">></div></div>
+                    <div class="profile-list-item">
+                        <img src="imge/e79e25d6d23c45cdbff429fa905502d.jpg" alt="切换关怀版" class="icon">
+                        <span>切换关怀版</span>
+                        <div class="arrow">></div>
+                    </div>
+                    <div class="profile-list-item">
+                        <img src="imge/8ba46cc8666669ea4352fd4caf61505.jpg" alt="企业办税权限" class="icon">
+                        <span>企业办税权限</span>
+                        <div class="arrow">></div>
+                    </div>
+                    <div class="profile-list-item">
+                        <img src="imge/fbb5f163815e33387efb80e87b413c3.jpg" alt="安全中心" class="icon">
+                        <span>安全中心</span>
+                        <div class="arrow">></div>
+                    </div>
+                    <div class="profile-list-item">
+                        <img src="imge/83e036ba066d167689ac1595c8bff16.jpg" alt="帮助中心" class="icon">
+                        <span>帮助中心</span>
+                        <div class="arrow">></div>
+                    </div>
+                    <div class="profile-list-item">
+                        <img src="imge/25f965c78fc4cd29de4ac35a241cd32.jpg" alt="我要咨询" class="icon">
+                        <span>我要咨询</span>
+                        <div class="arrow">></div>
+                    </div>
+                    <div class="profile-list-item">
+                        <img src="imge/83e036ba066d167689ac1595c8bff16.jpg" alt="关于&更新" class="icon"> <!-- 假设“关于&更新”图标与“帮助中心”相同 -->
+                        <span>关于&更新</span>
+                        <div class="red-dot"></div>
+                        <div class="arrow">></div>
+                    </div>
                 </div>
                 <button class="logout-btn">退出登录</button>
             </div>
@@ -728,12 +813,15 @@
         
         <!-- 底部导航栏 -->
         <nav class="bottom-nav">
-            <!-- 关键改动：首页图标路径更新 -->
+            <!-- 首页图标 -->
             <div class="nav-item active" data-page="home-page"><img src="imge/e71a9e9487a9cf88b140cb788abe30c.jpg" alt="首页" class="nav-icon"><div class="nav-text">首页</div></div>
+            <!-- 待办图标 -->
             <div class="nav-item" data-page="todo-page"><img src="imge/d3dc02ec7af1f8a8ca3671c25b612d6.jpg" alt="待办" class="nav-icon"><div class="nav-text">待办</div></div>
+            <!-- 办&查图标 -->
             <div class="nav-item" data-page="search-page"><img src="imge/e722c4b0deb679803b6a303e59d3c96.jpg" alt="办&查" class="nav-icon"><div class="nav-text">办&查</div></div>
+            <!-- 消息图标 -->
             <div class="nav-item" data-page="message-page"><img src="imge/b9dc6613a5323b87754bd4fc8f7b544.jpg" alt="消息" class="nav-icon"><div class="nav-text">消息</div><div class="badge">4</div></div>
-            <!-- 关键改动：底部导航栏“我的”图标替换 -->
+            <!-- 我的图标 -->
             <div class="nav-item" data-page="profile-page">
                 <img src="imge/1775e13a08d207c89b12b6e732f56cd.jpg" alt="我的" class="nav-icon">
                 <div class="nav-text">我的</div>
