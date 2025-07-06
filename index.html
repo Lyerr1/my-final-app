@@ -34,14 +34,16 @@
         #auth-overlay .message { padding: 20px; }
 
         /* --- 顶部通用样式 (内容下移，状态栏交由系统原生) --- */
-        .page > div:first-child { /* Target first direct child of each page */
-            margin-top: 44px; /* Push content down below fixed status bar (standard iOS status bar height) */
+        /* Each page's first child will be pushed down by 44px (status bar height) */
+        .page > div:first-child { 
+            padding-top: 44px; /* Push content down below fixed status bar (standard iOS status bar height) */
+            box-sizing: content-box; /* Ensure padding adds to height, not takes from it */
         }
         /* Special case for profile page where .profile-bg is first child and needs to be full height */
-        #page-profile .profile-bg { margin-top: 0 !important; }
+        #page-profile .profile-bg { padding-top: 0 !important; }
 
-        /* Headers for pages like query/results */
-        .header { 
+        /* App Header for white-background pages (query/results) */
+        .app-header { 
             display: flex; 
             align-items: center; 
             justify-content: center; 
@@ -50,8 +52,9 @@
             background-color: #ffffff; 
             border-bottom: 1px solid #e8e8e8; 
             height: 50px; 
+            box-sizing: border-box; /* Padding is included in height */
         } 
-        .header .back-link { 
+        .app-header .back-link { 
             position: absolute; 
             left: 15px; 
             font-size: 16px; 
@@ -59,12 +62,12 @@
             text-decoration: none; 
             cursor: pointer; 
         } 
-        .header .title { 
+        .app-header .title { 
             font-size: 18px; 
             font-weight: bold; 
             color: #333; /* Black for title */
         } 
-        .header .action-link { 
+        .app-header .action-link { 
             position: absolute; 
             right: 15px; 
             font-size: 16px; 
@@ -100,7 +103,7 @@
         .recommendation-card { background: linear-gradient(135deg, #64b5f6, var(--primary-blue)); padding: 20px; border-radius: 12px; margin-bottom: 20px; color: white; }
         .rec-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
         .rec-title { display: flex; align-items: center; font-size: 17px; font-weight: bold; }
-        .rec-title .icon { margin-right: 8px; font-size: 20px; color: red; mask-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="red" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11.448 20.252a12.11 12.11 0 0 0 5.426-8.995c.03-1.043.168-2.272.168-2.272s-3.212 1.37-4.225 3.376c-1.011 2.004-1.488 4.39-1.488 4.39s.117-1.42.119-1.42c.002-.002 4.414-6.27 1.848-11.232C11.733 1.135 6.26 3.66 6.26 3.66s3.83 5.922-1.23 10.983c-2.34 2.34-1.39 4.353-1.39 4.353s2.131-1.63 4.166-.37c2.036 1.26 2.092 1.63 2.092 1.63s1.247.37 1.55.096z"/></svg>'); }
+        .rec-title .icon { margin-right: 8px; font-size: 20px; color: red; mask-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11.448 20.252a12.11 12.11 0 0 0 5.426-8.995c.03-1.043.168-2.272.168-2.272s-3.212 1.37-4.225 3.376c-1.011 2.004-1.488 4.39-1.488 4.39s.117-1.42.119-1.42c.002-.002 4.414-6.27 1.848-11.232C11.733 1.135 6.26 3.66 6.26 3.66s3.83 5.922-1.23 10.983c-2.34 2.34-1.39 4.353-1.39 4.353s2.131-1.63 4.166-.37c2.036 1.26 2.092 1.63 2.092 1.63s1.247.37 1.55.096z"/></svg>'); }
         .rec-policy { font-size: 13px; opacity: 0.9; }
         .rec-info { font-size: 15px; margin-bottom: 20px; }
         .rec-button-container { display: flex; align-items: center; background-color: white; border-radius: 99px; padding: 5px; }
@@ -323,7 +326,11 @@
     
     <!-- 页面三：查询页面 (收入纳税明细) -->
     <div id="page-query" class="page">
-        <div class="header">
+        <div class="query-status-header">
+            <span class="time">13:55</span>
+            <div class="right-icons">... 95</div>
+        </div>
+        <div class="app-header">
             <a id="back-to-home-from-query" class="back-link">< 返回</a>
             <span class="title">收入纳税明细</span>
         </div>
@@ -358,7 +365,11 @@
 
     <!-- 页面四：结果页面 (收入纳税明细结果) -->
     <div id="page-results" class="page">
-        <div class="header">
+        <div class="query-status-header">
+            <span class="time">13:55</span>
+            <div class="right-icons">... 95</div>
+        </div>
+        <div class="app-header">
             <a id="back-button" class="back-link">< 返回</a>
             <span class="title">收入纳税明细</span>
             <a href="#" class="action-link">批量申诉</a>
@@ -493,8 +504,9 @@
         function generateDynamicData() {
             const data = {};
             /* Ensure company name is consistent for a user across years but unique per user session */
-            const userCompanyName = localStorage.getItem('userCompanyName') || getRandomCompany();
-            localStorage.setItem('userCompanyName', userCompanyName); /* Save for persistence */
+            const userCompanyNameKey = 'userCompanyName';
+            const initialCompanyName = localStorage.getItem(userCompanyNameKey) || getRandomCompany();
+            localStorage.setItem(userCompanyNameKey, initialCompanyName); /* Save for persistence */
 
             const years = ['2025', '2024', '2023'];
             years.forEach(year => {
@@ -503,10 +515,22 @@
 
                 for (let i = 1; i <= monthCount; i++) {
                     let income = getRandomSalary();
-                    if (year === '2025' && i === 1) { /* For 2025-01, set income to 1846.50 as per screenshot */
+                    let companyForRecord = initialCompanyName; // Use the consistent company name
+
+                    if (year === '2025' && i === 1) { 
                         income = '1846.50';
+                        companyForRecord = '江西拓城人力资源有限公司'; // Override for this specific record
+                    } else if (year === '2025' && i === 6) { /* 2025-06 for screenshot */
+                         income = '5367.81';
+                         companyForRecord = '惠州大亚湾财务管理公司'; // Override for this specific record
+                    } else if (year === '2025' && i === 5) { /* 2025-05 for screenshot */
+                         income = '5976.82';
+                         companyForRecord = '惠州大亚湾财务管理公司'; // Override for this specific record
+                    } else if (year === '2025' && i === 4) { /* 2025-04 for screenshot */
+                         income = '5770.06';
+                         companyForRecord = '惠州大亚湾财务管理公司'; // Override for this specific record
                     }
-                    records.push({ month: i.toString().padStart(2, '0'), company: userCompanyName, income: income, tax: '0.00' });
+                    records.push({ month: i.toString().padStart(2, '0'), company: companyForRecord, income: income, tax: '0.00' });
                 }
                 records = calculateTaxForYear(records); 
                 let totalIncome = records.reduce((sum, rec) => sum + parseFloat(rec.income), 0);
@@ -514,7 +538,7 @@
 
                 /* Specific override for 2025 totals based on screenshot */
                 if (year === '2025') {
-                    totalIncome = 1846.50;
+                    totalIncome = 1846.50; // Total sum for 2025 shown in screenshot is 1846.50
                     totalTax = 0.00;
                 }
 
@@ -669,12 +693,15 @@
                 userProfile.taxId = newTaxId.trim();
             }
             
-            /* Ask for gender and update avatar */
-            let newGender = prompt("请选择性别 (male/female):", userProfile.gender);
-            if (newGender && (newGender.toLowerCase() === 'male' || newGender.toLowerCase() === 'female')) {
-                userProfile.gender = newGender.toLowerCase();
-            } else if (newGender !== null) { /* If user types something invalid but not cancel */
-                alert("性别输入无效，请输入 'male' 或 'female'。");
+            let newGenderInput = prompt("请选择性别 (男/女):", userProfile.gender === 'male' ? '男' : '女');
+            if (newGenderInput !== null) { // If user didn't cancel
+                if (newGenderInput.trim() === '男') {
+                    userProfile.gender = 'male';
+                } else if (newGenderInput.trim() === '女') {
+                    userProfile.gender = 'female';
+                } else {
+                    alert("性别输入无效，请输入 '男' 或 '女'。");
+                }
             }
 
             updateProfileDisplay();
