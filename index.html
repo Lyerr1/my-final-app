@@ -375,8 +375,13 @@
         }
         .info-card-details { flex-grow: 1; }
         .info-card #user-name { font-size: clamp(18px, 5vw, 22px); font-weight: bold; margin: 0; }
-        .info-card #tax-id { font-size: 14px; color: var(--text-light); margin-top: 5px; display: flex; align-items: center; }
-        .info-card #tax-id .eye-icon { margin-left: 10px; cursor: pointer; }
+        .info-card #tax-id { 
+            font-size: 14px; 
+            color: #c5a56a; /* 金色字体 */
+            margin-top: 5px; 
+            display: flex; 
+            align-items: center; 
+        }
         .info-card .personal-info-btn { 
             position: absolute;
             right: 0;
@@ -397,7 +402,6 @@
             object-fit: contain;
         }
         .profile-grid-item p { margin: 5px 0 0; font-size: 14px; color: var(--text-color); }
-        /* 关键改动：三格卡片下方标签的样式 */
         .grid-label-img {
             height: 18px; /* 调整图片高度 */
             width: auto;
@@ -422,7 +426,7 @@
             padding: 12px; 
             border: 1px solid #ddd; 
             background-color: var(--card-bg); 
-            color: #e74c3c; 
+            color: var(--primary-blue); /* 蓝色字体 */
             font-size: 16px; 
             border-radius: 8px; 
             cursor: pointer; 
@@ -748,10 +752,7 @@
                 <div class="info-card">
                     <div class="info-card-details">
                         <h2 id="user-name">某某</h2>
-                        <div id="tax-id">
-                            纳税人识别号 <span id="tax-id-number">4****************X</span>
-                            <span class="eye-icon">👁️</span>
-                        </div>
+                        <div id="tax-id">纳税人识别号 <span id="tax-id-number">4****************X</span></div>
                     </div>
                     <div class="personal-info-btn" id="edit-info-btn">
                         个人信息 >
